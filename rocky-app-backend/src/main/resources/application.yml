@@ -1,0 +1,27 @@
+app:
+  datasource:
+    main:
+      driver-class-name: org.postgresql.Driver
+      jdbc-url: jdbc:postgresql://localhost:5432/rockydb
+      username: rockyadmin
+      password: 'password'
+      pool-size: 30
+
+spring:
+  main:
+    allow-circular-references: true
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+server:
+  error:
+    include-binding-errors: always
+    include-message: always
+  port: 8005
+  servlet:
+    context-path: /api
+
+jwt:
+  token:
+    secret: "rrEmm07zF5SpvvzrO7eiPOSgxvqa4kJNIFDRkPQ50Q4GJo-NtOUifzp1EHTfIRoaExW2A94RBAfMgJsaMQEFERRIIFmLQkw7lRFXlr8gtGCtebDJ1A_fPHA4UTC_KHKsg_S4jwf3SwcBHZaNYErumQkc4rMZD3ovs-szzRN6G0c"
