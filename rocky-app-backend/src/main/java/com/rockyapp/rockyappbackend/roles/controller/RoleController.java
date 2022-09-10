@@ -2,6 +2,7 @@ package com.rockyapp.rockyappbackend.roles.controller;
 
 import com.rockyapp.rockyappbackend.common.pagination.ResultPagine;
 import com.rockyapp.rockyappbackend.roles.dto.RoleDTO;
+import com.rockyapp.rockyappbackend.roles.dto.SimpleRoleDTO;
 import com.rockyapp.rockyappbackend.roles.exception.RoleAlreadyExistsException;
 import com.rockyapp.rockyappbackend.roles.exception.RoleNotFoundException;
 import com.rockyapp.rockyappbackend.roles.service.RoleService;
@@ -19,9 +20,9 @@ public class RoleController {
 
     @GetMapping("/search")
     @PostAuthorize("hasAnyAuthority('SEARCH_ROLE', 'CREATE_ROLE', 'UPDATE_ROLE', 'DELETE_ROLE')")
-    public ResultPagine<RoleDTO> searchRoles(@RequestParam(name = "name", defaultValue = "") String name,
-                                        @RequestParam(name = "active", defaultValue = "2") int active,
-                                        Pageable pageable){
+    public ResultPagine<SimpleRoleDTO> searchRoles(@RequestParam(name = "name", defaultValue = "") String name,
+                                                   @RequestParam(name = "active", defaultValue = "2") int active,
+                                                   Pageable pageable){
         return roleService.searchRoleByNameAndIsNotDelete(name, active, pageable);
     }
 

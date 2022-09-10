@@ -3,10 +3,12 @@ package com.rockyapp.rockyappbackend.roles.service.impl;
 import com.rockyapp.rockyappbackend.common.pagination.ResultPagine;
 import com.rockyapp.rockyappbackend.roles.dao.RoleDAO;
 import com.rockyapp.rockyappbackend.roles.dto.RoleDTO;
+import com.rockyapp.rockyappbackend.roles.dto.SimpleRoleDTO;
 import com.rockyapp.rockyappbackend.roles.entity.Role;
 import com.rockyapp.rockyappbackend.roles.exception.RoleAlreadyExistsException;
 import com.rockyapp.rockyappbackend.roles.exception.RoleNotFoundException;
 import com.rockyapp.rockyappbackend.roles.mapper.RoleMapper;
+import com.rockyapp.rockyappbackend.roles.mapper.SimpleRoleMapper;
 import com.rockyapp.rockyappbackend.roles.service.RoleService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,12 +25,13 @@ public class RoleServiceImpl implements RoleService {
 
     private RoleDAO roleDAO;
     private RoleMapper roleMapper;
+    private SimpleRoleMapper simpleRoleMapper;
 
     @Override
-    public ResultPagine<RoleDTO> searchRoleByNameAndIsNotDelete(String name, int active, Pageable pageable) {
+    public ResultPagine<SimpleRoleDTO> searchRoleByNameAndIsNotDelete(String name, int active, Pageable pageable) {
         Page<Role> rolePage = this.roleDAO.searchRoleByNameAndDeleteIsNot(name, active, pageable);
 
-        return this.roleMapper.mapFromEntity(rolePage);
+        return this.simpleRoleMapper.mapFromEntity(rolePage);
     }
 
     @Override
