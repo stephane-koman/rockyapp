@@ -50,7 +50,7 @@ public class TokenHelper {
     public static String generateJwtRefreshToken(String username, HttpServletRequest request){
         return JWT.create()
                 .withSubject(username)
-                .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME_ACCESS))
+                .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME_REFRESH))
                 .withIssuer(request.getRequestURL().toString())
                 .sign(ALGORITHM);
     }
