@@ -3,6 +3,7 @@ package com.rockyapp.rockyappbackend.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rockyapp.rockyappbackend.utils.helpers.TokenHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -43,26 +45,13 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         User user = (User) authResult.getPrincipal();
-        Algorithm algo = Algorithm.HMAC256(SecurityConstants.SECRET);
-        String jwtAccessToken = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME_ACCESS))
-                .withIssuer(request.getRequestURL().toString())
-                .withClaim("permissions", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-                .sign(algo);
+        List<String> authorities = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
-        String jwtRefreshToken = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME_REFRESH))
-                .withIssuer(request.getRequestURL().toString())
-                .sign(algo);
+        String jwtAccessToken = TokenHelper.generateJwtAccessToken(user.getUsername(), authorities, request);
 
-        Map<String, String> idToken = new HashMap<>();
-        idToken.put("access-token", jwtAccessToken);
-        idToken.put("refresh-token", jwtRefreshToken);
+        String jwtRefreshToken = TokenHelper.generateJwtRefreshToken(user.getUsername(), request);
 
-        response.setContentType("application/json");
-        new ObjectMapper().writeValue(response.getOutputStream(), idToken);
+        TokenHelper.writeTokenInHttpResponse(jwtAccessToken, jwtRefreshToken, response);
     }
 
 }

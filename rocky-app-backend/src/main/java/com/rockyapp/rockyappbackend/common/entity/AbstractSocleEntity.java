@@ -1,4 +1,4 @@
-package com.rockyapp.rockyappbackend.common;
+package com.rockyapp.rockyappbackend.common.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @MappedSuperclass
-public abstract class AbstractSocleEntity implements SocleEntity{
+public abstract class AbstractSocleEntity implements SocleEntity {
 
     private static final long serialVersionUID = -7740347057780248917L;
 

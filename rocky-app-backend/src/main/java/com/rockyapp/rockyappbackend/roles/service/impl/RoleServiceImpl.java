@@ -1,9 +1,10 @@
 package com.rockyapp.rockyappbackend.roles.service.impl;
 
-import com.rockyapp.rockyappbackend.common.ResultPagine;
+import com.rockyapp.rockyappbackend.common.pagination.ResultPagine;
 import com.rockyapp.rockyappbackend.roles.dao.RoleDAO;
 import com.rockyapp.rockyappbackend.roles.dto.RoleDTO;
 import com.rockyapp.rockyappbackend.roles.entity.Role;
+import com.rockyapp.rockyappbackend.roles.exception.RoleNotFoundException;
 import com.rockyapp.rockyappbackend.roles.mapper.RoleMapper;
 import com.rockyapp.rockyappbackend.roles.service.RoleService;
 import lombok.AllArgsConstructor;
@@ -26,5 +27,14 @@ public class RoleServiceImpl implements RoleService {
         Page<Role> rolePage = this.roleDAO.searchRoleByNameAndDeleteIsNot(name, active, pageable);
 
         return this.roleMapper.mapFromEntity(rolePage);
+    }
+
+    @Override
+    public Role findRoleByName(String name) throws RoleNotFoundException {
+        Role role = roleDAO.findRoleByNameAndIsActiveAndIsNotDelete(name);
+
+        if(role == null) throw new RoleNotFoundException();
+
+        return role;
     }
 }

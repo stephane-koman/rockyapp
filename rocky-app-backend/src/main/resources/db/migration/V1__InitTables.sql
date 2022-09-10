@@ -36,22 +36,30 @@ CREATE TABLE users
     name       VARCHAR(250)             NOT NULL,
     username   VARCHAR(250)             NOT NULL,
     password   VARCHAR(250)             NOT NULL,
-    mail      VARCHAR(250)             NOT NULL,
+    email       VARCHAR(250)             NOT NULL,
 
-    is_active   NUMERIC(1) DEFAULT 1,
-    is_delete   NUMERIC(1) DEFAULT 0,
-
-    role_id    BIGINT,
+    is_active  NUMERIC(1) DEFAULT 1,
+    is_delete  NUMERIC(1) DEFAULT 0,
 
     created_at TIMESTAMP WITH TIME ZONE NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE,
     deleted_at TIMESTAMP WITH TIME ZONE,
 
-    unique (username, mail),
+    unique (username, email),
     CONSTRAINT pk_users PRIMARY KEY (id)
 );
-ALTER TABLE users
-    ADD CONSTRAINT fk_users_reference_roles FOREIGN KEY (role_id) REFERENCES roles (id);
+
+CREATE TABLE users_roles
+(
+    user_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
+
+    CONSTRAINT pk_users_roles PRIMARY KEY (user_id, role_id)
+);
+ALTER TABLE users_roles
+    ADD CONSTRAINT fk_users_roles_reference_users FOREIGN KEY (user_id) REFERENCES users (id);
+ALTER TABLE users_roles
+    ADD CONSTRAINT fk_users_roles_reference_roles FOREIGN KEY (role_id) REFERENCES roles (id);
 
 CREATE TABLE users_permissions
 (
@@ -103,8 +111,8 @@ CREATE TABLE products
 
     product_type_id BIGINT                   NOT NULL,
 
-    is_active   NUMERIC(1) DEFAULT 1,
-    is_delete   NUMERIC(1) DEFAULT 0,
+    is_active       NUMERIC(1) DEFAULT 1,
+    is_delete       NUMERIC(1) DEFAULT 0,
 
     created_at      TIMESTAMP WITH TIME ZONE NOT NULL,
     updated_at      TIMESTAMP WITH TIME ZONE,
@@ -143,8 +151,8 @@ CREATE TABLE volumes
     mesure      mesure                   NOT NULL DEFAULT 'ml',
     description TEXT,
 
-    is_active   NUMERIC(1) DEFAULT 1,
-    is_delete   NUMERIC(1) DEFAULT 0,
+    is_active   NUMERIC(1)                        DEFAULT 1,
+    is_delete   NUMERIC(1)                        DEFAULT 0,
 
     created_at  TIMESTAMP WITH TIME ZONE NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE,
@@ -184,8 +192,8 @@ CREATE TABLE invoice_items
     quantity   BIGINT,
     price      DECIMAL,
 
-    is_active   NUMERIC(1) DEFAULT 1,
-    is_delete   NUMERIC(1) DEFAULT 0,
+    is_active  NUMERIC(1) DEFAULT 1,
+    is_delete  NUMERIC(1) DEFAULT 0,
 
     created_at TIMESTAMP WITH TIME ZONE NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE,

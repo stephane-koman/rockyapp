@@ -1,6 +1,6 @@
 package com.rockyapp.rockyappbackend.users.entity;
 
-import com.rockyapp.rockyappbackend.common.AbstractSocleEntity;
+import com.rockyapp.rockyappbackend.common.entity.AbstractSocleEntity;
 import com.rockyapp.rockyappbackend.permissions.entity.Permission;
 import com.rockyapp.rockyappbackend.roles.entity.Role;
 import lombok.*;
@@ -40,9 +40,14 @@ public class User extends AbstractSocleEntity {
     @Column(name = "email", length = 250, nullable = false)
     private String email;
 
-    @ManyToOne()
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    private Role role;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany()
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")}
+    )
+    private List<Role> roles = new ArrayList<>();
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToMany()

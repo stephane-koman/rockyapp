@@ -1,6 +1,6 @@
 package com.rockyapp.rockyappbackend.roles.entity;
 
-import com.rockyapp.rockyappbackend.common.AbstractSocleEntity;
+import com.rockyapp.rockyappbackend.common.entity.AbstractSocleEntity;
 import com.rockyapp.rockyappbackend.permissions.entity.Permission;
 import com.rockyapp.rockyappbackend.users.entity.User;
 import lombok.*;

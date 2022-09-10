@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.rockyapp.rockyappbackend.utils.helpers.TokenHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,12 +25,12 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        if (request.getServletPath().equals("/refreshToken")) {
+        if (request.getServletPath().equals("/v1/refreshToken")) {
             filterChain.doFilter(request, response);
         } else {
             String authorizationToken = request.getHeader(SecurityConstants.HEADER_STRING);
 
-            if (authorizationToken == null || authorizationToken.startsWith(SecurityConstants.TOKEN_PREFIX.concat(" "))) {
+            if (authorizationToken == null || !authorizationToken.startsWith(SecurityConstants.TOKEN_PREFIX)) {
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -53,10 +54,8 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 filterChain.doFilter(request, response);
             } catch (Exception e) {
-                response.setHeader("error-message", e.getMessage());
-                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                TokenHelper.writeTokenErrorInHttpResponse(response, e);
             }
-
 
         }
     }

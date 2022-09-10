@@ -1,11 +1,11 @@
 package com.rockyapp.rockyappbackend.roles.dto;
 
-import com.rockyapp.rockyappbackend.common.SocleDTO;
-import com.rockyapp.rockyappbackend.permissions.dto.PermissionDTO;
+import com.rockyapp.rockyappbackend.common.dto.SocleDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -17,5 +17,5 @@ public class RoleDTO implements SocleDTO {
     private String description;
     private boolean isActive;
 
-    private List<PermissionDTO> permissionList;
+    private List<String> permissionList = new ArrayList<>();
 }

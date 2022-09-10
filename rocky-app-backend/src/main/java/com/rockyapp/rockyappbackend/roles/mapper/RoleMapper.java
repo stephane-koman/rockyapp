@@ -1,13 +1,16 @@
 package com.rockyapp.rockyappbackend.roles.mapper;
 
-import com.rockyapp.rockyappbackend.common.AbstractSocleMapper;
-import com.rockyapp.rockyappbackend.common.SocleMapper;
+import com.rockyapp.rockyappbackend.common.mapper.AbstractSocleMapper;
+import com.rockyapp.rockyappbackend.common.mapper.SocleMapper;
+import com.rockyapp.rockyappbackend.permissions.entity.Permission;
 import com.rockyapp.rockyappbackend.permissions.mapper.PermissionMapper;
 import com.rockyapp.rockyappbackend.roles.dto.RoleDTO;
 import com.rockyapp.rockyappbackend.roles.entity.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -26,7 +29,10 @@ public class RoleMapper extends AbstractSocleMapper<Role, RoleDTO> implements So
         RoleDTO roleDTO = new RoleDTO();
         BeanUtils.copyProperties(entity, roleDTO, "active");
         roleDTO.setActive(entity.getActive() == 1);
-        roleDTO.setPermissionList(permissionMapper.mapFromEntity(entity.getPermissions()));
+
+        if(!entity.getPermissions().isEmpty())
+            roleDTO.setPermissionList(entity.getPermissions().stream().map(Permission::getName).collect(Collectors.toList()));
+
         return roleDTO;
     }
 }

@@ -8,11 +8,11 @@ app:
       pool-size: 30
 
 spring:
-  main:
-    allow-circular-references: true
+  flyway:
+    baseline-on-migrate: true
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
 
 server:
   error:
@@ -21,7 +21,3 @@ server:
   port: 8005
   servlet:
     context-path: /api
-
-jwt:
-  token:
-    secret: "rrEmm07zF5SpvvzrO7eiPOSgxvqa4kJNIFDRkPQ50Q4GJo-NtOUifzp1EHTfIRoaExW2A94RBAfMgJsaMQEFERRIIFmLQkw7lRFXlr8gtGCtebDJ1A_fPHA4UTC_KHKsg_S4jwf3SwcBHZaNYErumQkc4rMZD3ovs-szzRN6G0c"

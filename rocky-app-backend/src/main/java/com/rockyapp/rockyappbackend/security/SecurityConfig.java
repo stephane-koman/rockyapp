@@ -1,7 +1,7 @@
 package com.rockyapp.rockyappbackend.security;
 
-import com.rockyapp.rockyappbackend.exceptions.NotFoundException;
 import com.rockyapp.rockyappbackend.users.entity.User;
+import com.rockyapp.rockyappbackend.users.exception.UserNotFoundException;
 import com.rockyapp.rockyappbackend.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -35,17 +35,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(new UserDetailsService() {
                     @Override
-                    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
                         User user = null;
                         try {
-                            user = userService.findUserByUsername(username);
-                        } catch (NotFoundException e) {
+                            user = userService.findUserByUsernameOrEmail(name);
+                        } catch (UserNotFoundException e) {
                             throw new RuntimeException(e);
                         }
                         Collection<GrantedAuthority> authorities = new ArrayList<>();
 
                         user.getPermissions().forEach(p -> authorities.add(new SimpleGrantedAuthority(p.getName())));
-                        user.getRole().getPermissions().forEach(p -> authorities.add(new SimpleGrantedAuthority(p.getName())));
+                        user.getRoles().forEach(r -> r.getPermissions().forEach(p -> authorities.add(new SimpleGrantedAuthority(p.getName()))));
 
                         Set<GrantedAuthority> authoritiesSet = new LinkedHashSet<>(authorities);
                         authorities.clear();
@@ -72,7 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.headers().frameOptions().disable();
         http.authorizeRequests().antMatchers("/index.html", "/ajax/**", "/angtrans/**", "/bower_components/**", "/css/**", "/fonts/**", "/webapp/**", "/images/**", "/img/**", "/js/**", "/less/**", "/rtl/**", "/scripts/**", "/styles/**", "/views/**").permitAll();
-        http.authorizeRequests().antMatchers("/v1/auth/**").permitAll();
+        http.authorizeRequests().antMatchers("/v1/auth/**", "/v1/refreshToken/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(filter);
         http.addFilter(new JWTAuthenticationFilter(authenticationManagerBean()));

@@ -1,7 +1,13 @@
 package com.rockyapp.rockyappbackend.permissions.dto;
 
-import com.rockyapp.rockyappbackend.common.SocleDTO;
+import com.rockyapp.rockyappbackend.common.dto.SocleDTO;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PermissionDTO implements SocleDTO {
     private Long id;
     private String name;

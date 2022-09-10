@@ -1,7 +1,7 @@
 package com.rockyapp.rockyappbackend.permissions.mapper;
 
-import com.rockyapp.rockyappbackend.common.AbstractSocleMapper;
-import com.rockyapp.rockyappbackend.common.SocleMapper;
+import com.rockyapp.rockyappbackend.common.mapper.AbstractSocleMapper;
+import com.rockyapp.rockyappbackend.common.mapper.SocleMapper;
 import com.rockyapp.rockyappbackend.permissions.dto.PermissionDTO;
 import com.rockyapp.rockyappbackend.permissions.entity.Permission;
 import org.springframework.beans.BeanUtils;
@@ -17,8 +17,9 @@ public class PermissionMapper extends AbstractSocleMapper<Permission, Permission
 
     @Override
     public PermissionDTO mapFromEntity(Permission entity) {
-        PermissionDTO PermissionDTO = new PermissionDTO();
-        BeanUtils.copyProperties(entity, PermissionDTO);
-        return null;
+        PermissionDTO permissionDTO = new PermissionDTO();
+        BeanUtils.copyProperties(entity, permissionDTO, "active", "roles", "users");
+        permissionDTO.setActive(entity.getActive() == 1);
+        return permissionDTO;
     }
 }

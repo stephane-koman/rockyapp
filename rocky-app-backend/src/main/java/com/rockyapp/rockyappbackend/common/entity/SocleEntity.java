@@ -1,4 +1,4 @@
-package com.rockyapp.rockyappbackend.common;
+package com.rockyapp.rockyappbackend.common.entity;
 
 import java.io.Serializable;
 

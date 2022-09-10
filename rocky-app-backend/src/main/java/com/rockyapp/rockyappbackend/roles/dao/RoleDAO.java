@@ -16,4 +16,9 @@ public interface RoleDAO extends PagingAndSortingRepository<Role, Long> {
             "AND (r.active = :active or :active = 2) AND (r.delete = 0 )"
     )
     Page<Role> searchRoleByNameAndDeleteIsNot(@Param("name") String name, @Param("active") int active, Pageable pageable);
+
+    @Query("SELECT r FROM Role r " +
+            "WHERE (LOWER(r.name) = LOWER(:name)) " +
+            "AND r.active = 1 AND r.delete = 0")
+    Role findRoleByNameAndIsActiveAndIsNotDelete(@Param("name") String name);
 }

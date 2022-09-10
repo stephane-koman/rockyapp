@@ -1,0 +1,2 @@
+INSERT INTO users(name, username, password, email, created_at)
+VALUES ('Stephane Koman', 'skoman', '$2a$12$b8ZiFmG5CPg/mLPATX5d4ezLn08WC08Iznkdfyf0oP5Z15if7xIKC', 'skoman@rockyapp.com', current_timestamp);
