@@ -26,19 +26,19 @@ public class RoleController {
     }
 
     @GetMapping("/{id}")
-    @PostAuthorize("hasAuthority('SEARCH_ROLE')")
+    @PostAuthorize("hasAnyAuthority('SEARCH_ROLE', 'CREATE_ROLE', 'UPDATE_ROLE', 'DELETE_ROLE')")
     public RoleDTO findRoleById(@PathVariable(name = "id") Long id) throws RoleNotFoundException {
         return roleService.findRoleById(id);
     }
 
     @PostMapping
-    @PostAuthorize("hasAuthority('CREATE_ROLE')")
+    @PostAuthorize("hasAnyAuthority('CREATE_ROLE', 'UPDATE_ROLE', 'DELETE_ROLE')")
     public RoleDTO createRole(@RequestBody RoleDTO roleDTO) throws RoleAlreadyExistsException {
         return roleService.create(roleDTO);
     }
 
     @PutMapping("/{id}")
-    @PostAuthorize("hasAuthority('UPDATE_ROLE')")
+    @PostAuthorize("hasAnyAuthority('UPDATE_ROLE', 'DELETE_ROLE')")
     public RoleDTO updateRole(@PathVariable(name = "id") Long id, @RequestBody RoleDTO roleDTO) throws RoleAlreadyExistsException, RoleNotFoundException {
         return roleService.update(id,roleDTO);
     }

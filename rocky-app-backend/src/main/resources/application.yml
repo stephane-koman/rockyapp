@@ -4,7 +4,7 @@ app:
       driver-class-name: org.postgresql.Driver
       jdbc-url: jdbc:postgresql://localhost:5432/rockydb
       username: rockyadmin
-      password: 'password'
+      password: password
       pool-size: 30
 
 spring:
@@ -21,3 +21,10 @@ server:
   port: 8005
   servlet:
     context-path: /api
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+      hibernate: ERROR
