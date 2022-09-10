@@ -2,7 +2,6 @@ package com.rockyapp.rockyappbackend.roles.mapper;
 
 import com.rockyapp.rockyappbackend.common.mapper.AbstractSocleMapper;
 import com.rockyapp.rockyappbackend.common.mapper.SocleMapper;
-import com.rockyapp.rockyappbackend.permissions.mapper.PermissionMapper;
 import com.rockyapp.rockyappbackend.roles.dto.SimpleRoleDTO;
 import com.rockyapp.rockyappbackend.roles.entity.Role;
 import lombok.AllArgsConstructor;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class SimpleRoleMapper extends AbstractSocleMapper<Role, SimpleRoleDTO> implements SocleMapper<Role, SimpleRoleDTO> {
-
-    private PermissionMapper permissionMapper;
 
     @Override
     public Role mapToEntity(SimpleRoleDTO model, Role entity) {
