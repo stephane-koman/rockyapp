@@ -4,6 +4,7 @@ import com.rockyapp.rockyappbackend.users.dao.UserDAO;
 import com.rockyapp.rockyappbackend.users.dto.UserCreaDTO;
 import com.rockyapp.rockyappbackend.users.dto.UserDTO;
 import com.rockyapp.rockyappbackend.users.entity.User;
+import com.rockyapp.rockyappbackend.users.exception.PasswordEmptyException;
 import com.rockyapp.rockyappbackend.users.exception.PasswordNotMatchException;
 import com.rockyapp.rockyappbackend.users.exception.UserNotFoundException;
 import com.rockyapp.rockyappbackend.users.mapper.UserCreaMapper;
@@ -21,7 +22,7 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
-    public UserDTO create(UserCreaDTO userCreaDTO) throws PasswordNotMatchException {
+    public UserDTO create(UserCreaDTO userCreaDTO) throws PasswordNotMatchException, PasswordEmptyException {
         User user = new User();
         user = userDAO.save(userCreaMapper.mapToEntity(userCreaDTO, user));
         return userMapper.mapFromEntity(user);

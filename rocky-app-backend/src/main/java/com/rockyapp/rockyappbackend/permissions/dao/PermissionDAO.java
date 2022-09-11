@@ -10,7 +10,8 @@ import org.springframework.data.repository.query.Param;
 public interface PermissionDAO extends PagingAndSortingRepository<Permission, Long> {
     @Query("SELECT p FROM Permission p " +
             "WHERE (LOWER(p.name) like LOWER(CONCAT('%',:name,'%'))) " +
-            "AND (p.active = :active or :active = 2) AND (p.delete = 0 )"
+            "AND (p.active = :active or :active = 2) AND (p.delete = 0) " +
+            "ORDER BY p.name"
     )
     Page<Permission> searchPermissionByNameAndDeleteIsNot(@Param("name") String name, @Param("active") int active, Pageable pageable);
 

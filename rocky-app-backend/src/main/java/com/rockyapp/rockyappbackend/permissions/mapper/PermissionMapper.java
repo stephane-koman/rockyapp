@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component;
 public class PermissionMapper extends AbstractSocleMapper<Permission, PermissionDTO> implements SocleMapper<Permission, PermissionDTO> {
     @Override
     public Permission mapToEntity(PermissionDTO model, Permission entity) {
-        BeanUtils.copyProperties(model, entity, "id");
+        BeanUtils.copyProperties(model, entity, "id", "active");
+        entity.setActive(model.isActive() ? 1 : 0);
         return entity;
     }
 

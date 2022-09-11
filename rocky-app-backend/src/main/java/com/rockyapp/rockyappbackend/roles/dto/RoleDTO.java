@@ -15,7 +15,7 @@ public class RoleDTO implements SocleDTO {
     private Long id;
     private String name;
     private String description;
-    private boolean isActive;
+    private boolean active = true;
 
     private List<String> permissionList = new ArrayList<>();
 }
