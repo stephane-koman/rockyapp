@@ -2,8 +2,6 @@ package com.rockyapp.rockyappbackend.users.mapper;
 
 import com.rockyapp.rockyappbackend.common.mapper.AbstractSocleMapper;
 import com.rockyapp.rockyappbackend.common.mapper.SocleMapper;
-import com.rockyapp.rockyappbackend.roles.dto.SimpleRoleDTO;
-import com.rockyapp.rockyappbackend.roles.entity.Role;
 import com.rockyapp.rockyappbackend.users.dto.SimpleUserDTO;
 import com.rockyapp.rockyappbackend.users.entity.User;
 import lombok.AllArgsConstructor;

@@ -3,8 +3,6 @@ package com.rockyapp.rockyappbackend.roles.mapper;
 import com.rockyapp.rockyappbackend.common.mapper.AbstractSocleMapper;
 import com.rockyapp.rockyappbackend.common.mapper.SocleMapper;
 import com.rockyapp.rockyappbackend.permissions.entity.Permission;
-import com.rockyapp.rockyappbackend.permissions.exception.PermissionNotFoundException;
-import com.rockyapp.rockyappbackend.permissions.mapper.PermissionMapper;
 import com.rockyapp.rockyappbackend.permissions.service.PermissionService;
 import com.rockyapp.rockyappbackend.roles.dto.RoleDTO;
 import com.rockyapp.rockyappbackend.roles.entity.Role;
@@ -13,8 +11,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Component

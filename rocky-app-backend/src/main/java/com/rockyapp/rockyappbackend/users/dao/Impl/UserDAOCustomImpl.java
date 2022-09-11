@@ -3,23 +3,24 @@ package com.rockyapp.rockyappbackend.users.dao.Impl;
 import com.rockyapp.rockyappbackend.users.dao.UserDAOCustom;
 import com.rockyapp.rockyappbackend.users.dto.UserSearchCriteriaDTO;
 import com.rockyapp.rockyappbackend.users.entity.User;
-
-import static com.rockyapp.rockyappbackend.utils.helpers.DaoHelper.*;
-
 import com.rockyapp.rockyappbackend.utils.helpers.DaoHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.rockyapp.rockyappbackend.utils.helpers.DaoHelper.createIntegerPredicate;
+import static com.rockyapp.rockyappbackend.utils.helpers.DaoHelper.createStringPredicate;
 
 public class UserDAOCustomImpl implements UserDAOCustom {
     @PersistenceContext

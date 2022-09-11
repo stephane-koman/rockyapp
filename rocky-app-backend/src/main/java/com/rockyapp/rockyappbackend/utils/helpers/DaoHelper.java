@@ -1,7 +1,6 @@
 package com.rockyapp.rockyappbackend.utils.helpers;
 
 import com.rockyapp.rockyappbackend.common.dto.DefaultCriteriaDTO;
-import com.rockyapp.rockyappbackend.roles.entity.Role;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
