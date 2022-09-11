@@ -1,5 +1,6 @@
 package com.rockyapp.rockyappbackend.roles.controller;
 
+import com.rockyapp.rockyappbackend.common.dto.DefaultCriteriaDTO;
 import com.rockyapp.rockyappbackend.common.pagination.ResultPagine;
 import com.rockyapp.rockyappbackend.roles.dto.RoleDTO;
 import com.rockyapp.rockyappbackend.roles.dto.SimpleRoleDTO;
@@ -20,10 +21,9 @@ public class RoleController {
 
     @GetMapping("/search")
     @PostAuthorize("hasAnyAuthority('SEARCH_ROLE', 'CREATE_ROLE', 'UPDATE_ROLE', 'DELETE_ROLE')")
-    public ResultPagine<SimpleRoleDTO> searchRoles(@RequestParam(name = "name", defaultValue = "") String name,
-                                                   @RequestParam(name = "active", defaultValue = "2") int active,
+    public ResultPagine<SimpleRoleDTO> searchRoles(@RequestBody(required = false) DefaultCriteriaDTO criteriaDTO,
                                                    Pageable pageable){
-        return roleService.searchRoleByNameAndIsNotDelete(name, active, pageable);
+        return roleService.searchRoles(criteriaDTO, pageable);
     }
 
     @GetMapping("/{id}")

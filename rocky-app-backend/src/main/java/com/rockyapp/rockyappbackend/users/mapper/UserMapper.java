@@ -26,8 +26,7 @@ public class UserMapper extends AbstractSocleMapper<User, UserDTO> implements So
         BeanUtils.copyProperties(model, entity, "password", "passwordConfirm", "roleList", "permissionList");
 
         userGlobalMapper.mapRoles(model.getRoleList(), entity);
-
-        userGlobalMapper.mapPermissions(model.getPermissionList(), entity);
+        userGlobalMapper.mapPermissions(model.getPermissionList(), entity.getPermissions());
 
         return entity;
     }

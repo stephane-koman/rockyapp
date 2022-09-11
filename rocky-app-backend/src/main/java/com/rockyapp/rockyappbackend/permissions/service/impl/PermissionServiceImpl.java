@@ -1,5 +1,6 @@
 package com.rockyapp.rockyappbackend.permissions.service.impl;
 
+import com.rockyapp.rockyappbackend.common.dto.DefaultCriteriaDTO;
 import com.rockyapp.rockyappbackend.common.pagination.ResultPagine;
 import com.rockyapp.rockyappbackend.permissions.dao.PermissionDAO;
 import com.rockyapp.rockyappbackend.permissions.dto.PermissionDTO;
@@ -19,8 +20,8 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
 @Service
-@AllArgsConstructor
 @Transactional
+@AllArgsConstructor
 public class PermissionServiceImpl implements PermissionService {
 
     private PermissionDAO permissionDAO;
@@ -28,14 +29,14 @@ public class PermissionServiceImpl implements PermissionService {
     private SimplePermissionMapper simplePermissionMapper;
 
     @Override
-    public ResultPagine<SimplePermissionDTO> searchPermissionByNameAndIsNotDelete(String name, int active, Pageable pageable) {
-        Page<Permission> permissionPage = permissionDAO.searchPermissionByNameAndDeleteIsNot(name, active, pageable);
+    public ResultPagine<SimplePermissionDTO> searchPermissions(DefaultCriteriaDTO criteriaDTO, Pageable pageable) {
+        Page<Permission> permissionPage = permissionDAO.searchPermissions(criteriaDTO, pageable);
         return simplePermissionMapper.mapFromEntity(permissionPage);
     }
 
     @Override
     public Permission findPermissionByName(String name) throws PermissionNotFoundException {
-        Permission permission = permissionDAO.findPermissionByNameAndIsActiveAndIsNotDelete(name);
+        Permission permission = permissionDAO.findPermissionByNameAndIsNotDelete(name);
 
         if(permission == null) throw new PermissionNotFoundException();
 
@@ -44,7 +45,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public PermissionDTO findPermissionById(Long id) throws PermissionNotFoundException {
-        Permission permission = permissionDAO.findPermissionByIdAndIsActiveAndIsNotDelete(id);
+        Permission permission = permissionDAO.findPermissionByIdAndIsNotDelete(id);
 
         if(permission == null) throw new PermissionNotFoundException();
 
@@ -69,6 +70,7 @@ public class PermissionServiceImpl implements PermissionService {
         Permission permission  = this.findPermissionByName(permissionDTO.getName());
         if(!permission.getId().equals(permissionId)) throw new PermissionAlreadyExistsException(permissionDTO.getName());
 
+        permission = permissionDAO.findById(permissionId).orElseThrow(PermissionNotFoundException::new);
         permission = permissionMapper.mapToEntity(permissionDTO, permission);
         permission.setUpdatedAt(LocalDateTime.now());
         permission = permissionDAO.save(permission);

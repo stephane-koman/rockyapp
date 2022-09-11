@@ -7,7 +7,7 @@ import com.rockyapp.rockyappbackend.roles.entity.Role;
 import com.rockyapp.rockyappbackend.roles.exception.RoleNotFoundException;
 import com.rockyapp.rockyappbackend.roles.service.RoleService;
 import com.rockyapp.rockyappbackend.users.entity.User;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -15,11 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-@AllArgsConstructor
 public class UserGlobalMapper {
 
+    @Autowired
     private RoleService roleService;
+    @Autowired
     private PermissionService permissionService;
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public void encryptPassword(String password, User entity) {
@@ -43,7 +45,7 @@ public class UserGlobalMapper {
         }
     }
 
-    public void mapPermissions(List<String> permissions, User entity) {
+    public void mapPermissions(List<String> permissions, List<Permission> newPermissions) {
         if (permissions != null && !permissions.isEmpty()){
             List<Permission> permissionList = new ArrayList<>();
             permissions.forEach(p -> {
@@ -55,7 +57,7 @@ public class UserGlobalMapper {
                 }
                 permissionList.add(permission);
             });
-            entity.getPermissions().addAll(permissionList);
+            newPermissions.addAll(permissionList);
         }
     }
 }

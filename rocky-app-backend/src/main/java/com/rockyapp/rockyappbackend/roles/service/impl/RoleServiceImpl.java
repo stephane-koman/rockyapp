@@ -1,5 +1,6 @@
 package com.rockyapp.rockyappbackend.roles.service.impl;
 
+import com.rockyapp.rockyappbackend.common.dto.DefaultCriteriaDTO;
 import com.rockyapp.rockyappbackend.common.pagination.ResultPagine;
 import com.rockyapp.rockyappbackend.roles.dao.RoleDAO;
 import com.rockyapp.rockyappbackend.roles.dto.RoleDTO;
@@ -28,15 +29,15 @@ public class RoleServiceImpl implements RoleService {
     private SimpleRoleMapper simpleRoleMapper;
 
     @Override
-    public ResultPagine<SimpleRoleDTO> searchRoleByNameAndIsNotDelete(String name, int active, Pageable pageable) {
-        Page<Role> rolePage = this.roleDAO.searchRoleByNameAndDeleteIsNot(name, active, pageable);
+    public ResultPagine<SimpleRoleDTO> searchRoles(DefaultCriteriaDTO criteriaDTO, Pageable pageable) {
+        Page<Role> rolePage = this.roleDAO.searchRoles(criteriaDTO, pageable);
 
         return this.simpleRoleMapper.mapFromEntity(rolePage);
     }
 
     @Override
     public Role findRoleByName(String name) throws RoleNotFoundException {
-        Role role = roleDAO.findRoleByNameAndIsActiveAndIsNotDelete(name);
+        Role role = roleDAO.findRoleByNameAndIsNotDelete(name);
 
         if(role == null) throw new RoleNotFoundException();
 
@@ -45,7 +46,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDTO findRoleById(Long id) throws RoleNotFoundException {
-        Role role = roleDAO.findRoleByIdAndIsActiveAndIsNotDelete(id);
+        Role role = roleDAO.findRoleByIdAndIsNotDelete(id);
 
         if(role == null) throw new RoleNotFoundException();
 
@@ -68,8 +69,10 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public RoleDTO update(Long roleId, RoleDTO roleDTO) throws RoleAlreadyExistsException, RoleNotFoundException {
         Role role  = this.findRoleByName(roleDTO.getName());
+
         if(!role.getId().equals(roleId)) throw new RoleAlreadyExistsException(roleDTO.getName());
 
+        role = roleDAO.findById(roleId).orElseThrow(RoleNotFoundException::new);
         role = roleMapper.mapToEntity(roleDTO, role);
         role.setUpdatedAt(LocalDateTime.now());
         role = roleDAO.save(role);

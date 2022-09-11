@@ -8,6 +8,7 @@ import com.rockyapp.rockyappbackend.permissions.mapper.PermissionMapper;
 import com.rockyapp.rockyappbackend.permissions.service.PermissionService;
 import com.rockyapp.rockyappbackend.roles.dto.RoleDTO;
 import com.rockyapp.rockyappbackend.roles.entity.Role;
+import com.rockyapp.rockyappbackend.utils.mappers.UserGlobalMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
@@ -21,22 +22,13 @@ import java.util.stream.Collectors;
 public class RoleMapper extends AbstractSocleMapper<Role, RoleDTO> implements SocleMapper<Role, RoleDTO> {
 
     private PermissionService permissionService;
-    private PermissionMapper permissionMapper;
+    private UserGlobalMapper userGlobalMapper;
 
     @Override
     public Role mapToEntity(RoleDTO model, Role entity) {
         BeanUtils.copyProperties(model, entity, "id", "active", "permissionList");
-        if(!model.getPermissionList().isEmpty()){
-            entity.getPermissions().clear();
-            List<Permission> permissionList = model.getPermissionList().stream().map(p -> {
-                try {
-                    return permissionService.findPermissionByName(p);
-                } catch (PermissionNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }).collect(Collectors.toList());
-            entity.getPermissions().addAll(permissionList);
-        }
+
+        userGlobalMapper.mapPermissions(model.getPermissionList(), entity.getPermissions());
 
         entity.setActive(model.isActive() ? 1 : 0);
 

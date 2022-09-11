@@ -1,5 +1,6 @@
 package com.rockyapp.rockyappbackend.permissions.controller;
 
+import com.rockyapp.rockyappbackend.common.dto.DefaultCriteriaDTO;
 import com.rockyapp.rockyappbackend.common.pagination.ResultPagine;
 import com.rockyapp.rockyappbackend.permissions.dto.PermissionDTO;
 import com.rockyapp.rockyappbackend.permissions.dto.SimplePermissionDTO;
@@ -20,10 +21,9 @@ public class PermissionController {
 
     @GetMapping("/search")
     @PostAuthorize("hasAnyAuthority('SEARCH_PERMISSION', 'CREATE_PERMISSION', 'UPDATE_PERMISSION', 'DELETE_PERMISSION')")
-    public ResultPagine<SimplePermissionDTO> searchPermissions(@RequestParam(name = "name", defaultValue = "") String name,
-                                                               @RequestParam(name = "active", defaultValue = "2") int active,
+    public ResultPagine<SimplePermissionDTO> searchPermissions(@RequestBody(required = false) DefaultCriteriaDTO criteriaDTO,
                                                                Pageable pageable){
-        return permissionService.searchPermissionByNameAndIsNotDelete(name, active, pageable);
+        return permissionService.searchPermissions(criteriaDTO, pageable);
     }
 
     @GetMapping("/{id}")

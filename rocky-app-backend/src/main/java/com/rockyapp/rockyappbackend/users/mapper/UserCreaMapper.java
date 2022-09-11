@@ -47,7 +47,7 @@ public class UserCreaMapper extends AbstractSocleMapper<User, UserCreaDTO> imple
         }
 
         userGlobalMapper.mapRoles(model.getRoleList(), entity);
-        userGlobalMapper.mapPermissions(model.getPermissionList(), entity);
+        userGlobalMapper.mapPermissions(model.getPermissionList(), entity.getPermissions());
 
         return entity;
     }
