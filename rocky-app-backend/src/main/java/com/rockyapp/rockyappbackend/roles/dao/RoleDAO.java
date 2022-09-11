@@ -13,7 +13,8 @@ import javax.transaction.Transactional;
 public interface RoleDAO extends PagingAndSortingRepository<Role, Long> {
     @Query("SELECT r FROM Role r " +
             "WHERE (LOWER(r.name) like LOWER(CONCAT('%',:name,'%'))) " +
-            "AND (r.active = :active or :active = 2) AND (r.delete = 0 )"
+            "AND (r.active = :active or :active = 2) AND (r.delete = 0) " +
+            "ORDER BY r.name"
     )
     Page<Role> searchRoleByNameAndDeleteIsNot(@Param("name") String name, @Param("active") int active, Pageable pageable);
 

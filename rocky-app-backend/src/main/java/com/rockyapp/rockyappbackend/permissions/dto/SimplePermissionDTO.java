@@ -12,5 +12,5 @@ public class SimplePermissionDTO implements SocleDTO {
     private Long id;
     private String name;
     private String description;
-    private boolean isActive;
+    private boolean active;
 }

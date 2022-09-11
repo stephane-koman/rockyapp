@@ -25,7 +25,7 @@ public class RoleMapper extends AbstractSocleMapper<Role, RoleDTO> implements So
 
     @Override
     public Role mapToEntity(RoleDTO model, Role entity) {
-        BeanUtils.copyProperties(model, entity, "id", "permissionList");
+        BeanUtils.copyProperties(model, entity, "id", "active", "permissionList");
         if(!model.getPermissionList().isEmpty()){
             entity.getPermissions().clear();
             List<Permission> permissionList = model.getPermissionList().stream().map(p -> {
@@ -37,6 +37,8 @@ public class RoleMapper extends AbstractSocleMapper<Role, RoleDTO> implements So
             }).collect(Collectors.toList());
             entity.getPermissions().addAll(permissionList);
         }
+
+        entity.setActive(model.isActive() ? 1 : 0);
 
         return entity;
     }

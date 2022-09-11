@@ -12,13 +12,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserCreaDTO implements SocleDTO {
+    private Long id;
     private String name;
     private String username;
     private String email;
     private String password;
     private String passwordConfirm;
 
-    private int isActive;
+    private boolean active = true;
 
     private List<String> roleList = new ArrayList<>();
     private List<String> permissionList = new ArrayList<>();

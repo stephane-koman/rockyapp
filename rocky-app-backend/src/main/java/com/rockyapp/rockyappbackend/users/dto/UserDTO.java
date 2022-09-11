@@ -16,10 +16,8 @@ public class UserDTO implements SocleDTO {
     private String name;
     private String username;
     private String email;
-    private String password;
-    private String passwordConfirm;
 
-    private int isActive;
+    private boolean active = true;
 
     private List<String> roleList = new ArrayList<>();
     private List<String> permissionList = new ArrayList<>();
