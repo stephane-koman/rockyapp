@@ -20,7 +20,7 @@ server:
     include-message: always
   port: 8005
   servlet:
-    context-path: /api
+    context-path: /rocky-app
 
 logging:
   level:

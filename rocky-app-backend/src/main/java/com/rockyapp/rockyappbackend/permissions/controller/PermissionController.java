@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/v1/permission")
+@RequestMapping("/api/v1/permission")
 public class PermissionController {
 
     private PermissionService permissionService;

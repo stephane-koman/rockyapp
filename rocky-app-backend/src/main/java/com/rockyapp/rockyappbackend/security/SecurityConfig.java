@@ -66,13 +66,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         final JWTAuthenticationFilter filter = new JWTAuthenticationFilter(authenticationManager());
-        filter.setFilterProcessesUrl("/v1/auth");
+        filter.setFilterProcessesUrl("/api/v1/auth");
 
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.headers().frameOptions().disable();
-        http.authorizeRequests().antMatchers("/index.html", "/ajax/**", "/angtrans/**", "/bower_components/**", "/css/**", "/fonts/**", "/webapp/**", "/images/**", "/img/**", "/js/**", "/less/**", "/rtl/**", "/scripts/**", "/styles/**", "/views/**").permitAll();
-        http.authorizeRequests().antMatchers("/v1/auth/**", "/v1/refreshToken/**").permitAll();
+        http.authorizeRequests().antMatchers("/index.html", "/ajax/**",
+                "/bower_components/**", "/css/**", "/fonts/**", "/webapp/**", "/images/**",
+                "/img/**", "/js/**", "/less/**", "/rtl/**", "/scripts/**", "/styles/**",
+                "/views/**", "/static/**", "/resources/**", "/public/**", "/assets/**",
+                "/META-INF/static/**", "/META-INF/resources/**", "/META-INF/public/**",
+                "/META-INF/assets/**").permitAll();
+        http.authorizeRequests().antMatchers("/api/v1/auth/**", "/api/v1/refreshToken/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(filter);
         http.addFilter(new JWTAuthenticationFilter(authenticationManagerBean()));
