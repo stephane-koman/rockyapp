@@ -20,14 +20,14 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/search")
-    @PostAuthorize("hasAnyAuthority('SEARCH_USER', 'CREATE_USER', 'UPDATE_USER', 'DELETE_USER')")
+    @PostAuthorize("hasAnyAuthority('READ_USER', 'CREATE_USER', 'UPDATE_USER', 'DELETE_USER')")
     public ResultPagine<SimpleUserDTO> searchUsers(@RequestBody(required = false) UserSearchCriteriaDTO criteriaDTO,
                                                    Pageable pageable){
         return userService.searchUsers(criteriaDTO, pageable);
     }
 
     @GetMapping("/{id}")
-    @PostAuthorize("hasAnyAuthority('SEARCH_USER', 'CREATE_USER', 'UPDATE_USER', 'DELETE_USER')")
+    @PostAuthorize("hasAnyAuthority('READ_USER', 'CREATE_USER', 'UPDATE_USER', 'DELETE_USER')")
     public UserDTO findUserById(@PathVariable(name = "id") Long id) throws UserNotFoundException {
         return userService.findUserById(id);
     }

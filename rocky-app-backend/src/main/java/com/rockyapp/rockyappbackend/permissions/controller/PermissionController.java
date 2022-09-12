@@ -20,14 +20,14 @@ public class PermissionController {
     private PermissionService permissionService;
 
     @GetMapping("/search")
-    @PostAuthorize("hasAnyAuthority('SEARCH_PERMISSION', 'CREATE_PERMISSION', 'UPDATE_PERMISSION', 'DELETE_PERMISSION')")
+    @PostAuthorize("hasAnyAuthority('READ_PERMISSION', 'CREATE_PERMISSION', 'UPDATE_PERMISSION', 'DELETE_PERMISSION')")
     public ResultPagine<SimplePermissionDTO> searchPermissions(@RequestBody(required = false) DefaultCriteriaDTO criteriaDTO,
                                                                Pageable pageable){
         return permissionService.searchPermissions(criteriaDTO, pageable);
     }
 
     @GetMapping("/{id}")
-    @PostAuthorize("hasAnyAuthority('SEARCH_PERMISSION', 'CREATE_PERMISSION', 'UPDATE_PERMISSION', 'DELETE_PERMISSION')")
+    @PostAuthorize("hasAnyAuthority('READ_PERMISSION', 'CREATE_PERMISSION', 'UPDATE_PERMISSION', 'DELETE_PERMISSION')")
     public PermissionDTO findPermissionById(@PathVariable(name = "id") Long id) throws PermissionNotFoundException {
         return permissionService.findPermissionById(id);
     }

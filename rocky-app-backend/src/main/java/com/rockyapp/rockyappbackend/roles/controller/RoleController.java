@@ -20,14 +20,14 @@ public class RoleController {
     private RoleService roleService;
 
     @GetMapping("/search")
-    @PostAuthorize("hasAnyAuthority('SEARCH_ROLE', 'CREATE_ROLE', 'UPDATE_ROLE', 'DELETE_ROLE')")
+    @PostAuthorize("hasAnyAuthority('READ_ROLE', 'CREATE_ROLE', 'UPDATE_ROLE', 'DELETE_ROLE')")
     public ResultPagine<SimpleRoleDTO> searchRoles(@RequestBody(required = false) DefaultCriteriaDTO criteriaDTO,
                                                    Pageable pageable){
         return roleService.searchRoles(criteriaDTO, pageable);
     }
 
     @GetMapping("/{id}")
-    @PostAuthorize("hasAnyAuthority('SEARCH_ROLE', 'CREATE_ROLE', 'UPDATE_ROLE', 'DELETE_ROLE')")
+    @PostAuthorize("hasAnyAuthority('READ_ROLE', 'CREATE_ROLE', 'UPDATE_ROLE', 'DELETE_ROLE')")
     public RoleDTO findRoleById(@PathVariable(name = "id") Long id) throws RoleNotFoundException {
         return roleService.findRoleById(id);
     }

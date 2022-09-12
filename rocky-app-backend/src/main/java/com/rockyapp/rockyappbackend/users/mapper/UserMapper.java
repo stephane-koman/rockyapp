@@ -23,9 +23,9 @@ public class UserMapper extends AbstractSocleMapper<User, UserDTO> implements So
 
     @Override
     public User mapToEntity(UserDTO model, User entity) throws PasswordNotMatchException, PasswordEmptyException {
-        BeanUtils.copyProperties(model, entity, "password", "passwordConfirm", "roleList", "permissionList");
-
-        userGlobalMapper.mapRoles(model.getRoleList(), entity);
+        BeanUtils.copyProperties(model, entity, "active", "password", "passwordConfirm", "roleList", "permissionList");
+        entity.setActive(model.isActive() ? 1 : 0);
+        userGlobalMapper.mapRoles(model.getRoleList(), entity.getRoles());
         userGlobalMapper.mapPermissions(model.getPermissionList(), entity.getPermissions());
 
         return entity;
@@ -34,8 +34,9 @@ public class UserMapper extends AbstractSocleMapper<User, UserDTO> implements So
     @Override
     public UserDTO mapFromEntity(User entity) {
         UserDTO userDTO = new UserDTO();
-        BeanUtils.copyProperties(entity, userDTO, "role", "permissions");
+        BeanUtils.copyProperties(entity, userDTO, "active", "roles", "permissions");
 
+        userDTO.setActive(entity.getActive() == 1);
         userDTO.setRoleList(entity.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
         userDTO.setPermissionList(entity.getPermissions().stream().map(Permission::getName).collect(Collectors.toList()));
 

@@ -29,7 +29,8 @@ public class UserGlobalMapper {
         entity.setPassword(hashPW);
     }
 
-    public void mapRoles(List<String> roles, User entity) {
+    public void mapRoles(List<String> roles, List<Role> oldRoles) {
+        oldRoles.clear();
         if(roles != null && !roles.isEmpty()){
             List<Role> roleList = new ArrayList<>();
             roles.forEach(r -> {
@@ -41,11 +42,12 @@ public class UserGlobalMapper {
                 }
                 roleList.add(role);
             });
-            entity.getRoles().addAll(roleList);
+            oldRoles.addAll(roleList);
         }
     }
 
-    public void mapPermissions(List<String> permissions, List<Permission> newPermissions) {
+    public void mapPermissions(List<String> permissions, List<Permission> oldPermissions) {
+        oldPermissions.clear();
         if (permissions != null && !permissions.isEmpty()){
             List<Permission> permissionList = new ArrayList<>();
             permissions.forEach(p -> {
@@ -57,7 +59,7 @@ public class UserGlobalMapper {
                 }
                 permissionList.add(permission);
             });
-            newPermissions.addAll(permissionList);
+            oldPermissions.addAll(permissionList);
         }
     }
 }
