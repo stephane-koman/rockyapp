@@ -143,12 +143,12 @@ CREATE TABLE customers
     CONSTRAINT pk_customers PRIMARY KEY (customer_id)
 );
 
-CREATE TYPE mesure AS ENUM ('l', 'cl', 'ml');
+CREATE TYPE mesure AS ENUM ('L', 'CL', 'ML');
 CREATE TABLE volumes
 (
     id          BIGSERIAL,
     quantity    BIGINT                   NOT NULL,
-    mesure      mesure                   NOT NULL DEFAULT 'ml',
+    mesure      mesure                   NOT NULL DEFAULT 'ML',
     description TEXT,
 
     is_active   NUMERIC(1)                        DEFAULT 1,
@@ -212,7 +212,7 @@ CREATE TYPE paymentType AS ENUM ('CASH', 'CB', 'VIREMENT');
 CREATE TABLE payments
 (
     id           BIGSERIAL,
-    payment_type paymentType  NOT NULL,
+    payment_type paymentType  NOT NULL DEFAULT 'VIREMENT',
 
     invoice_id   VARCHAR(250) NOT NULL,
 
