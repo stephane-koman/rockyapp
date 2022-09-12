@@ -71,12 +71,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.headers().frameOptions().disable();
-        http.authorizeRequests().antMatchers("/index.html", "/ajax/**",
+        http.authorizeRequests().antMatchers("/*", "/index.html", "/ajax/**",
                 "/bower_components/**", "/css/**", "/fonts/**", "/webapp/**", "/images/**",
                 "/img/**", "/js/**", "/less/**", "/rtl/**", "/scripts/**", "/styles/**",
-                "/views/**", "/static/**", "/resources/**", "/public/**", "/assets/**",
-                "/META-INF/static/**", "/META-INF/resources/**", "/META-INF/public/**",
-                "/META-INF/assets/**").permitAll();
+                "/views/**", "/static/**", "/resources/**", "/public/**", "/assets/**").permitAll();
         http.authorizeRequests().antMatchers("/api/v1/auth/**", "/api/v1/refreshToken/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(filter);
