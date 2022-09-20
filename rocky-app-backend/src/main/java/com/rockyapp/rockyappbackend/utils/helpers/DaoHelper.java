@@ -1,6 +1,7 @@
 package com.rockyapp.rockyappbackend.utils.helpers;
 
 import com.rockyapp.rockyappbackend.common.dto.DefaultCriteriaDTO;
+import com.rockyapp.rockyappbackend.utils.enums.DefaultEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,21 +29,28 @@ public class DaoHelper {
 
         if(criteriaDTO == null) criteriaDTO = new DefaultCriteriaDTO();
 
-        Predicate deleteP = createIntegerPredicate(0, root.get("delete"), cb);
+        Predicate deleteP = createIntegerPredicate(0, root.get(DefaultEnum.DELETE.getValue()), cb);
         predicates.add(deleteP);
 
+        if (StringUtils.isNotEmpty(criteriaDTO.getText_search())) {
+            Predicate nameP = createStringPredicate(criteriaDTO.getText_search(), root.get(DefaultEnum.NAME.getValue()), cb);
+            Predicate descriptionP = createStringPredicate(criteriaDTO.getText_search(), root.get(DefaultEnum.DESCRIPTION.getValue()), cb);
+            Predicate combineP = cb.or(nameP, descriptionP);
+            predicates.add(combineP);
+        }
+
         if (StringUtils.isNotEmpty(criteriaDTO.getName())) {
-            Predicate nameP = createStringPredicate(criteriaDTO.getName(), root.get("name"), cb);
+            Predicate nameP = createStringPredicate(criteriaDTO.getName(), root.get(DefaultEnum.NAME.getValue()), cb);
             predicates.add(nameP);
         }
 
         if (StringUtils.isNotEmpty(criteriaDTO.getDescription())) {
-            Predicate usernameP = createStringPredicate(criteriaDTO.getDescription(), root.get("description"), cb);
-            predicates.add(usernameP);
+            Predicate descriptionP = createStringPredicate(criteriaDTO.getDescription(), root.get(DefaultEnum.DESCRIPTION.getValue()), cb);
+            predicates.add(descriptionP);
         }
 
         if (ArrayHelper.verifyIntIsBoolean(criteriaDTO.getActive())) {
-            Predicate activeP = createIntegerPredicate(criteriaDTO.getActive(), root.get("active"), cb);
+            Predicate activeP = createIntegerPredicate(criteriaDTO.getActive(), root.get(DefaultEnum.ACTIVE.getValue()), cb);
             predicates.add(activeP);
         }
 

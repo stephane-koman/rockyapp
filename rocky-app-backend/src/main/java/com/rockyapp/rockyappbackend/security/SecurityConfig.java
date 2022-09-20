@@ -75,7 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/bower_components/**", "/css/**", "/fonts/**", "/webapp/**", "/images/**",
                 "/img/**", "/js/**", "/less/**", "/rtl/**", "/scripts/**", "/styles/**",
                 "/views/**", "/static/**", "/resources/**", "/public/**", "/assets/**").permitAll();
-        http.authorizeRequests().antMatchers("/api/v1/auth/**", "/api/v1/refreshToken/**").permitAll();
+        http.authorizeRequests().antMatchers("/api/v1/auth/**", "/api/v1/refreshToken/**", "/api/v1/version").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(filter);
         http.addFilter(new JWTAuthenticationFilter(authenticationManagerBean()));

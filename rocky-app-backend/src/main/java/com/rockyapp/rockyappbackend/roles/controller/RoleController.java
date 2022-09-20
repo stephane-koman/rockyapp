@@ -19,7 +19,7 @@ public class RoleController {
 
     private RoleService roleService;
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     @PostAuthorize("hasAnyAuthority('READ_ROLE', 'CREATE_ROLE', 'UPDATE_ROLE', 'DELETE_ROLE')")
     public ResultPagine<SimpleRoleDTO> searchRoles(@RequestBody(required = false) DefaultCriteriaDTO criteriaDTO,
                                                    Pageable pageable){

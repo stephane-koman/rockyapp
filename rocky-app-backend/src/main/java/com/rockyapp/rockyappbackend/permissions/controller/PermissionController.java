@@ -19,7 +19,7 @@ public class PermissionController {
 
     private PermissionService permissionService;
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     @PostAuthorize("hasAnyAuthority('READ_PERMISSION', 'CREATE_PERMISSION', 'UPDATE_PERMISSION', 'DELETE_PERMISSION')")
     public ResultPagine<SimplePermissionDTO> searchPermissions(@RequestBody(required = false) DefaultCriteriaDTO criteriaDTO,
                                                                Pageable pageable){

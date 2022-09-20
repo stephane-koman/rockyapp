@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DefaultCriteriaDTO implements SocleDTO {
+    private String text_search;
     private String name;
     private String description;
     private int active = 2;

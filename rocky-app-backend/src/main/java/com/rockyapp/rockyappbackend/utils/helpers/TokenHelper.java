@@ -57,8 +57,8 @@ public class TokenHelper {
 
     public static void writeTokenInHttpResponse(String jwtAccessToken, String jwtRefreshToken, HttpServletResponse response) throws IOException {
         Map<String, String> idToken = new HashMap<>();
-        idToken.put("access-token", jwtAccessToken);
-        idToken.put("refresh-token", jwtRefreshToken);
+        idToken.put("access_token", jwtAccessToken);
+        idToken.put("refresh_token", jwtRefreshToken);
 
         response.setContentType("application/json");
         new ObjectMapper().writeValue(response.getOutputStream(), idToken);
