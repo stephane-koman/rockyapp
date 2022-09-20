@@ -18,7 +18,7 @@ public class UserCreaMapper extends AbstractSocleMapper<User, UserCreaDTO> imple
 
     @Override
     public User mapToEntity(UserCreaDTO model, User entity) throws PasswordNotMatchException, PasswordEmptyException {
-        BeanUtils.copyProperties(model, entity, "active", "password", "passwordConfirm", "roleList", "permissionList");
+        BeanUtils.copyProperties(model, entity,  "id", "active", "password", "passwordConfirm", "roleList", "permissionList");
         entity.setActive(model.isActive() ? 1 : 0);
 
         if(entity.getId() == null){

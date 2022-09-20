@@ -1,0 +1,141 @@
+{
+  "login": {
+    "sign_in": "Sign in",
+    "title": "Administration Dashboard",
+    "password_required": "Password is required",
+    "email_required": "Email is required",
+    "logout_message": "Why so early!",
+    "auth_error": "Incorrect email or password"
+  },
+  "required": {
+    "code": "Code is required",
+    "name": "Name is required",
+    "email": "Email is required",
+    "phone": "Phone is required",
+    "address": "Address is required"
+  },
+  "menu": {
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "users": "Users",
+    "roles": "Roles",
+    "permissions": "Permissions",
+    "country": "Country",
+    "city": "city",
+    "countries": "Countries",
+    "cities": "Cities",
+    "customers": "Customers",
+    "payment_types": "Payment options"
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "actions": "Actions",
+    "welcome": "Welcome",
+    "home": "Home",
+    "email": "Email",
+    "password": "Password",
+    "confirm_password": "Confirm P.",
+    "logout": "Logout",
+    "copyright": "All rights reserved",
+    "code": "Code",
+    "name": "Name",
+    "username": "Username",
+    "address": "Address",
+    "phone": "Phone",
+    "save": "Save",
+    "cancel": "Cancel",
+    "show": "Show",
+    "edit": "Edit",
+    "delete": "Delete",
+    "update": "Update",
+    "search": "Search",
+    "reset": "Reset",
+    "sure_to_delete": "Sure to delete?",
+    "session_expired": "Session expired",
+    "to": "to",
+    "items": "items",
+    "description": "Description",
+    "refresh": "Refresh",
+    "role": "Role",
+    "user": "User",
+    "permission": "Permission",
+    "country": "Country",
+    "city": "City",
+    "customer": "Customer",
+    "payment_type": "Payment option",
+    "roles": "Roles",
+    "users": "Users",
+    "permissions": "Permissions",
+    "countries": "Countries",
+    "cities": "Cities",
+    "customers": "Customers",
+    "payment_types": "Payment options",
+    "transfert": {
+      "source": "Source",
+      "target": "Target"
+    },
+    "confirm_delete_info": {
+      "default": "Are you sure to delete this ",
+      "cet": "Are you sure to delete this ",
+      "cette": "Are you sure to delete this "
+    },
+    "create_another_un": "Add an another",
+    "create_another_une": "Add an another",
+    "tous": "all",
+    "tout": "all",
+    "toutes": "all",
+    "select": "Select"
+  },
+  "user": {
+    "page_title": "List of users",
+    "create_user": "Add user",
+    "read_user": "Show user",
+    "update_user": "Update user",
+    "delete_user": "Delete user",
+    "password_required": "Password is required",
+    "confirm_password_required": "Confirm password is required",
+    "password_not_match": "The two passwords do not match!",
+    "init_password": "Init password"
+  },
+  "role": {
+    "page_title": "List of roles",
+    "create_role": "Add role",
+    "read_role": "Show role",
+    "update_role": "Update role",
+    "delete_role": "Delete role",
+    "select_role": "Select role"
+  },
+  "permission": {
+    "page_title": "List of permissions"
+  },
+  "country": {
+    "page_title": "List of countries",
+    "create_country": "Add country",
+    "read_country": "Show country",
+    "update_country": "Update country",
+    "delete_country": "Delete country",
+    "select_country": "Select country"
+  },
+  "city": {
+    "page_title": "List of cities",
+    "create_city": "Add city",
+    "read_city": "Show city",
+    "update_city": "Update city",
+    "delete_city": "Delete city"
+  },
+  "customer": {
+    "page_title": "List of customers",
+    "create_customer": "Add customer",
+    "read_customer": "Show customer",
+    "update_customer": "Update customer",
+    "delete_customer": "Delete customer"
+  },
+  "payment_type": {
+    "page_title": "List of payment options",
+    "create_payment_type": "Add payment option",
+    "read_payment_type": "Show payment option",
+    "update_payment_type": "Update payment option",
+    "delete_payment_type": "Delete payment option"
+  }
+}

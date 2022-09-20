@@ -16,8 +16,8 @@ public class UserCreaDTO implements SocleDTO {
     private String name;
     private String username;
     private String email;
-    private String password;
-    private String passwordConfirm;
+    private String password = null;
+    private String passwordConfirm = null;
 
     private boolean active = true;
 

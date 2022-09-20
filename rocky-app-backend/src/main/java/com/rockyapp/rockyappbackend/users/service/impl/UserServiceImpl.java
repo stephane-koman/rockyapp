@@ -40,8 +40,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findById(Long id) throws UserNotFoundException {
-        return null;
+    public UserDTO findUserById(Long id) throws UserNotFoundException {
+        User user = userDAO.findUserByIdAndIsNotDelete(id);
+
+        if(user == null) throw new UserNotFoundException();
+
+        return userMapper.mapFromEntity(user);
     }
 
     @Override
@@ -51,12 +55,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void create(UserCreaDTO userCreaDTO) throws PasswordNotMatchException, PasswordEmptyException, UsernameAlreadyExistsException, EmailAlreadyExistsException {
-        boolean usernameExists = userDAO.existsByUsernameOrEmail(userCreaDTO.getUsername());
-        boolean emailExists = userDAO.existsByUsernameOrEmail(userCreaDTO.getEmail());
+    public UserDTO create(UserCreaDTO userCreaDTO) throws PasswordNotMatchException, PasswordEmptyException, UsernameAlreadyExistsException, EmailAlreadyExistsException {
+        User usernameExists = userDAO.findUserByUsernameOrEmailAndIsActiveAndIsNotDelete(userCreaDTO.getUsername());
+        User emailExists = userDAO.findUserByUsernameOrEmailAndIsActiveAndIsNotDelete(userCreaDTO.getEmail());
 
-        if(Boolean.TRUE.equals(usernameExists)) throw new UsernameAlreadyExistsException(userCreaDTO.getUsername());
-        if(Boolean.TRUE.equals(emailExists)) throw new EmailAlreadyExistsException(userCreaDTO.getEmail());
+        if(usernameExists != null) throw new UsernameAlreadyExistsException(userCreaDTO.getUsername());
+        if(emailExists != null) throw new EmailAlreadyExistsException(userCreaDTO.getEmail());
 
         User user = new User();
         userDAO.save(userCreaMapper.mapToEntity(userCreaDTO, user));
@@ -72,7 +76,10 @@ public class UserServiceImpl implements UserService {
 
         User user = userDAO.findById(userId).orElseThrow(UserNotFoundException::new);
         user = userCreaMapper.mapToEntity(userCreaDTO, user);
-        userDAO.save(user);
+        user.setUpdatedAt(LocalDateTime.now());
+        user = userDAO.save(user);
+
+        return userMapper.mapFromEntity(user);
     }
 
     @Override

@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
@@ -24,7 +25,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        if (request.getServletPath().equals("/v1/refreshToken")) {
+        if (Arrays.asList("/api/v1/refreshToken", "/api/v1/version").contains(request.getServletPath())) {
             filterChain.doFilter(request, response);
         } else {
             String authorizationToken = request.getHeader(SecurityConstants.HEADER_STRING);
