@@ -44,9 +44,9 @@ public class PermissionController {
         return permissionService.update(id, permissionDTO);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @PostAuthorize("hasAuthority('DELETE_PERMISSION')")
-    public void deletePermission(@RequestParam(name = "id") Long id) throws PermissionNotFoundException {
+    public void deletePermission(@PathVariable(name = "id") Long id) throws PermissionNotFoundException {
         permissionService.delete(id);
     }
 }

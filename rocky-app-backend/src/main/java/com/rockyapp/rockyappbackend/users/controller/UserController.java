@@ -3,10 +3,7 @@ package com.rockyapp.rockyappbackend.users.controller;
 import com.rockyapp.rockyappbackend.common.exception.InvalidTokenException;
 import com.rockyapp.rockyappbackend.common.pagination.ResultPagine;
 import com.rockyapp.rockyappbackend.security.SecurityConstants;
-import com.rockyapp.rockyappbackend.users.dto.SimpleUserDTO;
-import com.rockyapp.rockyappbackend.users.dto.UserCreaDTO;
-import com.rockyapp.rockyappbackend.users.dto.UserDTO;
-import com.rockyapp.rockyappbackend.users.dto.UserSearchCriteriaDTO;
+import com.rockyapp.rockyappbackend.users.dto.*;
 import com.rockyapp.rockyappbackend.users.entity.User;
 import com.rockyapp.rockyappbackend.users.exception.*;
 import com.rockyapp.rockyappbackend.users.mapper.UserMapper;
@@ -64,9 +61,15 @@ public class UserController {
         return userService.update(id, userDTO);
     }
 
-    @DeleteMapping
+    @PutMapping("/reset_password/{id}")
+    @PostAuthorize("hasAnyAuthority('UPDATE_USER', 'DELETE_USER')")
+    public UserDTO initUserPassword(@PathVariable(name = "id") Long id, @RequestBody PasswordDTO passwordDTO) throws UserNotFoundException, PasswordNotMatchException, PasswordEmptyException {
+        return userService.initPassword(id, passwordDTO);
+    }
+
+    @DeleteMapping("/{id}")
     @PostAuthorize("hasAuthority('DELETE_USER')")
-    public void deleteUser(@RequestParam(name = "id") Long id) throws UserNotFoundException {
+    public void deleteUser(@PathVariable(name = "id") Long id) throws UserNotFoundException {
         userService.delete(id);
     }
 }

@@ -44,9 +44,9 @@ public class RoleController {
         return roleService.update(id,roleDTO);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @PostAuthorize("hasAuthority('DELETE_ROLE')")
-    public void deleteRole(@RequestParam(name = "id") Long id) throws RoleNotFoundException {
+    public void deleteRole(@PathVariable(name = "id") Long id) throws RoleNotFoundException {
         roleService.delete(id);
     }
 }

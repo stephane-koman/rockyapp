@@ -34,27 +34,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(new UserDetailsService() {
-                    @Override
-                    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-                        User user = null;
-                        try {
-                            user = userService.findUserByUsernameOrEmail(name);
-                        } catch (UserNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                        Collection<GrantedAuthority> authorities = new ArrayList<>();
+            @Override
+            public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+                User user = null;
+                try {
+                    user = userService.findUserByUsernameOrEmail(name);
+                } catch (UserNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                Collection<GrantedAuthority> authorities = new ArrayList<>();
 
-                        user.getPermissions().forEach(p -> authorities.add(new SimpleGrantedAuthority(p.getName())));
-                        user.getRoles().forEach(r -> r.getPermissions().forEach(p -> authorities.add(new SimpleGrantedAuthority(p.getName()))));
+                user.getPermissions().stream().filter(p -> p.getActive() == 1 && p.getDelete() == 0).forEach(p -> authorities.add(new SimpleGrantedAuthority(p.getName())));
+                user.getRoles().stream().filter(r -> r.getActive() == 1 && r.getDelete() == 0).forEach(r -> r.getPermissions().stream().filter(p -> p.getActive() == 1 && p.getDelete() == 0).forEach(p -> authorities.add(new SimpleGrantedAuthority(p.getName()))));
 
-                        Set<GrantedAuthority> authoritiesSet = new LinkedHashSet<>(authorities);
-                        authorities.clear();
+                Set<GrantedAuthority> authoritiesSet = new LinkedHashSet<>(authorities);
+                authorities.clear();
 
-                        authorities.addAll(authoritiesSet);
+                authorities.addAll(authoritiesSet);
 
-                        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
-                    }
-                });
+                return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+            }
+        });
     }
 
     @Bean

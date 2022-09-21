@@ -5,7 +5,7 @@ import {
   IApiResponse,
   IPagination,
 } from "../utils/interfaces/global.interface";
-import { ISimpleUser, IUser, IUserCrea, IUserCriteriaSearch } from "../utils/interfaces/user.interface";
+import { IPassword, ISimpleUser, IUser, IUserCrea, IUserCriteriaSearch } from "../utils/interfaces/user.interface";
 
 class UserService {
   private endPointPath: string = "/user";
@@ -23,18 +23,18 @@ class UserService {
   };
 
   update = (id: number, user: IUserCrea): Promise<AxiosResponse<IUser>> => {
-    return axiosApiInstance.put<IUser>(
-      `${this.endPointPath}/${id}`,
-      user
-    );
+    return axiosApiInstance.put<IUser>(`${this.endPointPath}/${id}`, user);
   };
 
   delete = (id: number) => {
     return axiosApiInstance.delete(`${this.endPointPath}/${id}`);
   };
 
-  resetPassword = (id: number, data: any) => {
-    return axiosApiInstance.put(
+  resetPassword = (
+    id: number,
+    data: IPassword
+  ): Promise<AxiosResponse<IUser>> => {
+    return axiosApiInstance.put<IUser>(
       `${this.endPointPath}/reset_password/${id}`,
       data
     );
