@@ -29,7 +29,7 @@ public class SimpleUserMapper extends AbstractSocleMapper<User, SimpleUserDTO> i
         BeanUtils.copyProperties(entity, userDTO, "active", "permissions", "roles");
         userDTO.setActive(entity.getActive() == 1);
 
-        userDTO.setRoleList(entity.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
+        userDTO.setRoleList(entity.getRoles().stream().filter(r -> r.getActive() == 1 && r.getDelete() == 0).map(Role::getName).collect(Collectors.toList()));
 
         return userDTO;
     }

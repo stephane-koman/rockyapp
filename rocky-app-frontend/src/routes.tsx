@@ -33,7 +33,9 @@ const routes = (t: TFunction) => [
     name: t("menu.settings"),
     breadcrumbName: t("menu.settings"),
     component: User,
-    permissions: USER_PERMISSIONS,
+    permissions: USER_PERMISSIONS.concat(ROLE_PERMISSIONS).concat(
+      PERMISSION_PERMISSIONS
+    ),
   },
   {
     path: "/settings/users",

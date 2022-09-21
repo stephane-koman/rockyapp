@@ -11,10 +11,11 @@ export interface IUser extends ISimpleUser {
   permissionList: string[];
 }
 
-export interface IUserCrea extends IUser {
-  password: string[];
-  passwordConfirm: string[];
+export interface IPassword {
+  password: string;
+  passwordConfirm: string;
 }
+export interface IUserCrea extends IUser, IPassword {}
 
 export interface IUserCriteriaSearch extends IDefaultCriteriaSearch {
   username?: string;

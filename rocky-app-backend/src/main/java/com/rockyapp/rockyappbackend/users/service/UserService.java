@@ -1,10 +1,7 @@
 package com.rockyapp.rockyappbackend.users.service;
 
 import com.rockyapp.rockyappbackend.common.pagination.ResultPagine;
-import com.rockyapp.rockyappbackend.users.dto.SimpleUserDTO;
-import com.rockyapp.rockyappbackend.users.dto.UserCreaDTO;
-import com.rockyapp.rockyappbackend.users.dto.UserDTO;
-import com.rockyapp.rockyappbackend.users.dto.UserSearchCriteriaDTO;
+import com.rockyapp.rockyappbackend.users.dto.*;
 import com.rockyapp.rockyappbackend.users.entity.User;
 import com.rockyapp.rockyappbackend.users.exception.*;
 import org.springframework.data.domain.Pageable;

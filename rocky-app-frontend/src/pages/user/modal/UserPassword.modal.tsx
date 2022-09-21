@@ -19,15 +19,16 @@ const UserPasswordModal = ({ isOpen, user, onClose }: IProps) => {
   const [form] = Form.useForm();
   const [errors, setErrors] = useState<any[]>([]);
 
-  const handleSubmit = (values: any) => {
+  const onFinishHandler = (values: any) => {
     if(user){
-       userService.resetPassword(user?.id, values).then((resp: any) => {
-         if (resp?.data?.errors) {
-           setErrors(resp?.data?.errors);
-         } else {
-           handleClose();
-         }
-       });
+       userService
+         .resetPassword(user?.id, values)
+         .then((_) => {
+          onCloseHandler();
+         })
+         .catch((error) => {
+           setErrors(error);
+         });
     }
    
   };
@@ -41,7 +42,7 @@ const UserPasswordModal = ({ isOpen, user, onClose }: IProps) => {
     }
   }, [isOpen, user]);
   
-  const handleClose = () => {
+  const onCloseHandler = () => {
     form.resetFields();
     onClose();
   }
@@ -51,12 +52,12 @@ const UserPasswordModal = ({ isOpen, user, onClose }: IProps) => {
       open={isOpen}
       destroyOnClose
       title={t("user.init_password")}
-      onCancel={() => handleClose()}
+      onCancel={() => onCloseHandler()}
       onOk={form.submit}
       footer={
         <ModalFooterActions
           type={EActionType.CREATE}
-          onClose={handleClose}
+          onClose={onCloseHandler}
           onSubmit={form.submit}
         />
       }
@@ -73,9 +74,9 @@ const UserPasswordModal = ({ isOpen, user, onClose }: IProps) => {
         initialValues={{
           id: "",
           password: "",
-          password_confirm: "",
+          passwordConfirm: "",
         }}
-        onFinish={handleSubmit}
+        onFinish={onFinishHandler}
       >
         {Object.keys(errors).length > 0 && (
           <List
@@ -109,7 +110,7 @@ const UserPasswordModal = ({ isOpen, user, onClose }: IProps) => {
           </Col>
           <Col className="gutter-row" span={24}>
             <Form.Item
-              name="password_confirm"
+              name="passwordConfirm"
               label={<div>{t("common.confirm_password")}</div>}
               dependencies={["password"]}
               hasFeedback

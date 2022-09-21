@@ -23,7 +23,9 @@ const _nav = (t: TFunction) => [
     name: t("menu.settings"),
     to: "/settings",
     icon: <SettingOutlined />,
-    permissions: USER_PERMISSIONS,
+    permissions: USER_PERMISSIONS.concat(ROLE_PERMISSIONS).concat(
+      PERMISSION_PERMISSIONS
+    ),
     _children: [
       {
         name: t("menu.users"),
@@ -42,7 +44,7 @@ const _nav = (t: TFunction) => [
         to: "/settings/permissions",
         icon: <AppstoreAddOutlined />,
         permissions: PERMISSION_PERMISSIONS,
-      }
+      },
     ],
   },
 ];

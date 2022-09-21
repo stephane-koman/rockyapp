@@ -2,16 +2,14 @@ package com.rockyapp.rockyappbackend.users.service.impl;
 
 import com.rockyapp.rockyappbackend.common.pagination.ResultPagine;
 import com.rockyapp.rockyappbackend.users.dao.UserDAO;
-import com.rockyapp.rockyappbackend.users.dto.SimpleUserDTO;
-import com.rockyapp.rockyappbackend.users.dto.UserCreaDTO;
-import com.rockyapp.rockyappbackend.users.dto.UserDTO;
-import com.rockyapp.rockyappbackend.users.dto.UserSearchCriteriaDTO;
+import com.rockyapp.rockyappbackend.users.dto.*;
 import com.rockyapp.rockyappbackend.users.entity.User;
 import com.rockyapp.rockyappbackend.users.exception.*;
 import com.rockyapp.rockyappbackend.users.mapper.SimpleUserMapper;
 import com.rockyapp.rockyappbackend.users.mapper.UserCreaMapper;
 import com.rockyapp.rockyappbackend.users.mapper.UserMapper;
 import com.rockyapp.rockyappbackend.users.service.UserService;
+import com.rockyapp.rockyappbackend.utils.mappers.UserGlobalMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private UserCreaMapper userCreaMapper;
     private UserMapper userMapper;
     private SimpleUserMapper simpleUserMapper;
+    private UserGlobalMapper userGlobalMapper;
 
     @Override
     public User findByUsernameOrEmail(String name) throws UserNotFoundException {
@@ -79,6 +78,23 @@ public class UserServiceImpl implements UserService {
         user.setUpdatedAt(LocalDateTime.now());
         user = userDAO.save(user);
 
+        return userMapper.mapFromEntity(user);
+    }
+
+    @Override
+    public UserDTO initPassword(Long userId, PasswordDTO passwordDTO) throws PasswordNotMatchException, PasswordEmptyException, UserNotFoundException {
+        User user = userDAO.findById(userId).orElseThrow(UserNotFoundException::new);
+
+        if(passwordDTO.getPassword() == null || passwordDTO.getPasswordConfirm() == null)
+            throw new PasswordEmptyException();
+
+        if(!passwordDTO.getPassword().equals(passwordDTO.getPasswordConfirm()))
+            throw new PasswordNotMatchException();
+
+        userGlobalMapper.encryptPassword(passwordDTO.getPassword(), user);
+
+        user.setUpdatedAt(LocalDateTime.now());
+        user = userDAO.save(user);
         return userMapper.mapFromEntity(user);
     }
 

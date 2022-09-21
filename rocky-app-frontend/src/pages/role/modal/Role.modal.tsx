@@ -150,10 +150,10 @@ export const RoleModal = ({
       onOk={form.submit}
       footer={
         <ModalFooterActions
-          again={{
+          again={type !== EActionType.READ ? {
             text: t("common.role"),
             type: EAgainType.Un,
-          }}
+          }: undefined}
           type={type}
           loading={isPending}
           addAgain={addAgain}

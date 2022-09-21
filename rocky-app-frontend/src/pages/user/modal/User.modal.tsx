@@ -9,8 +9,9 @@ import {
   Modal,
   Row,
   Select,
-  Transfer
+  Transfer,
 } from "antd";
+import { TFunction } from "i18next";
 import { useEffect, useState, useTransition } from "react";
 import { useTranslation } from "react-i18next";
 import ModalFooterActions from "../../../components/ModalFooterActions/ModalFooterActions";
@@ -20,7 +21,8 @@ import { globalFilterOption } from "../../../utils/helpers/global.helper";
 import { IPermission } from "../../../utils/interfaces/permission.interface";
 import { ISimpleRole } from "../../../utils/interfaces/role.interface";
 import {
-  ISimpleUser, IUserCrea
+  ISimpleUser,
+  IUserCrea,
 } from "../../../utils/interfaces/user.interface";
 
 interface IProps {
@@ -160,10 +162,10 @@ export const UserModal = ({
       onOk={form.submit}
       footer={
         <ModalFooterActions
-          again={{
+          again={type !== EActionType.READ ? {
             text: t("common.user"),
             type: EAgainType.Un,
-          }}
+          } : undefined}
           type={type}
           loading={isPending}
           addAgain={addAgain}
@@ -230,59 +232,8 @@ export const UserModal = ({
               <Input disabled={type === EActionType.READ} />
             </Form.Item>
           </Col>
-          <Col className="gutter-row" span={12}>
-            <Form.Item
-              name="password"
-              label={t("common.password")}
-              rules={[{ required: false, message: t("user.password_required") }]}
-            >
-              <Input.Password disabled={type === EActionType.READ} />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-          <Col className="gutter-row" span={12}>
-            <Form.Item
-              name="email"
-              label={t("common.email")}
-              rules={[
-                {
-                  required: true,
-                  type: "email",
-                  message: t("required.email"),
-                },
-              ]}
-            >
-              <Input disabled={type === EActionType.READ} />
-            </Form.Item>
-          </Col>
-          <Col className="gutter-row" span={12}>
-            <Form.Item
-              name="passwordConfirm"
-              label={<div>{t("common.confirm_password")}</div>}
-              dependencies={["password"]}
-              hasFeedback
-              rules={[
-                {
-                  required: false,
-                  message: t("user.confirm_password_required"),
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue("password") === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(
-                      new Error(t("user.password_not_match"))
-                    );
-                  },
-                }),
-              ]}
-            >
-              <Input.Password disabled={type === EActionType.READ} />
-            </Form.Item>
-          </Col>
+          {type !== EActionType.CREATE && <EmailInput t={t} type={type} />}
+          {type === EActionType.CREATE && <PasswordInput t={t} type={type} />}
         </Row>
 
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -300,23 +251,22 @@ export const UserModal = ({
               <Input disabled={type === EActionType.READ} />
             </Form.Item>
           </Col>
-          <Col className="gutter-row" span={12}>
-            <Form.Item name="roleList" label={t("common.roles")}>
-              <Select
-                allowClear
-                autoClearSearchValue
-                mode="multiple"
-                style={{ width: "100%" }}
-                placeholder=""
-                disabled={type === EActionType.READ}
-                options={roleList?.map((role: ISimpleRole) => ({
-                  label: role.name,
-                  value: role.name,
-                }))}
-              />
-            </Form.Item>
-          </Col>
+
+          {type !== EActionType.CREATE && (
+            <RolesInput t={t} type={type} roleList={roleList} />
+          )}
+
+          {type === EActionType.CREATE && (
+            <PasswordConfirmInput t={t} type={type} />
+          )}
         </Row>
+
+        {type === EActionType.CREATE && (
+          <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+            <EmailInput t={t} type={type} />
+            <RolesInput t={t} type={type} roleList={roleList} />
+          </Row>
+        )}
 
         <Divider />
 
@@ -355,3 +305,85 @@ export const UserModal = ({
 };
 
 export default UserModal;
+
+interface IInput {
+  t: any;
+  type?: EActionType;
+  roleList?: ISimpleRole[];
+}
+
+const RolesInput = ({ t, type, roleList }: IInput) => (
+  <Col className="gutter-row" span={12}>
+    <Form.Item name="roleList" label={t("common.roles")}>
+      <Select
+        allowClear
+        autoClearSearchValue
+        mode="multiple"
+        style={{ width: "100%" }}
+        placeholder=""
+        disabled={type === EActionType.READ}
+        options={roleList?.map((role: ISimpleRole) => ({
+          label: role.name,
+          value: role.name,
+        }))}
+      />
+    </Form.Item>
+  </Col>
+);
+
+const EmailInput = ({ t, type }: IInput) => (
+  <Col className="gutter-row" span={12}>
+    <Form.Item
+      name="email"
+      label={t("common.email")}
+      rules={[
+        {
+          required: true,
+          type: "email",
+          message: t("required.email"),
+        },
+      ]}
+    >
+      <Input disabled={type === EActionType.READ} />
+    </Form.Item>
+  </Col>
+);
+
+const PasswordInput = ({ t, type }: IInput) => (
+  <Col className="gutter-row" span={12}>
+    <Form.Item
+      name="password"
+      label={t("common.password")}
+      rules={[{ required: true, message: t("user.password_required") }]}
+    >
+      <Input.Password disabled={type === EActionType.READ} />
+    </Form.Item>
+  </Col>
+);
+
+const PasswordConfirmInput = ({ t, type }: IInput) => (
+  <Col className="gutter-row" span={12}>
+    <Form.Item
+      name="passwordConfirm"
+      label={<div>{t("common.confirm_password")}</div>}
+      dependencies={["password"]}
+      hasFeedback
+      rules={[
+        {
+          required: true,
+          message: t("user.confirm_password_required"),
+        },
+        ({ getFieldValue }) => ({
+          validator(_, value) {
+            if (!value || getFieldValue("password") === value) {
+              return Promise.resolve();
+            }
+            return Promise.reject(new Error(t("user.password_not_match")));
+          },
+        }),
+      ]}
+    >
+      <Input.Password disabled={type === EActionType.READ} />
+    </Form.Item>
+  </Col>
+);
