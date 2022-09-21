@@ -5,6 +5,11 @@ import { EActionType, ETableActionType } from "../enums/global.enum";
 export interface IDefault {
   id: number;
   name: string;
+  active?: boolean;
+}
+
+export interface IStatus {
+  active?: boolean;
 }
 
 export interface ICustomer extends IDefault {
@@ -21,9 +26,9 @@ export interface IJwtToken {
 }
 
 export interface IPagination {
-  page: number;
-  size: number;
-  total: number;
+  page?: number;
+  size?: number;
+  total?: number;
   sorts?: string[]
 }
 
@@ -33,6 +38,7 @@ export interface IApiResponse<T> extends IPagination {
 }
 
 export interface IDefaultCriteriaSearch {
+  active?: number;
   name?: string;
   text_search?: string;
 }

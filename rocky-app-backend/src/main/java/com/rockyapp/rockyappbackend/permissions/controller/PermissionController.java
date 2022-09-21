@@ -1,12 +1,14 @@
 package com.rockyapp.rockyappbackend.permissions.controller;
 
 import com.rockyapp.rockyappbackend.common.dto.DefaultCriteriaDTO;
+import com.rockyapp.rockyappbackend.common.dto.StatusDTO;
 import com.rockyapp.rockyappbackend.common.pagination.ResultPagine;
 import com.rockyapp.rockyappbackend.permissions.dto.PermissionDTO;
 import com.rockyapp.rockyappbackend.permissions.dto.SimplePermissionDTO;
 import com.rockyapp.rockyappbackend.permissions.exception.PermissionAlreadyExistsException;
 import com.rockyapp.rockyappbackend.permissions.exception.PermissionNotFoundException;
 import com.rockyapp.rockyappbackend.permissions.service.PermissionService;
+import com.rockyapp.rockyappbackend.users.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +50,12 @@ public class PermissionController {
     public ResponseEntity<Void> update(@PathVariable(name = "id") Long id, @RequestBody PermissionDTO permissionDTO) throws PermissionNotFoundException, PermissionAlreadyExistsException {
         permissionService.update(id, permissionDTO);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/status/{id}")
+    @PostAuthorize("hasAnyAuthority('UPDATE_PERMISSION', 'DELETE_PERMISSION')")
+    public void updateUserStatus(@PathVariable(name = "id") Long id, @RequestBody StatusDTO statusDTO) throws PermissionNotFoundException {
+        permissionService.changePermissionStatus(id, statusDTO.isActive());
     }
 
     @DeleteMapping("/{id}")

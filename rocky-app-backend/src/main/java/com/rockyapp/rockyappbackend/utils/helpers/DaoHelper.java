@@ -5,6 +5,7 @@ import com.rockyapp.rockyappbackend.utils.enums.DefaultEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 
@@ -65,8 +66,15 @@ public class DaoHelper {
     public static <T> Page<T> returnResults (EntityManager entityManager, CriteriaQuery<T> cq, Pageable pageable){
         TypedQuery<T> query = entityManager.createQuery(cq);
         int totalRows = query.getResultList().size();
-        query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
-        query.setMaxResults(pageable.getPageSize());
-        return new PageImpl<T>(query.getResultList(), pageable, totalRows);
+        Pageable page = null;
+        if(pageable.getPageSize() > 1){
+            page = pageable;
+            query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+            query.setMaxResults(pageable.getPageSize());
+        }else{
+            page = PageRequest.of(0, Integer.MAX_VALUE);
+        }
+
+        return new PageImpl<T>(query.getResultList(), page, totalRows);
     }
 }

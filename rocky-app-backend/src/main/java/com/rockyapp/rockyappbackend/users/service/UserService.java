@@ -13,4 +13,5 @@ public interface UserService {
     void create(UserCreaDTO userCreaDTO) throws PasswordNotMatchException, PasswordEmptyException, UsernameAlreadyExistsException, EmailAlreadyExistsException;
     void update(Long userId, UserCreaDTO userCreaDTO) throws PasswordNotMatchException, PasswordEmptyException, UsernameAlreadyExistsException, EmailAlreadyExistsException, UserNotFoundException;
     void delete(Long userId) throws UserNotFoundException;
+    void changeUserStatus(Long userId, boolean status) throws UserNotFoundException;
 }

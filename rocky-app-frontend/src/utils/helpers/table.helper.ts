@@ -55,3 +55,14 @@ export const setPaginationValues = (data: any, setPagination: any) => {
     total: data.total,
   }));
 };
+
+export const getActiveListData = (t: any) => [
+  {
+    value: true,
+    text: t("common.yes"),
+  },
+  {
+    value: false,
+    text: t("common.no"),
+  },
+];

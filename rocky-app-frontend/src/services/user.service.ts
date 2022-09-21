@@ -3,7 +3,7 @@ import axiosApiInstance from "../axios-instance";
 import { addSortsForSearch } from "../utils/helpers/global.helper";
 import {
   IApiResponse,
-  IPagination,
+  IPagination
 } from "../utils/interfaces/global.interface";
 import { IPassword, ISimpleUser, IUser, IUserCrea, IUserCriteriaSearch } from "../utils/interfaces/user.interface";
 

@@ -1,12 +1,14 @@
 package com.rockyapp.rockyappbackend.roles.controller;
 
 import com.rockyapp.rockyappbackend.common.dto.DefaultCriteriaDTO;
+import com.rockyapp.rockyappbackend.common.dto.StatusDTO;
 import com.rockyapp.rockyappbackend.common.pagination.ResultPagine;
 import com.rockyapp.rockyappbackend.roles.dto.RoleDTO;
 import com.rockyapp.rockyappbackend.roles.dto.SimpleRoleDTO;
 import com.rockyapp.rockyappbackend.roles.exception.RoleAlreadyExistsException;
 import com.rockyapp.rockyappbackend.roles.exception.RoleNotFoundException;
 import com.rockyapp.rockyappbackend.roles.service.RoleService;
+import com.rockyapp.rockyappbackend.users.exception.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +49,12 @@ public class RoleController {
     public ResponseEntity<Void> update(@PathVariable(name = "id") Long id, @RequestBody RoleDTO roleDTO) throws RoleAlreadyExistsException, RoleNotFoundException {
         roleService.update(id,roleDTO);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/status/{id}")
+    @PostAuthorize("hasAnyAuthority('UPDATE_ROLE', 'DELETE_ROLE')")
+    public void updateUserStatus(@PathVariable(name = "id") Long id, @RequestBody StatusDTO statusDTO) throws RoleNotFoundException {
+        roleService.changeRoleStatus(id, statusDTO.isActive());
     }
 
     @DeleteMapping("/{id}")

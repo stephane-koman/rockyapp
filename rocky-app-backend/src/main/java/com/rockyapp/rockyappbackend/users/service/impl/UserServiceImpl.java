@@ -8,6 +8,7 @@ import com.rockyapp.rockyappbackend.users.exception.*;
 import com.rockyapp.rockyappbackend.users.mapper.SimpleUserMapper;
 import com.rockyapp.rockyappbackend.users.mapper.UserCreaMapper;
 import com.rockyapp.rockyappbackend.users.mapper.UserMapper;
+import com.rockyapp.rockyappbackend.users.mapper.UserUpdateMapper;
 import com.rockyapp.rockyappbackend.users.service.UserService;
 import com.rockyapp.rockyappbackend.utils.mappers.UserGlobalMapper;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
 
     private UserDAO userDAO;
     private UserCreaMapper userCreaMapper;
+    private UserUpdateMapper userUpdateMapper;
     private UserMapper userMapper;
     private SimpleUserMapper simpleUserMapper;
     private UserGlobalMapper userGlobalMapper;
@@ -70,11 +72,11 @@ public class UserServiceImpl implements UserService {
         User userName = this.findByUsernameOrEmail(userCreaDTO.getUsername());
         User userEmail = this.findByUsernameOrEmail(userCreaDTO.getEmail());
 
-        if(!userName.getId().equals(userId)) throw new UsernameAlreadyExistsException(userCreaDTO.getUsername());
-        if(!userEmail.getId().equals(userId)) throw new EmailAlreadyExistsException(userCreaDTO.getUsername());
+        if(!userName.getId().equals(userId)) throw new UsernameAlreadyExistsException(userUpdateDTO.getUsername());
+        if(!userEmail.getId().equals(userId)) throw new EmailAlreadyExistsException(userUpdateDTO.getUsername());
 
         User user = userDAO.findById(userId).orElseThrow(UserNotFoundException::new);
-        user = userCreaMapper.mapToEntity(userCreaDTO, user);
+        user = userUpdateMapper.mapToEntity(userUpdateDTO, user);
         user.setUpdatedAt(LocalDateTime.now());
         user = userDAO.save(user);
 
@@ -105,6 +107,14 @@ public class UserServiceImpl implements UserService {
         user.setActive(0);
         user.setUpdatedAt(LocalDateTime.now());
         user.setDeletedAt(LocalDateTime.now());
+        userDAO.save(user);
+    }
+
+    @Override
+    public void changeUserStatus(Long userId, boolean status) throws UserNotFoundException {
+        User user = userDAO.findById(userId).orElseThrow(UserNotFoundException::new);
+        user.setActive(Boolean.TRUE.equals(status) ? 1 : 0);
+        user.setUpdatedAt(LocalDateTime.now());
         userDAO.save(user);
     }
 }

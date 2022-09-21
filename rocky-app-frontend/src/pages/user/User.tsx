@@ -1,39 +1,54 @@
-import { LockOutlined, UserAddOutlined } from "@ant-design/icons";
-import { Button, Table } from "antd";
+import {
+  CheckOutlined,
+  CloseOutlined,
+  LockOutlined,
+  UserAddOutlined
+} from "@ant-design/icons";
+import { Button, Switch, Table } from "antd";
 import { ItemType } from "antd/lib/menu/hooks/useItems";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useTranslation } from "react-i18next";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import TableActions from "../../components/TableActions/TableActions";
 import { getColumnSearchProps } from "../../components/TableColumnComponents/TableColumnComponents";
 import TableHeaderActions from "../../components/TableHeaderActions/TableHeaderActions";
+import { globalService } from "../../services/global.service";
 import { permissionService } from "../../services/permission.service";
 import { roleService } from "../../services/role.service";
 import { userService } from "../../services/user.service";
 import {
   DEFAULT_PAGE,
-  DEFAULT_PAGE_SIZE,
+  DEFAULT_PAGE_SIZE
 } from "../../utils/constants/global.constant";
 import { USER_PERMISSIONS } from "../../utils/constants/permissions.constant";
-import { EActionType, ETableActionType } from "../../utils/enums/global.enum";
+import {
+  EActionType,
+  ETableActionType,
+  ETableChange
+} from "../../utils/enums/global.enum";
 import { getUserPermissions } from "../../utils/helpers/auth.helper";
-import { showTotalPagination } from "../../utils/helpers/global.helper";
+import { showTotalPagination, switchStatus } from "../../utils/helpers/global.helper";
 import {
   getUserManyPermissionsFromList,
-  getUserOnePermissionFromList,
+  getUserOnePermissionFromList
 } from "../../utils/helpers/permission.helper";
 import {
+  getActiveListData,
   getColumnFilter,
   getColumnSorter,
   setOneSortsTable,
-  setPaginationValues,
+  setPaginationValues
 } from "../../utils/helpers/table.helper";
 import { IPagination } from "../../utils/interfaces/global.interface";
-import { IPermission } from "../../utils/interfaces/permission.interface";
-import { ISimpleRole } from "../../utils/interfaces/role.interface";
+import {
+  IPermission
+} from "../../utils/interfaces/permission.interface";
+import {
+  ISimpleRole
+} from "../../utils/interfaces/role.interface";
 import {
   ISimpleUser,
-  IUserCriteriaSearch,
+  IUserCriteriaSearch
 } from "../../utils/interfaces/user.interface";
 import UserModal from "./modal/User.modal";
 import UserPasswordModal from "./modal/UserPassword.modal";
@@ -44,6 +59,7 @@ enum columnType {
   Email = "email",
   Roles = "roles",
   RoleList = "roleList",
+  Active = "active",
 }
 
 const initFilters: IUserCriteriaSearch = {
@@ -68,7 +84,6 @@ const User = () => {
   const [permissionList, setPermissionList] = useState<IPermission[]>([]);
   const [user, setUser] = useState<ISimpleUser | undefined>(undefined);
   const [actionType, setActionType] = useState<EActionType>(EActionType.READ);
-  const [sorter, setSorter] = useState<string | null>(null);
   const [filters, setFilters] = useState<IUserCriteriaSearch>(initFilters);
 
   const [pagination, setPagination] = useState<IPagination>({
@@ -125,6 +140,33 @@ const User = () => {
           <div>{data?.roleList?.join(", ")}</div>
         ),
       },
+      {
+        title: t("common.status"),
+        key: columnType.Active,
+        dataIndex: columnType.Active,
+        filters: getActiveListData(t),
+        filteredValue: getColumnFilter(columnType.Active, filters),
+        render: (_: any, data: ISimpleUser) => (
+          <Switch
+            checkedChildren={<CheckOutlined />}
+            unCheckedChildren={<CloseOutlined />}
+            checked={data.active}
+            disabled={
+              getUserOnePermissionFromList(
+                USER_PERMISSIONS,
+                EActionType.UPDATE + "_user"
+              ) === null &&
+              getUserOnePermissionFromList(
+                USER_PERMISSIONS,
+                EActionType.DELETE + "_user"
+              ) === null
+            }
+            onChange={(checked: boolean) =>
+              onChangeSwitchHandler(checked, data.id)
+            }
+          />
+        ),
+      },
     ];
 
     if (
@@ -172,6 +214,11 @@ const User = () => {
     return columns;
   };
 
+  const onChangeSwitchHandler = (checked: boolean, userId: number) => {
+    const userList: ISimpleUser[] = switchStatus(checked, userId, users, "user");
+    setUsers(userList);
+  };
+
   const getCustomItems = (): ItemType[] => {
     if (
       userConnectedPermissions.includes(
@@ -196,11 +243,19 @@ const User = () => {
   };
 
   useEffect(() => {
-    roleService.search().then((res) => {
+    const criteria: any = {
+      active: 1,
+    };
+
+    const page: IPagination = {
+      size: 1,
+    };
+
+    roleService.search(criteria, page).then((res) => {
       setRoleList(res.data?.results);
     });
 
-    permissionService.search().then((res) => {
+    permissionService.search(criteria, page).then((res) => {
       setPermissionList(res?.data?.results);
     });
 
@@ -248,7 +303,7 @@ const User = () => {
     extra: any
   ) => {
     switch (extra?.action) {
-      case "paginate":
+      case ETableChange.PAGINATE:
         setPagination({
           ...pagination,
           page: currentPagination?.current,
@@ -256,7 +311,7 @@ const User = () => {
         });
         break;
 
-      case "filter":
+      case ETableChange.FILTER:
         setFilters({
           name: currentFilters.name ? currentFilters.name[0] : null,
           username: currentFilters.username ? currentFilters.username[0] : null,
@@ -265,7 +320,7 @@ const User = () => {
         });
         break;
 
-      case "sort":
+      case ETableChange.SORT:
         setOneSortsTable(sorter, pagination.sorts, setPagination);
         break;
 
@@ -294,7 +349,6 @@ const User = () => {
       page: DEFAULT_PAGE,
       total: 0,
     });
-    setSorter(null);
     setFilters(initFilters);
     setRefresh(true);
     setReset(true);
