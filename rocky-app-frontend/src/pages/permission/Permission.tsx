@@ -4,10 +4,18 @@ import { SyncOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { IPagination } from "../../utils/interfaces/global.interface";
 import { permissionService } from "../../services/permission.service";
-import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, DEFAULT_TABLE_KEY } from "../../utils/constants/global.constant";
-import { IPermission, IPermissionCriteriaSearch } from "../../utils/interfaces/permission.interface";
+import {
+  DEFAULT_PAGE,
+  DEFAULT_PAGE_SIZE,
+  DEFAULT_TABLE_KEY,
+} from "../../utils/constants/global.constant";
+import {
+  IPermission,
+  IPermissionCriteriaSearch,
+} from "../../utils/interfaces/permission.interface";
 import { showTotalPagination } from "../../utils/helpers/global.helper";
 import { setPaginationValues } from "../../utils/helpers/table.helper";
+import { ETableChange } from "../../utils/enums/global.enum";
 
 const Permission = () => {
   const { t } = useTranslation();
@@ -41,7 +49,7 @@ const Permission = () => {
   ];
 
   useEffect(() => {
-    if (refresh) {      
+    if (refresh) {
       searchPermissions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,7 +71,7 @@ const Permission = () => {
           setRefresh(false);
         });
     });
-  }
+  };
 
   const onTableChange = (
     currentPagination: any,
@@ -72,23 +80,21 @@ const Permission = () => {
     extra: any
   ) => {
     switch (extra?.action) {
-      case "paginate":
+      case ETableChange.PAGINATE:
         setPagination({
           ...pagination,
           page: currentPagination?.current,
           size: currentPagination?.pageSize,
         });
 
-        setRefresh(true);
-
         break;
 
-      case "filters":
+      case ETableChange.FILTER:
         console.log(filters);
 
         break;
 
-      case "sorters":
+      case ETableChange.SORT:
         console.log(sorter);
 
         break;
@@ -96,6 +102,7 @@ const Permission = () => {
       default:
         break;
     }
+    setRefresh(true);
   };
 
   const onRefresh = () => {

@@ -1,5 +1,6 @@
 package com.rockyapp.rockyappbackend.users.controller;
 
+import com.rockyapp.rockyappbackend.common.dto.StatusDTO;
 import com.rockyapp.rockyappbackend.common.exception.InvalidTokenException;
 import com.rockyapp.rockyappbackend.common.pagination.ResultPagine;
 import com.rockyapp.rockyappbackend.security.SecurityConstants;
@@ -57,8 +58,14 @@ public class UserController {
 
     @PutMapping("/{id}")
     @PostAuthorize("hasAnyAuthority('UPDATE_USER', 'DELETE_USER')")
-    public UserDTO updateUser(@PathVariable(name = "id") Long id, @RequestBody UserCreaDTO userDTO) throws UserNotFoundException, UsernameAlreadyExistsException, PasswordNotMatchException, EmailAlreadyExistsException, PasswordEmptyException {
+    public UserDTO updateUser(@PathVariable(name = "id") Long id, @RequestBody UserUpdateDTO userDTO) throws UserNotFoundException, UsernameAlreadyExistsException, PasswordNotMatchException, EmailAlreadyExistsException, PasswordEmptyException {
         return userService.update(id, userDTO);
+    }
+
+    @PutMapping("/status/{id}")
+    @PostAuthorize("hasAnyAuthority('UPDATE_USER', 'DELETE_USER')")
+    public void updateUserStatus(@PathVariable(name = "id") Long id, @RequestBody StatusDTO statusDTO) throws UserNotFoundException {
+        userService.changeUserStatus(id, statusDTO.isActive());
     }
 
     @PutMapping("/reset_password/{id}")

@@ -87,4 +87,12 @@ public class PermissionServiceImpl implements PermissionService {
         permission.setDeletedAt(LocalDateTime.now());
         permissionDAO.save(permission);
     }
+
+    @Override
+    public void changePermissionStatus(Long id, boolean active) throws PermissionNotFoundException {
+        Permission permission = permissionDAO.findById(id).orElseThrow(PermissionNotFoundException::new);
+        permission.setActive(Boolean.TRUE.equals(active) ? 1 : 0);
+        permission.setUpdatedAt(LocalDateTime.now());
+        permissionDAO.save(permission);
+    }
 }

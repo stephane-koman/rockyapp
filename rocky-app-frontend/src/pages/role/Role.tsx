@@ -1,6 +1,10 @@
-import { UnlockOutlined } from "@ant-design/icons";
-import { Button, Table } from "antd";
-import { useEffect, useRef, useState, useTransition } from "react";
+import {
+  UnlockOutlined,
+  CheckOutlined,
+  CloseOutlined,
+} from "@ant-design/icons";
+import { Button, Switch, Table } from "antd";
+import { useEffect, useState, useTransition } from "react";
 import { useTranslation } from "react-i18next";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import TableActions from "../../components/TableActions/TableActions";
@@ -10,34 +14,32 @@ import { permissionService } from "../../services/permission.service";
 import { roleService } from "../../services/role.service";
 import {
   DEFAULT_PAGE,
-  DEFAULT_PAGE_SIZE,
+  DEFAULT_PAGE_SIZE
 } from "../../utils/constants/global.constant";
 import { ROLE_PERMISSIONS } from "../../utils/constants/permissions.constant";
-import { EActionType, ETableActionType } from "../../utils/enums/global.enum";
+import { EActionType, ETableActionType, ETableChange } from "../../utils/enums/global.enum";
 import { getUserPermissions } from "../../utils/helpers/auth.helper";
-import { showTotalPagination } from "../../utils/helpers/global.helper";
+import { showTotalPagination, switchStatus } from "../../utils/helpers/global.helper";
 import {
   getUserManyPermissionsFromList,
-  getUserOnePermissionFromList,
+  getUserOnePermissionFromList
 } from "../../utils/helpers/permission.helper";
 import {
-  getColumnFilter,
-  getColumnSorter,
-  setPaginationValues,
-  setOneSortsTable,
+  getActiveListData, getColumnFilter,
+  getColumnSorter, setOneSortsTable, setPaginationValues
 } from "../../utils/helpers/table.helper";
 import { IPagination } from "../../utils/interfaces/global.interface";
-import { IPermission } from "../../utils/interfaces/permission.interface";
+import { IPermission, IPermissionCriteriaSearch } from "../../utils/interfaces/permission.interface";
 import {
-  IRole,
   IRoleCriteriaSearch,
-  ISimpleRole,
+  ISimpleRole
 } from "../../utils/interfaces/role.interface";
 import RoleModal from "./modal/Role.modal";
 
 enum columnType {
   Name = "name",
   Description = "description",
+  Active = "active",
 }
 
 const initFiliters: IRoleCriteriaSearch = {
@@ -87,6 +89,33 @@ const Role = () => {
         sortOrder: getColumnSorter(columnType.Description, pagination.sorts),
         ...getColumnSearchProps(columnType.Description, reset),
       },
+      {
+        title: t("common.status"),
+        key: columnType.Active,
+        dataIndex: columnType.Active,
+        filters: getActiveListData(t),
+        filteredValue: getColumnFilter(columnType.Active, filters),
+        render: (_: any, data: ISimpleRole) => (
+          <Switch
+            checkedChildren={<CheckOutlined />}
+            unCheckedChildren={<CloseOutlined />}
+            checked={data.active}
+            disabled={
+              getUserOnePermissionFromList(
+                ROLE_PERMISSIONS,
+                EActionType.UPDATE + "_role"
+              ) === null &&
+              getUserOnePermissionFromList(
+                ROLE_PERMISSIONS,
+                EActionType.DELETE + "_role"
+              ) === null
+            }
+            onChange={(checked: boolean) =>
+              onChangeSwitchHandler(checked, data.id)
+            }
+          />
+        ),
+      },
     ];
 
     if (
@@ -124,7 +153,6 @@ const Role = () => {
             ).toLowerCase()}?`}
             handleAction={handleModal}
             onConfirmDelete={onConfirmDelete}
-            onCancelDelete={onCancelDelete}
           />
         ),
       });
@@ -132,8 +160,9 @@ const Role = () => {
     return columns;
   };
 
-  const onCancelDelete = (e: any) => {
-    console.log(e);
+  const onChangeSwitchHandler = (checked: boolean, roleId: number) => {
+    const newRoleList: ISimpleRole[] = switchStatus(checked, roleId, roleList, "role");
+    setRoleList(newRoleList);
   };
 
   const onConfirmDelete = (userId: any) => {
@@ -143,7 +172,14 @@ const Role = () => {
   };
 
   useEffect(() => {
-    permissionService.search().then((res) => {
+    const criteria: IPermissionCriteriaSearch = {
+      active: 1,
+    };
+    const page: IPagination = {
+      size: 1
+    }
+
+    permissionService.search(criteria, page).then((res) => {
       setPermissionList(res?.data?.results);
     });
 
@@ -191,7 +227,7 @@ const Role = () => {
     extra: any
   ) => {
     switch (extra?.action) {
-      case "paginate":
+      case ETableChange.PAGINATE:
         setPagination({
           ...pagination,
           page: currentPagination?.current,
@@ -200,7 +236,7 @@ const Role = () => {
 
         break;
 
-      case "filter":
+      case ETableChange.FILTER:
         setFilters({
           name: currentFilters.name ? currentFilters.name[0] : null,
           description: currentFilters.description
@@ -210,7 +246,7 @@ const Role = () => {
 
         break;
 
-      case "sort":
+      case ETableChange.SORT:
         setOneSortsTable(sorter, pagination.sorts, setPagination);
 
         break;
@@ -283,7 +319,6 @@ const Role = () => {
         dataSource={roleList}
         columns={getColumns()}
         loading={isPending}
-        //scroll={{ scrollToFirstRowOnChange: true, y: "450px" }}
         pagination={{
           defaultPageSize: DEFAULT_PAGE_SIZE,
           defaultCurrent: DEFAULT_PAGE,

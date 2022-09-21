@@ -16,4 +16,6 @@ public interface PermissionService {
     PermissionDTO create(PermissionDTO permissionDTO) throws PermissionAlreadyExistsException;
     PermissionDTO update(Long permissionId, PermissionDTO permissionDTO) throws PermissionAlreadyExistsException, PermissionNotFoundException;
     void delete(Long permissionId) throws PermissionNotFoundException;
+
+    void changePermissionStatus(Long id, boolean active) throws PermissionNotFoundException;
 }

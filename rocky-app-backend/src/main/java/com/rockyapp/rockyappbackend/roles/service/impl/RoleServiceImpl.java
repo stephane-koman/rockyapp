@@ -11,6 +11,8 @@ import com.rockyapp.rockyappbackend.roles.exception.RoleNotFoundException;
 import com.rockyapp.rockyappbackend.roles.mapper.RoleMapper;
 import com.rockyapp.rockyappbackend.roles.mapper.SimpleRoleMapper;
 import com.rockyapp.rockyappbackend.roles.service.RoleService;
+import com.rockyapp.rockyappbackend.users.entity.User;
+import com.rockyapp.rockyappbackend.users.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -87,6 +89,14 @@ public class RoleServiceImpl implements RoleService {
         role.setActive(0);
         role.setUpdatedAt(LocalDateTime.now());
         role.setDeletedAt(LocalDateTime.now());
+        roleDAO.save(role);
+    }
+
+    @Override
+    public void changeRoleStatus(Long id, boolean active) throws RoleNotFoundException {
+        Role role = roleDAO.findById(id).orElseThrow(RoleNotFoundException::new);
+        role.setActive(Boolean.TRUE.equals(active) ? 1 : 0);
+        role.setUpdatedAt(LocalDateTime.now());
         roleDAO.save(role);
     }
 }
