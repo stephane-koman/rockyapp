@@ -5,5 +5,5 @@ export const DEFAULT_TABLE_KEY = "id";
 export const DEFAULT_PAGE_SIZE = 10;
 export const DEFAULT_PAGE = 1;
 
-export const SITE_TITLE = "ROCKY DEGUE";
-export const SITE_TITLE_FOOTER = "Rocky Dêguê";
+export const SITE_TITLE = "ROCKY APP";
+export const SITE_TITLE_FOOTER = "Rocky App";

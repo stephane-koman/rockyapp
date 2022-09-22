@@ -34,12 +34,13 @@ const CBreadcrumb = (props: IProps) => {
 
   let items = null;
   const currPath = useLocation().pathname;
+  
 
   if (routes) {
     const paths = getPaths(currPath);
     const currRoutes = paths
       .map((currPath) => {
-        const route = routes.find((route) => matchPath(currPath, route.path));
+        const route = routes.find((route) => matchPath(currPath, route.path));        
         return { ...route, currPath };
       })
       .filter((route) => route && route.name);
@@ -61,4 +62,4 @@ const CBreadcrumb = (props: IProps) => {
   );
 };
 
-export default CBreadcrumb;
+export default React.memo(CBreadcrumb);
