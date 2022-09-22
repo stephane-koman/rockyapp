@@ -12,14 +12,6 @@ export interface IStatus {
   active?: boolean;
 }
 
-export interface ICustomer extends IDefault {
-  email: string;
-  fixe: string;
-  mobile: string;
-  address: string;
-  description?: string;
-}
-
 export interface IJwtToken {
   access_token: string;
   refresh_token: string;

@@ -69,12 +69,6 @@ export const RoleModal = ({
     });
   };
 
-  useEffect(() => {
-    console.log("addAgain", addAgain);
-    
-  }, [addAgain]);
-  
-
   const onCloseHandler = (change?: boolean) => {
     form.resetFields();
     setErrors([]);
@@ -150,7 +144,7 @@ export const RoleModal = ({
       onOk={form.submit}
       footer={
         <ModalFooterActions
-          again={type !== EActionType.READ ? {
+          again={type === EActionType.CREATE ? {
             text: t("common.role"),
             type: EAgainType.Un,
           }: undefined}

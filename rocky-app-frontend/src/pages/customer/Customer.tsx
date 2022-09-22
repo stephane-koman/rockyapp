@@ -1,7 +1,7 @@
 import {
-  UnlockOutlined,
   CheckOutlined,
   CloseOutlined,
+  UnlockOutlined,
 } from "@ant-design/icons";
 import { Button, Switch, Table } from "antd";
 import { useEffect, useState, useTransition } from "react";
@@ -10,8 +10,7 @@ import PageTitle from "../../components/PageTitle/PageTitle";
 import TableActions from "../../components/TableActions/TableActions";
 import { getColumnSearchProps } from "../../components/TableColumnComponents/TableColumnComponents";
 import TableHeaderActions from "../../components/TableHeaderActions/TableHeaderActions";
-import { permissionService } from "../../services/permission.service";
-import { roleService } from "../../services/role.service";
+import { customerService } from "../../services/customer.service";
 import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
@@ -38,40 +37,40 @@ import {
   setOneSortsTable,
   setPaginationValues,
 } from "../../utils/helpers/table.helper";
+import {
+  ICustomer,
+  ICustomerCriteriaSearch,
+} from "../../utils/interfaces/customer.interface";
 import { IPagination } from "../../utils/interfaces/global.interface";
-import {
-  IPermission,
-  IPermissionCriteriaSearch,
-} from "../../utils/interfaces/permission.interface";
-import {
-  IRoleCriteriaSearch,
-  ISimpleRole,
-} from "../../utils/interfaces/role.interface";
-import RoleModal from "./modal/Role.modal";
+import CustomerModal from "./modal/Customer.modal";
 
 enum columnType {
   Name = "name",
-  Description = "description",
+  Email = "email",
+  Mobile = "mobile",
+  Fixe = "fixe",
+  Address = "address",
   Active = "active",
 }
 
-const initFiliters: IRoleCriteriaSearch = {
+const initFiliters: ICustomerCriteriaSearch = {
   name: undefined,
-  description: undefined,
+  email: undefined,
+  mobile: undefined,
+  fixe: undefined,
   text_search: undefined,
 };
 
-const Role = () => {
+const Customer = () => {
   const userConnectedPermissions: any[] = getUserPermissions();
   const { t } = useTranslation();
   const [isPending, startTransition] = useTransition();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(true);
-  const [roleList, setRoleList] = useState<ISimpleRole[]>([]);
-  const [permissionList, setPermissionList] = useState<IPermission[]>([]);
+  const [customerList, setCustomerList] = useState<ICustomer[]>([]);
   const [actionType, setActionType] = useState<EActionType>(EActionType.READ);
-  const [role, setRole] = useState<ISimpleRole | undefined>(undefined);
-  const [filters, setFilters] = useState<IRoleCriteriaSearch>(initFiliters);
+  const [customer, setCustomer] = useState<ICustomer | undefined>(undefined);
+  const [filters, setFilters] = useState<ICustomerCriteriaSearch>(initFiliters);
   const [reset, setReset] = useState<boolean>(false);
 
   const [pagination, setPagination] = useState<IPagination>({
@@ -93,14 +92,34 @@ const Role = () => {
         ...getColumnSearchProps(columnType.Name, reset),
       },
       {
-        title: t("common." + columnType.Description),
-        dataIndex: columnType.Description,
-        key: columnType.Description,
+        title: t("common." + columnType.Email),
+        dataIndex: columnType.Email,
+        key: columnType.Email,
         sorter: true,
         filterSearch: true,
-        filteredValue: getColumnFilter(columnType.Description, filters),
-        sortOrder: getColumnSorter(columnType.Description, pagination.sorts),
-        ...getColumnSearchProps(columnType.Description, reset),
+        filteredValue: getColumnFilter(columnType.Email, filters),
+        sortOrder: getColumnSorter(columnType.Email, pagination.sorts),
+        ...getColumnSearchProps(columnType.Email, reset),
+      },
+      {
+        title: t("common." + columnType.Mobile),
+        dataIndex: columnType.Mobile,
+        key: columnType.Mobile,
+        sorter: true,
+        filterSearch: true,
+        filteredValue: getColumnFilter(columnType.Mobile, filters),
+        sortOrder: getColumnSorter(columnType.Mobile, pagination.sorts),
+        ...getColumnSearchProps(columnType.Mobile, reset),
+      },
+      {
+        title: t("common." + columnType.Fixe),
+        dataIndex: columnType.Fixe,
+        key: columnType.Fixe,
+        sorter: true,
+        filterSearch: true,
+        filteredValue: getColumnFilter(columnType.Fixe, filters),
+        sortOrder: getColumnSorter(columnType.Fixe, pagination.sorts),
+        ...getColumnSearchProps(columnType.Fixe, reset),
       },
       {
         title: t("common.status"),
@@ -108,7 +127,7 @@ const Role = () => {
         dataIndex: columnType.Active,
         filters: getActiveListData(t),
         filteredValue: getColumnFilter(columnType.Active, filters),
-        render: (_: any, data: ISimpleRole) => (
+        render: (_: any, data: ICustomer) => (
           <Switch
             checkedChildren={<CheckOutlined />}
             unCheckedChildren={<CloseOutlined />}
@@ -116,11 +135,11 @@ const Role = () => {
             disabled={
               getUserOnePermissionFromList(
                 ROLE_PERMISSIONS,
-                EActionType.UPDATE + "_role"
+                EActionType.UPDATE + "_customer"
               ) === null &&
               getUserOnePermissionFromList(
                 ROLE_PERMISSIONS,
-                EActionType.DELETE + "_role"
+                EActionType.DELETE + "_customer"
               ) === null
             }
             onChange={(checked: boolean) =>
@@ -141,8 +160,10 @@ const Role = () => {
         render: (_: any, data: any) => (
           <TableActions
             type={
-              getUserManyPermissionsFromList(userConnectedPermissions, "role")
-                .length > 2
+              getUserManyPermissionsFromList(
+                userConnectedPermissions,
+                "customer"
+              ).length > 2
                 ? ETableActionType.DROPDOWN
                 : ETableActionType.BUTTON
             }
@@ -162,7 +183,7 @@ const Role = () => {
               ),
             }}
             deleteInfo={`${t("common.confirm_delete_info.cet")} ${t(
-              "common.role"
+              "common.customer"
             ).toLowerCase()}?`}
             handleAction={handleModal}
             onConfirmDelete={onConfirmDelete}
@@ -173,53 +194,36 @@ const Role = () => {
     return columns;
   };
 
-  const onChangeSwitchHandler = (checked: boolean, roleId: number) => {
-    const newRoleList: ISimpleRole[] = switchStatus(
+  const onChangeSwitchHandler = (checked: boolean, customerId: number) => {
+    const newCustomerList: ICustomer[] = switchStatus(
       checked,
-      roleId,
-      roleList,
-      "role"
+      customerId,
+      customerList,
+      "customer"
     );
-    setRoleList(newRoleList);
+    setCustomerList(newCustomerList);
   };
 
   const onConfirmDelete = (userId: any) => {
-    roleService.delete(userId).then((_: any) => {
+    customerService.delete(userId).then((_: any) => {
       setRefresh(true);
     });
   };
 
   useEffect(() => {
-    const criteria: IPermissionCriteriaSearch = {
-      active: 1,
-    };
-    const page: IPagination = {
-      size: 1,
-    };
-
-    permissionService.search(criteria, page).then((res) => {
-      setPermissionList(res?.data?.results);
-    });
-
-    setReset(false);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     if (refresh) {
-      searchRoles();
+      searchCustomers();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refresh]);
 
-  const searchRoles = () => {
+  const searchCustomers = () => {
     startTransition(() => {
-      roleService
+      customerService
         .search(filters, pagination)
         .then((res) => {
           const data = res?.data;
-          setRoleList(data?.results);
+          setCustomerList(data?.results);
           setPaginationValues(data, setPagination);
         })
         .catch((err: any) => {
@@ -234,7 +238,7 @@ const Role = () => {
 
   const handleModal = (r: any, type: EActionType) => {
     setActionType(type);
-    setRole(r);
+    setCustomer(r);
     setIsModalVisible(true);
   };
 
@@ -256,18 +260,17 @@ const Role = () => {
 
       case ETableChange.FILTER:
         const data = {
-          name: currentFilters.name ? currentFilters.name[0] : null,
-          description: currentFilters.description
-            ? currentFilters.description[0]
-            : null,
-
+          name: currentFilters.name ? currentFilters.name[0] : undefined,
+          email: currentFilters.email ? currentFilters.email[0] : undefined,
+          mobile: currentFilters.mobile ? currentFilters.mobile[0] : undefined,
+          fixe: currentFilters.fixe ? currentFilters.fixe[0] : undefined,
           active: currentFilters.active
             ? currentFilters.active[0]
               ? 1
               : 0
             : undefined,
         };
-
+        
         if (
           Object.values(data).some((d: any) => d !== undefined && d !== null)
         ) {
@@ -291,7 +294,7 @@ const Role = () => {
       setRefresh(true);
     }
     setIsModalVisible(false);
-    setRole(undefined);
+    setCustomer(undefined);
   };
 
   const onRefresh = () => {
@@ -320,14 +323,13 @@ const Role = () => {
 
   return (
     <div>
-      <RoleModal
+      <CustomerModal
         type={actionType}
-        role={role}
-        permissionList={permissionList}
+        customer={customer}
         isOpen={isModalVisible}
         onClose={onCloseModal}
       />
-      <PageTitle title={t("role.page_title")} />
+      <PageTitle title={t("customer.page_title")} />
       <TableHeaderActions
         search
         refresh
@@ -338,14 +340,14 @@ const Role = () => {
           getUserOnePermissionFromList(ROLE_PERMISSIONS, EActionType.CREATE)
         ) && (
           <Button icon={<UnlockOutlined />} type="primary" onClick={showModal}>
-            {t("role.create_role")}
+            {t("customer.create_customer")}
           </Button>
         )}
       </TableHeaderActions>
 
       <Table
         rowKey="id"
-        dataSource={roleList}
+        dataSource={customerList}
         columns={getColumns()}
         loading={isPending}
         pagination={{
@@ -364,4 +366,4 @@ const Role = () => {
   );
 };
 
-export default Role;
+export default Customer;

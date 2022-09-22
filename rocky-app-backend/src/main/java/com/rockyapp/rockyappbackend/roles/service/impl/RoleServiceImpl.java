@@ -57,9 +57,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDTO create(RoleDTO roleDTO) throws RoleAlreadyExistsException {
-        boolean roleExists = roleDAO.existsByName(roleDTO.getName());
+        Role roleExists = roleDAO.findRoleByNameAndIsNotDelete(roleDTO.getName());
 
-        if(Boolean.TRUE.equals(roleExists)) throw new RoleAlreadyExistsException(roleDTO.getName());
+        if(roleExists != null) throw new RoleAlreadyExistsException(roleDTO.getName());
 
         Role role = new Role();
         role = roleMapper.mapToEntity(roleDTO, role);
