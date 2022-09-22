@@ -2,6 +2,7 @@ import axios from "axios";
 import { globalService } from "./services/global.service";
 import { JWT_TOKEN } from "./utils/constants/global.constant";
 import { HttpStatus } from "./utils/enums/httpStatus.enum";
+import { notification } from "antd";
 
 const AUTH_URL: string = "/auth";
 
@@ -39,7 +40,6 @@ axiosApiInstance.interceptors.response.use(
   },
   async function (error) {
     const originalRequest = error.config;
-    console.log("error", error);
     
     if (
       error.response.status === HttpStatus.UNAUTHORIZED &&
@@ -60,8 +60,19 @@ axiosApiInstance.interceptors.response.use(
       window.location.replace("/login?session=expired");
     }
 
+    if (
+      error.response.status === HttpStatus.INTERNAL_SERVER_ERROR &&
+      error.config.url !== AUTH_URL
+    ) {
+      notification.error({
+        message: "Erreur",
+        description: error?.response?.data?.message,
+      });
+    }
+
     return Promise.reject(error);
   }
+  
 );
 
 export default axiosApiInstance;

@@ -14,3 +14,9 @@ export enum EAgainType {
   Un = "un",
   Une = "une",
 }
+
+export enum ETableChange {
+  PAGINATE = "paginate",
+  FILTER = "filter",
+  SORT = "sort"
+}

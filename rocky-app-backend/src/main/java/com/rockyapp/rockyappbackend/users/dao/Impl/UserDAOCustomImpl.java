@@ -5,6 +5,7 @@ import com.rockyapp.rockyappbackend.users.dao.UserDAOCustom;
 import com.rockyapp.rockyappbackend.users.dto.UserSearchCriteriaDTO;
 import com.rockyapp.rockyappbackend.users.entity.User;
 import com.rockyapp.rockyappbackend.utils.enums.UserEnum;
+import com.rockyapp.rockyappbackend.utils.helpers.ArrayHelper;
 import com.rockyapp.rockyappbackend.utils.helpers.DaoHelper;
 import com.rockyapp.rockyappbackend.utils.helpers.StringHelper;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +17,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.rockyapp.rockyappbackend.utils.helpers.DaoHelper.createIntegerPredicate;
@@ -61,11 +61,11 @@ public class UserDAOCustomImpl implements UserDAOCustom {
         }
 
         if (StringUtils.isNotEmpty(criteriaDTO.getEmail())) {
-            Predicate emailP = createStringPredicate(criteriaDTO.getUsername(), user.get(UserEnum.EMAIL.getValue()), cb);
+            Predicate emailP = createStringPredicate(criteriaDTO.getEmail(), user.get(UserEnum.EMAIL.getValue()), cb);
             predicates.add(emailP);
         }
 
-        if (Arrays.asList(0, 1).contains(criteriaDTO.getActive())) {
+        if (ArrayHelper.verifyIntIsBoolean(criteriaDTO.getActive())) {
             Predicate activeP = createIntegerPredicate(criteriaDTO.getActive(), user.get(UserEnum.ACTIVE.getValue()), cb);
             predicates.add(activeP);
         }

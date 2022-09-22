@@ -1,11 +1,13 @@
 import {
-  AppstoreAddOutlined, DashboardOutlined,
+  AppstoreAddOutlined,
+  DashboardOutlined,
   SettingOutlined,
   TeamOutlined,
-  ToolOutlined
+  ToolOutlined,
+  UsergroupAddOutlined,
 } from "@ant-design/icons";
 import { TFunction } from "i18next";
-import { PERMISSION_PERMISSIONS, ROLE_PERMISSIONS, USER_PERMISSIONS } from "../utils/constants/permissions.constant";
+import { CUSTOMER_PERMISSIONS, PERMISSION_PERMISSIONS, ROLE_PERMISSIONS, USER_PERMISSIONS } from "../utils/constants/permissions.constant";
 
 const _nav = (t: TFunction) => [
   {
@@ -13,12 +15,12 @@ const _nav = (t: TFunction) => [
     to: "/dashboard",
     icon: <DashboardOutlined />,
   },
-  /* {
+  {
     name: t("menu.customers"),
     to: "/customers",
     icon: <UsergroupAddOutlined />,
     permissions: CUSTOMER_PERMISSIONS,
-  }, */
+  },
   {
     name: t("menu.settings"),
     to: "/settings",

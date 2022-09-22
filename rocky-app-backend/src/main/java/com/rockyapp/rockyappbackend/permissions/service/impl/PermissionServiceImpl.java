@@ -54,9 +54,9 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public PermissionDTO create(PermissionDTO permissionDTO) throws PermissionAlreadyExistsException {
-        boolean permissionExists = permissionDAO.existsByName(permissionDTO.getName());
+        Permission permissionExists = permissionDAO.findPermissionByNameAndIsNotDelete(permissionDTO.getName());
 
-        if(Boolean.TRUE.equals(permissionExists)) throw new PermissionAlreadyExistsException(permissionDTO.getName());
+        if(permissionExists != null) throw new PermissionAlreadyExistsException(permissionDTO.getName());
 
         Permission permission = new Permission();
         permission = permissionMapper.mapToEntity(permissionDTO, permission);
@@ -85,6 +85,14 @@ public class PermissionServiceImpl implements PermissionService {
         permission.setActive(0);
         permission.setUpdatedAt(LocalDateTime.now());
         permission.setDeletedAt(LocalDateTime.now());
+        permissionDAO.save(permission);
+    }
+
+    @Override
+    public void changePermissionStatus(Long id, boolean active) throws PermissionNotFoundException {
+        Permission permission = permissionDAO.findById(id).orElseThrow(PermissionNotFoundException::new);
+        permission.setActive(Boolean.TRUE.equals(active) ? 1 : 0);
+        permission.setUpdatedAt(LocalDateTime.now());
         permissionDAO.save(permission);
     }
 }

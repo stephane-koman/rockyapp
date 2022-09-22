@@ -1,12 +1,12 @@
 import { TFunction } from "i18next";
 import React from "react";
-import { PERMISSION_PERMISSIONS, ROLE_PERMISSIONS, USER_PERMISSIONS } from "./utils/constants/permissions.constant";
+import { CUSTOMER_PERMISSIONS, PERMISSION_PERMISSIONS, ROLE_PERMISSIONS, USER_PERMISSIONS } from "./utils/constants/permissions.constant";
 
 const Dashboard = React.lazy(() => import('./pages/dashborad/Dashboard'));
 const User = React.lazy(() => import("./pages/user/User"));
 const Role = React.lazy(() => import("./pages/role/Role"));
 const Permission = React.lazy(() => import("./pages/permission/Permission"));
-//const Customer = React.lazy(() => import("../old_codes/customer/Customer"));
+const Customer = React.lazy(() => import("./pages/customer/Customer"));
 
 const routes = (t: TFunction) => [
   {
@@ -21,13 +21,13 @@ const routes = (t: TFunction) => [
     breadcrumbName: t("menu.dashboard"),
     component: Dashboard,
   },
-  /* {
+  {
     path: "/customers",
     name: t("menu.customers"),
     breadcrumbName: t("menu.customers"),
     component: Customer,
     permissions: CUSTOMER_PERMISSIONS,
-  }, */
+  },
   {
     path: "/settings/*",
     name: t("menu.settings"),

@@ -1,5 +1,6 @@
 import axiosApiInstance from "../axios-instance";
 import { JWT_TOKEN } from "../utils/constants/global.constant";
+import { IStatus } from "../utils/interfaces/global.interface";
 
 class GlobalService {
   login = (data: any) => {
@@ -7,7 +8,7 @@ class GlobalService {
       "/auth",
       new URLSearchParams({
         username: data?.email,
-        password: data?.password
+        password: data?.password,
       }),
       {
         headers: {
@@ -21,8 +22,6 @@ class GlobalService {
     const value: any = localStorage.getItem(JWT_TOKEN);
     const keys = JSON.parse(value);
 
-    console.log("keys", keys);
-    
     return axiosApiInstance
       .get("/refreshToken", {
         headers: {
@@ -34,6 +33,10 @@ class GlobalService {
         localStorage.setItem(JWT_TOKEN, JSON.stringify(response?.data));
         return response?.data?.access_token;
       });
+  };
+
+  updateStatus = (id: any, status: IStatus, endPointPath: string) => {
+    return axiosApiInstance.put(`/${endPointPath}/status/${id}`, status);
   };
 
   getVersion = () => {
