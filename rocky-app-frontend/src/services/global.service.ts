@@ -22,8 +22,6 @@ class GlobalService {
     const value: any = localStorage.getItem(JWT_TOKEN);
     const keys = JSON.parse(value);
 
-    console.log("keys", keys);
-
     return axiosApiInstance
       .get("/refreshToken", {
         headers: {

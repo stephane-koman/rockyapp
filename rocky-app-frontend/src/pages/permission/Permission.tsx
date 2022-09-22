@@ -86,7 +86,7 @@ const Permission = () => {
           page: currentPagination?.current,
           size: currentPagination?.pageSize,
         });
-
+        setRefresh(true);
         break;
 
       case ETableChange.FILTER:
@@ -102,7 +102,6 @@ const Permission = () => {
       default:
         break;
     }
-    setRefresh(true);
   };
 
   const onRefresh = () => {

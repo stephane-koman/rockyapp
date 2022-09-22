@@ -53,10 +53,10 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public void create(PermissionDTO permissionDTO) throws PermissionAlreadyExistsException {
-        boolean permissionExists = permissionDAO.existsByName(permissionDTO.getName());
+    public PermissionDTO create(PermissionDTO permissionDTO) throws PermissionAlreadyExistsException {
+        Permission permissionExists = permissionDAO.findPermissionByNameAndIsNotDelete(permissionDTO.getName());
 
-        if(Boolean.TRUE.equals(permissionExists)) throw new PermissionAlreadyExistsException(permissionDTO.getName());
+        if(permissionExists != null) throw new PermissionAlreadyExistsException(permissionDTO.getName());
 
         Permission permission = new Permission();
         permission = permissionMapper.mapToEntity(permissionDTO, permission);

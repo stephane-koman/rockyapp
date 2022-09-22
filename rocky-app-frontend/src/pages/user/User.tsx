@@ -2,7 +2,7 @@ import {
   CheckOutlined,
   CloseOutlined,
   LockOutlined,
-  UserAddOutlined
+  UserAddOutlined,
 } from "@ant-design/icons";
 import { Button, Switch, Table } from "antd";
 import { ItemType } from "antd/lib/menu/hooks/useItems";
@@ -18,37 +18,36 @@ import { roleService } from "../../services/role.service";
 import { userService } from "../../services/user.service";
 import {
   DEFAULT_PAGE,
-  DEFAULT_PAGE_SIZE
+  DEFAULT_PAGE_SIZE,
 } from "../../utils/constants/global.constant";
 import { USER_PERMISSIONS } from "../../utils/constants/permissions.constant";
 import {
   EActionType,
   ETableActionType,
-  ETableChange
+  ETableChange,
 } from "../../utils/enums/global.enum";
 import { getUserPermissions } from "../../utils/helpers/auth.helper";
-import { showTotalPagination, switchStatus } from "../../utils/helpers/global.helper";
+import {
+  showTotalPagination,
+  switchStatus,
+} from "../../utils/helpers/global.helper";
 import {
   getUserManyPermissionsFromList,
-  getUserOnePermissionFromList
+  getUserOnePermissionFromList,
 } from "../../utils/helpers/permission.helper";
 import {
   getActiveListData,
   getColumnFilter,
   getColumnSorter,
   setOneSortsTable,
-  setPaginationValues
+  setPaginationValues,
 } from "../../utils/helpers/table.helper";
 import { IPagination } from "../../utils/interfaces/global.interface";
-import {
-  IPermission
-} from "../../utils/interfaces/permission.interface";
-import {
-  ISimpleRole
-} from "../../utils/interfaces/role.interface";
+import { IPermission } from "../../utils/interfaces/permission.interface";
+import { ISimpleRole } from "../../utils/interfaces/role.interface";
 import {
   ISimpleUser,
-  IUserCriteriaSearch
+  IUserCriteriaSearch,
 } from "../../utils/interfaces/user.interface";
 import UserModal from "./modal/User.modal";
 import UserPasswordModal from "./modal/UserPassword.modal";
@@ -215,7 +214,12 @@ const User = () => {
   };
 
   const onChangeSwitchHandler = (checked: boolean, userId: number) => {
-    const userList: ISimpleUser[] = switchStatus(checked, userId, users, "user");
+    const userList: ISimpleUser[] = switchStatus(
+      checked,
+      userId,
+      users,
+      "user"
+    );
     setUsers(userList);
   };
 
@@ -309,25 +313,47 @@ const User = () => {
           page: currentPagination?.current,
           size: currentPagination?.pageSize,
         });
+        setRefresh(true);
         break;
 
       case ETableChange.FILTER:
-        setFilters({
-          name: currentFilters.name ? currentFilters.name[0] : null,
-          username: currentFilters.username ? currentFilters.username[0] : null,
-          email: currentFilters.email ? currentFilters.email[0] : null,
-          roleList: currentFilters.roleList || [],
-        });
+        const data = {
+          name: currentFilters.name?.le ? currentFilters.name[0] : undefined,
+          username: currentFilters.username
+            ? currentFilters.username[0]
+            : undefined,
+          email: currentFilters.email ? currentFilters.email[0] : undefined,
+          roleList: currentFilters.roleList
+            ? currentFilters.roleList?.length > 0
+              ? currentFilters.roleList
+              : undefined
+            : undefined,
+          active: currentFilters.active
+            ? currentFilters.active?.length
+              ? currentFilters.active[0]
+                ? 1
+                : 0
+              : undefined
+            : undefined,
+        };
+
+        if (
+          Object.values(data).some((d: any) => d !== undefined && d !== null)
+        ) {
+          setFilters(data);
+          setRefresh(true);
+        }
+
         break;
 
       case ETableChange.SORT:
         setOneSortsTable(sorter, pagination.sorts, setPagination);
+        setRefresh(true);
         break;
 
       default:
         break;
     }
-    setRefresh(true);
   };
 
   const onCloseModal = (change?: boolean) => {

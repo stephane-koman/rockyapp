@@ -32,7 +32,7 @@ export const recursiveMenu = (nav: any): MenuItem => {
       (nav?.permissions?.some((p: any) => getUserPermissions()?.includes(p)) ||
         !nav?.permissions) &&
       getItem(
-        <Link to={nav?.to}>{nav?.name}</Link>,
+        nav?.name,
         nav?.to,
         nav?.icon,
         nav?._children?.map((navChild: any) =>

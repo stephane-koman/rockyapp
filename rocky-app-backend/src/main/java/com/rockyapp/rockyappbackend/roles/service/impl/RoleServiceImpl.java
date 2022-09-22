@@ -56,10 +56,15 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+<<<<<<< refs/remotes/origin/main
     public void create(RoleDTO roleDTO) throws RoleAlreadyExistsException {
         boolean roleExists = roleDAO.existsByName(roleDTO.getName());
+=======
+    public RoleDTO create(RoleDTO roleDTO) throws RoleAlreadyExistsException {
+        Role roleExists = roleDAO.findRoleByNameAndIsNotDelete(roleDTO.getName());
+>>>>>>> Adding customer API
 
-        if(Boolean.TRUE.equals(roleExists)) throw new RoleAlreadyExistsException(roleDTO.getName());
+        if(roleExists != null) throw new RoleAlreadyExistsException(roleDTO.getName());
 
         Role role = new Role();
         role = roleMapper.mapToEntity(roleDTO, role);

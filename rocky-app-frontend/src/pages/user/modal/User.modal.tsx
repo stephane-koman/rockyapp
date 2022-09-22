@@ -162,7 +162,7 @@ export const UserModal = ({
       onOk={form.submit}
       footer={
         <ModalFooterActions
-          again={type !== EActionType.READ ? {
+          again={type === EActionType.CREATE ? {
             text: t("common.user"),
             type: EAgainType.Un,
           } : undefined}
