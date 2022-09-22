@@ -35,10 +35,10 @@ export const MenuAD = memoize(({currPath, onClick}: IProps) => {
         recursiveMenu(nav)
       )) ||
     [];
-
+    
   return (
     <Menu
-      defaultSelectedKeys={[currPath]}
+      selectedKeys={[currPath === "/" ? "/dashboard" : currPath]}
       theme="dark"
       mode="inline"
       items={items}

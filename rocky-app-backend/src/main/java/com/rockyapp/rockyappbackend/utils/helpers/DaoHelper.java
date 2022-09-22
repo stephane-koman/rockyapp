@@ -22,7 +22,7 @@ public class DaoHelper {
     }
 
     public static Predicate createIntegerPredicate(int property, Path<String> propertyPath, CriteriaBuilder cb) {
-        return cb.equal(propertyPath, property);
+        return cb.like(propertyPath.as(String.class), '%' + String.valueOf(property) + '%');
     }
 
     public static <T> void generateDefaultQuery(Root<T> root, CriteriaBuilder cb, CriteriaQuery<T> cq, DefaultCriteriaDTO criteriaDTO, Pageable pageable){

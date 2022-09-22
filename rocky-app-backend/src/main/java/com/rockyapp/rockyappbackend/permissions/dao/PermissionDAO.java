@@ -15,5 +15,4 @@ public interface PermissionDAO extends PagingAndSortingRepository<Permission, Lo
             "WHERE p.id = :id AND p.delete = 0")
     Permission findPermissionByIdAndIsNotDelete(@Param("id") Long id);
 
-    boolean existsByName(String name);
 }
