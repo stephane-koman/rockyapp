@@ -73,8 +73,8 @@ public class UserServiceImpl implements UserService {
         User userName = this.findUserByUsernameOrEmail(userUpdateDTO.getUsername());
         User userEmail = this.findUserByUsernameOrEmail(userUpdateDTO.getEmail());
 
-        if(!userName.getId().equals(userId)) throw new UsernameAlreadyExistsException(userUpdateDTO.getUsername());
-        if(!userEmail.getId().equals(userId)) throw new EmailAlreadyExistsException(userUpdateDTO.getUsername());
+        if(userName != null && !userName.getId().equals(userId)) throw new UsernameAlreadyExistsException(userUpdateDTO.getUsername());
+        if(userEmail  != null && !userEmail.getId().equals(userId)) throw new EmailAlreadyExistsException(userUpdateDTO.getUsername());
 
         User user = userDAO.findById(userId).orElseThrow(UserNotFoundException::new);
         user = userUpdateMapper.mapToEntity(userUpdateDTO, user);

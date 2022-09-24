@@ -1,12 +1,9 @@
-import { red } from "@ant-design/colors";
-import { WarningOutlined } from "@ant-design/icons";
-import { Col, Divider, Form, Input, List, Modal, Row, Transfer } from "antd";
+import { Col, Form, Input, Modal, Row } from "antd";
 import { useEffect, useState, useTransition } from "react";
 import { useTranslation } from "react-i18next";
 import ModalFooterActions from "../../../components/ModalFooterActions/ModalFooterActions";
 import { customerService } from "../../../services/customer.service";
 import { EActionType, EAgainType } from "../../../utils/enums/global.enum";
-import { globalFilterOption } from "../../../utils/helpers/global.helper";
 import { ICustomer } from "../../../utils/interfaces/customer.interface";
 import "./Customer.modal.scss";
 
@@ -25,10 +22,8 @@ export const CustomerModal = ({
 }: IProps) => {
   const { t } = useTranslation();
   const [isPending, startTransition] = useTransition();
-  const startTransfertTransition = useTransition()[1];
   const [form] = Form.useForm();
   const [addAgain, setAddAgain] = useState<boolean>(false);
-  const [errors, setErrors] = useState<any[]>([]);
 
   useEffect(() => {
     if (isOpen && customer) {
@@ -42,7 +37,6 @@ export const CustomerModal = ({
 
   const onCloseHandler = (change?: boolean) => {
     form.resetFields();
-    setErrors([]);
     if (!addAgain) {
       onClose(change);
     } 

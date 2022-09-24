@@ -4,7 +4,6 @@ import { EActionType, ETableActionType } from "../enums/global.enum";
 
 export interface IDefault {
   id: number;
-  name: string;
   active?: boolean;
 }
 
@@ -31,7 +30,6 @@ export interface IApiResponse<T> extends IPagination {
 
 export interface IDefaultCriteriaSearch {
   active?: number;
-  name?: string;
   text_search?: string;
 }
 

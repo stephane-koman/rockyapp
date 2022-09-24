@@ -265,18 +265,16 @@ const Customer = () => {
           mobile: currentFilters.mobile ? currentFilters.mobile[0] : undefined,
           fixe: currentFilters.fixe ? currentFilters.fixe[0] : undefined,
           active: currentFilters.active
-            ? currentFilters.active[0]
-              ? 1
-              : 0
+            ? currentFilters.active?.length > 0
+              ? currentFilters.active[0]
+                ? 1
+                : 0
+              : undefined
             : undefined,
         };
         
-        if (
-          Object.values(data).some((d: any) => d !== undefined && d !== null)
-        ) {
-          setFilters(data);
-          setRefresh(true);
-        }
+        setFilters(data);
+        setRefresh(true);
         break;
 
       case ETableChange.SORT:

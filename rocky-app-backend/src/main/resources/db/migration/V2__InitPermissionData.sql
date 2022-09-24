@@ -34,4 +34,8 @@ VALUES ('READ_PERMISSION', current_timestamp ),
        ('READ_PAYMENT', current_timestamp),
        ('CREATE_PAYMENT', current_timestamp),
        ('UPDATE_PAYMENT', current_timestamp),
-       ('DELETE_PAYMENT', current_timestamp);
+       ('DELETE_PAYMENT', current_timestamp),
+       ('READ_VOLUME', current_timestamp),
+       ('CREATE_VOLUME', current_timestamp),
+       ('UPDATE_VOLUME', current_timestamp),
+       ('DELETE_VOLUME', current_timestamp);

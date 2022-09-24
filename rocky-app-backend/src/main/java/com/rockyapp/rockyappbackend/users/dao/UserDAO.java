@@ -14,16 +14,7 @@ public interface UserDAO extends PagingAndSortingRepository<User, Long>, UserDAO
     User findUserByUsernameOrEmailAndIsActiveAndIsNotDelete(final String name);
 
     @Query("SELECT u FROM User u " +
-            "WHERE u.id = :id " +
-            "AND u.active = 1 AND u.delete = 0")
-    User findUserByIdAndIsActiveAndIsNotDelete(@Param("id") Long id);
-
-    @Query("SELECT u FROM User u " +
             "WHERE u.id = :id AND u.delete = 0")
     User findUserByIdAndIsNotDelete(@Param("id") Long id);
 
-    @Query("SELECT u FROM User u " +
-            "WHERE (LOWER(u.username) = LOWER(:name)) " +
-            "OR (LOWER(u.email) = LOWER(:name)) ")
-    boolean existsByUsernameOrEmail(String name);
 }

@@ -256,24 +256,22 @@ const Role = () => {
 
       case ETableChange.FILTER:
         const data = {
-          name: currentFilters.name ? currentFilters.name[0] : null,
+          name: currentFilters.name ? currentFilters.name[0] : undefined,
           description: currentFilters.description
             ? currentFilters.description[0]
-            : null,
+            : undefined,
 
           active: currentFilters.active
-            ? currentFilters.active[0]
-              ? 1
-              : 0
+            ? currentFilters.active?.length > 0
+              ? currentFilters.active[0]
+                ? 1
+                : 0
+              : undefined
             : undefined,
         };
 
-        if (
-          Object.values(data).some((d: any) => d !== undefined && d !== null)
-        ) {
-          setFilters(data);
-          setRefresh(true);
-        }
+        setFilters(data);
+        setRefresh(true);
         break;
 
       case ETableChange.SORT:

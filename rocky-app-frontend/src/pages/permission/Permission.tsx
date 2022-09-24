@@ -40,6 +40,7 @@ const Permission = () => {
       title: t("common.name"),
       dataIndex: "name",
       key: "name",
+      filterSearch: true,
     },
     {
       title: t("common.description"),

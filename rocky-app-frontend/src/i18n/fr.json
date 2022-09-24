@@ -25,6 +25,7 @@
     "countries": "Pays",
     "cities": "Villes",
     "customers": "Clients",
+    "volumes": "Volumes",
     "payment_types": "Moyens de paiement"
   },
   "common": {
@@ -73,6 +74,9 @@
     "cities": "Villes",
     "customers": "Clients",
     "payment_types": "Moyens de paiement",
+    "quantity": "Quantité",
+    "mesure": "Mesure",
+    "volume": "Volume",
     "transfert": {
       "source": "Source",
       "target": "Cible"
@@ -139,5 +143,12 @@
     "read_payment_type": "Afficher un moyen de paiement",
     "update_payment_type": "Modifier un moyen de paiement",
     "delete_payment_type": "Supprimer un moyen de paiement"
+  },
+  "volume": {
+    "page_title": "Liste des volumes",
+    "create_volume": "Ajouter un volume",
+    "read_volume": "Afficher un volume",
+    "update_volume": "Modifier un volume",
+    "delete_volume": "Supprimer un volume"
   }
 }
