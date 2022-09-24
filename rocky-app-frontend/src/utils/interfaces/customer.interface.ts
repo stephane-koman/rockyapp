@@ -1,6 +1,7 @@
 import { IDefault, IDefaultCriteriaSearch } from "./global.interface";
 
 export interface ICustomer extends IDefault {
+  name: string;
   email: string;
   mobile: string;
   fixe: string;
@@ -9,6 +10,7 @@ export interface ICustomer extends IDefault {
 }
 
 export interface ICustomerCriteriaSearch extends IDefaultCriteriaSearch {
+  name?: string;
   email?: string;
   mobile?: string;
   fixe?: string;

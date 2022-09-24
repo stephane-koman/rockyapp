@@ -14,5 +14,5 @@ public class VolumeDTO implements SocleDTO {
     private Long quantity;
     private MesureEnum mesure;
     private String description;
-    private boolean active;
+    private boolean active = true;
 }

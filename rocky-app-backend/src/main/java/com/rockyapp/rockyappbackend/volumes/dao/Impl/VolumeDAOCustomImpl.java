@@ -1,6 +1,5 @@
 package com.rockyapp.rockyappbackend.volumes.dao.Impl;
 
-import com.rockyapp.rockyappbackend.utils.enums.CustomerEnum;
 import com.rockyapp.rockyappbackend.utils.enums.VolumeEnum;
 import com.rockyapp.rockyappbackend.utils.helpers.ArrayHelper;
 import com.rockyapp.rockyappbackend.utils.helpers.DaoHelper;
@@ -54,7 +53,7 @@ public class VolumeDAOCustomImpl implements VolumeDAOCustom {
             predicates.add(quantityP);
         }
 
-        if (StringUtils.isNotEmpty(criteriaDTO.getMesure().name())) {
+        if ( criteriaDTO.getMesure() != null && StringUtils.isNotEmpty(criteriaDTO.getMesure().name())) {
             Predicate emailP = createStringPredicate(criteriaDTO.getMesure().name(), volumeRoot.get(VolumeEnum.MESURE.getValue()), cb);
             predicates.add(emailP);
         }

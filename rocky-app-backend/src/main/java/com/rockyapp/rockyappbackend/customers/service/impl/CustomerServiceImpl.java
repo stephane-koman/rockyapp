@@ -54,7 +54,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDTO update(String customerId, CustomerDTO customerDTO) throws CustomerAlreadyExistsException, CustomerNotFoundException {
         Customer customerExists = customerDAO.findCustomerByNameAndIsNotDelete(customerDTO.getName());
-        if(!customerExists.getId().equals(customerId)) throw new CustomerAlreadyExistsException(customerDTO.getName());
+        if(customerExists != null && !customerExists.getId().equals(customerId)) throw new CustomerAlreadyExistsException(customerDTO.getName());
 
         Customer customer = customerDAO.findById(customerId).orElseThrow(CustomerNotFoundException::new);
         customer = customerMapper.mapToEntity(customerDTO, customer);

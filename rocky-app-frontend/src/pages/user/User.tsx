@@ -12,7 +12,6 @@ import PageTitle from "../../components/PageTitle/PageTitle";
 import TableActions from "../../components/TableActions/TableActions";
 import { getColumnSearchProps } from "../../components/TableColumnComponents/TableColumnComponents";
 import TableHeaderActions from "../../components/TableHeaderActions/TableHeaderActions";
-import { globalService } from "../../services/global.service";
 import { permissionService } from "../../services/permission.service";
 import { roleService } from "../../services/role.service";
 import { userService } from "../../services/user.service";
@@ -318,7 +317,7 @@ const User = () => {
 
       case ETableChange.FILTER:
         const data = {
-          name: currentFilters.name?.le ? currentFilters.name[0] : undefined,
+          name: currentFilters.name ? currentFilters.name[0] : undefined,
           username: currentFilters.username
             ? currentFilters.username[0]
             : undefined,
@@ -329,7 +328,7 @@ const User = () => {
               : undefined
             : undefined,
           active: currentFilters.active
-            ? currentFilters.active?.length
+            ? currentFilters.active?.length > 0
               ? currentFilters.active[0]
                 ? 1
                 : 0
@@ -337,12 +336,8 @@ const User = () => {
             : undefined,
         };
 
-        if (
-          Object.values(data).some((d: any) => d !== undefined && d !== null)
-        ) {
-          setFilters(data);
-          setRefresh(true);
-        }
+        setFilters(data);
+        setRefresh(true);
 
         break;
 

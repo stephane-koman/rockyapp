@@ -68,7 +68,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public PermissionDTO update(Long permissionId, PermissionDTO permissionDTO) throws PermissionAlreadyExistsException, PermissionNotFoundException {
         Permission permission  = this.findPermissionByName(permissionDTO.getName());
-        if(!permission.getId().equals(permissionId)) throw new PermissionAlreadyExistsException(permissionDTO.getName());
+        if(permission != null && !permission.getId().equals(permissionId)) throw new PermissionAlreadyExistsException(permissionDTO.getName());
 
         permission = permissionDAO.findById(permissionId).orElseThrow(PermissionNotFoundException::new);
         permission = permissionMapper.mapToEntity(permissionDTO, permission);

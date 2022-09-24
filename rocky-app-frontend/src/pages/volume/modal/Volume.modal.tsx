@@ -1,23 +1,24 @@
-import { Col, Form, Input, Modal, Row } from "antd";
+import { Col, Form, Input, InputNumber, Modal, Row, Select } from "antd";
 import { useEffect, useState, useTransition } from "react";
 import { useTranslation } from "react-i18next";
 import ModalFooterActions from "../../../components/ModalFooterActions/ModalFooterActions";
-import { customerService } from "../../../services/customer.service";
+import { volumeService } from "../../../services/volume.service";
 import { EActionType, EAgainType } from "../../../utils/enums/global.enum";
-import { ICustomer } from "../../../utils/interfaces/customer.interface";
-import "./Customer.modal.scss";
+import { EMesure } from "../../../utils/enums/mesure.enum";
+import { IVolume } from "../../../utils/interfaces/volume.interface";
+import "./Volume.modal.scss";
 
 interface IProps {
   isOpen: boolean;
   type?: EActionType;
-  customer?: ICustomer;
+  volume?: IVolume;
   onClose: (change?: boolean) => void;
 }
 
-export const CustomerModal = ({
+export const VolumeModal = ({
   isOpen,
   type,
-  customer,
+  volume,
   onClose,
 }: IProps) => {
   const { t } = useTranslation();
@@ -26,14 +27,14 @@ export const CustomerModal = ({
   const [addAgain, setAddAgain] = useState<boolean>(false);
 
   useEffect(() => {
-    if (isOpen && customer) {
-      form.setFieldsValue(customer);
+    if (isOpen && volume) {
+      form.setFieldsValue(volume);
     }
 
-    if (isOpen && !customer) {
+    if (isOpen && !volume) {
       form.resetFields();
     }
-  }, [customer, isOpen, form]);
+  }, [volume, isOpen, form]);
 
   const onCloseHandler = (change?: boolean) => {
     form.resetFields();
@@ -43,9 +44,9 @@ export const CustomerModal = ({
     setAddAgain(false);
   };
 
-  const onCreateCustomer = (data: ICustomer) => {
+  const onCreateVolume = (data: IVolume) => {
     startTransition(() => {
-      customerService
+      volumeService
         .create(data)
         .then((_) => {
           onCloseHandler(true);
@@ -54,11 +55,11 @@ export const CustomerModal = ({
     });
   };
 
-  const onUpdateCustomer = (data: ICustomer) => {
-    if (customer) {
+  const onUpdateVolume = (data: IVolume) => {
+    if (volume) {
       startTransition(() => {
-        customerService
-          .update(customer.id, data)
+        volumeService
+          .update(volume.id, data)
           .then((_) => {
             onCloseHandler(true);
           })
@@ -68,8 +69,8 @@ export const CustomerModal = ({
   };
 
   const onFinishHandler = (values: any) => {
-    if (customer) onUpdateCustomer(values);
-    else onCreateCustomer(values);
+    if (volume) onUpdateVolume(values);
+    else onCreateVolume(values);
   };
 
   const onCancelHandler = () => {
@@ -79,11 +80,11 @@ export const CustomerModal = ({
 
   return (
     <Modal
-      className="Customer"
+      className="Volume"
       open={isOpen}
       destroyOnClose
       width={1000}
-      title={t(`customer.${type}_customer`)}
+      title={t(`volume.${type}_volume`)}
       onCancel={() => onCancelHandler()}
       onOk={form.submit}
       footer={
@@ -91,7 +92,7 @@ export const CustomerModal = ({
           again={
             type === EActionType.CREATE
               ? {
-                  text: t("common.customer"),
+                  text: t("common.volume"),
                   type: EAgainType.Un,
                 }
               : undefined
@@ -107,7 +108,7 @@ export const CustomerModal = ({
     >
       <Form
         form={form}
-        name="customer-ref"
+        name="volume-ref"
         scrollToFirstError
         labelCol={{
           span: 6,
@@ -117,11 +118,8 @@ export const CustomerModal = ({
         }}
         initialValues={{
           id: "",
-          name: "",
-          email: "",
-          mobile: "",
-          fixe: "",
-          address: "",
+          quantity: null,
+          mesure: EMesure.ML,
           description: "",
         }}
         onFinish={onFinishHandler}
@@ -131,51 +129,46 @@ export const CustomerModal = ({
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
           <Col className="gutter-row" span={12}>
             <Form.Item
-              name="name"
-              label={t("common.name")}
+              name="quantity"
+              label={t("common.quantity")}
               rules={[
                 {
                   required: true,
-                  message: t("required.name"),
+                  type: "number",
+                  message: t("required.quantity"),
                 },
               ]}
             >
-              <Input disabled={type === EActionType.READ} />
+              <InputNumber
+                style={{ width: "100%" }}
+                disabled={type === EActionType.READ}
+              />
             </Form.Item>
           </Col>
           <Col className="gutter-row" span={12}>
             <Form.Item
-              name="email"
-              label={t("common.email")}
+              name="mesure"
+              label={t("common.mesure")}
               rules={[
                 {
-                  required: false,
-                  type: "email",
+                  required: true,
+                  message: t("required.mesure"),
                 },
               ]}
             >
-              <Input disabled={type === EActionType.READ} />
+              <Select
+                style={{ width: "100%" }}
+                placeholder=""
+                disabled={type === EActionType.READ}
+                options={Object.values(EMesure)?.map((m: string) => ({
+                  label: m,
+                  value: m,
+                }))}
+              />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-          <Col className="gutter-row" span={12}>
-            <Form.Item name="mobile" label={t("common.mobile")}>
-              <Input disabled={type === EActionType.READ} />
-            </Form.Item>
-          </Col>
-          <Col className="gutter-row" span={12}>
-            <Form.Item name="fixe" label={t("common.fixe")}>
-              <Input disabled={type === EActionType.READ} />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-          <Col className="gutter-row" span={12}>
-            <Form.Item name="address" label={t("common.address")}>
-              <Input.TextArea disabled={type === EActionType.READ} />
-            </Form.Item>
-          </Col>
           <Col className="gutter-row" span={12}>
             <Form.Item name="description" label={t("common.description")}>
               <Input.TextArea disabled={type === EActionType.READ} />
@@ -187,4 +180,4 @@ export const CustomerModal = ({
   );
 };
 
-export default CustomerModal;
+export default VolumeModal;

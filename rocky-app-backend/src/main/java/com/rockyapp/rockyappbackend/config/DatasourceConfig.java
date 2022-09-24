@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 @Configuration
 public class DatasourceConfig {
-
     @Bean(name = "db")
     @Primary
     @ConfigurationProperties("app.datasource.main")
