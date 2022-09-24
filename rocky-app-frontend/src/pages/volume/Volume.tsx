@@ -10,7 +10,7 @@ import PageTitle from "../../components/PageTitle/PageTitle";
 import TableActions from "../../components/TableActions/TableActions";
 import { getColumnSearchProps } from "../../components/TableColumnComponents/TableColumnComponents";
 import TableHeaderActions from "../../components/TableHeaderActions/TableHeaderActions";
-import { customerService } from "../../services/customer.service";
+import { volumeService } from "../../services/volume.service";
 import {
   DEFAULT_PAGE,
   DEFAULT_PAGE_SIZE,
@@ -38,39 +38,36 @@ import {
   setPaginationValues,
 } from "../../utils/helpers/table.helper";
 import {
-  ICustomer,
-  ICustomerCriteriaSearch,
-} from "../../utils/interfaces/customer.interface";
+  IVolume,
+  IVolumeCriteriaSearch,
+} from "../../utils/interfaces/volume.interface";
 import { IPagination } from "../../utils/interfaces/global.interface";
-import CustomerModal from "./modal/Customer.modal";
+import VolumeModal from "./modal/Volume.modal";
+import { EMesure } from "../../utils/enums/mesure.enum";
 
 enum columnType {
-  Name = "name",
-  Email = "email",
-  Mobile = "mobile",
-  Fixe = "fixe",
-  Address = "address",
+  Quantity = "quantity",
+  Mesure = "mesure",
   Active = "active",
 }
 
-const initFiliters: ICustomerCriteriaSearch = {
-  name: undefined,
-  email: undefined,
-  mobile: undefined,
-  fixe: undefined,
+const initFiliters: IVolumeCriteriaSearch = {
+  quantity: undefined,
+  mesure: undefined,
+  active: undefined,
   text_search: undefined,
 };
 
-const Customer = () => {
+const Volume = () => {
   const userConnectedPermissions: any[] = getUserPermissions();
   const { t } = useTranslation();
   const [isPending, startTransition] = useTransition();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(true);
-  const [customerList, setCustomerList] = useState<ICustomer[]>([]);
+  const [volumeList, setVolumeList] = useState<IVolume[]>([]);
   const [actionType, setActionType] = useState<EActionType>(EActionType.READ);
-  const [customer, setCustomer] = useState<ICustomer | undefined>(undefined);
-  const [filters, setFilters] = useState<ICustomerCriteriaSearch>(initFiliters);
+  const [volume, setVolume] = useState<IVolume | undefined>(undefined);
+  const [filters, setFilters] = useState<IVolumeCriteriaSearch>(initFiliters);
   const [reset, setReset] = useState<boolean>(false);
 
   const [pagination, setPagination] = useState<IPagination>({
@@ -80,46 +77,30 @@ const Customer = () => {
   });
 
   const getColumns = () => {
+    const mesureList = Object.values(EMesure).map((m: string) => ({
+      value: m,
+      text: m,
+    }));
+    
     const columns: any[] = [
       {
-        title: t("common." + columnType.Name),
-        dataIndex: columnType.Name,
-        key: columnType.Name,
+        title: t("common." + columnType.Quantity),
+        dataIndex: columnType.Quantity,
+        key: columnType.Quantity,
         sorter: true,
         filterSearch: true,
-        filteredValue: getColumnFilter(columnType.Name, filters),
-        sortOrder: getColumnSorter(columnType.Name, pagination.sorts),
-        ...getColumnSearchProps(columnType.Name, reset),
+        filteredValue: getColumnFilter(columnType.Quantity, filters),
+        sortOrder: getColumnSorter(columnType.Quantity, pagination.sorts),
+        ...getColumnSearchProps(columnType.Quantity, reset),
       },
       {
-        title: t("common." + columnType.Email),
-        dataIndex: columnType.Email,
-        key: columnType.Email,
+        title: t("common." + columnType.Mesure),
+        dataIndex: columnType.Mesure,
+        key: columnType.Mesure,
         sorter: true,
-        filterSearch: true,
-        filteredValue: getColumnFilter(columnType.Email, filters),
-        sortOrder: getColumnSorter(columnType.Email, pagination.sorts),
-        ...getColumnSearchProps(columnType.Email, reset),
-      },
-      {
-        title: t("common." + columnType.Mobile),
-        dataIndex: columnType.Mobile,
-        key: columnType.Mobile,
-        sorter: true,
-        filterSearch: true,
-        filteredValue: getColumnFilter(columnType.Mobile, filters),
-        sortOrder: getColumnSorter(columnType.Mobile, pagination.sorts),
-        ...getColumnSearchProps(columnType.Mobile, reset),
-      },
-      {
-        title: t("common." + columnType.Fixe),
-        dataIndex: columnType.Fixe,
-        key: columnType.Fixe,
-        sorter: true,
-        filterSearch: true,
-        filteredValue: getColumnFilter(columnType.Fixe, filters),
-        sortOrder: getColumnSorter(columnType.Fixe, pagination.sorts),
-        ...getColumnSearchProps(columnType.Fixe, reset),
+        filters: mesureList,
+        filteredValue: getColumnFilter(columnType.Mesure, filters),
+        sortOrder: getColumnSorter(columnType.Mesure, pagination.sorts)
       },
       {
         title: t("common.status"),
@@ -127,7 +108,7 @@ const Customer = () => {
         dataIndex: columnType.Active,
         filters: getActiveListData(t),
         filteredValue: getColumnFilter(columnType.Active, filters),
-        render: (_: any, data: ICustomer) => (
+        render: (_: any, data: IVolume) => (
           <Switch
             checkedChildren={<CheckOutlined />}
             unCheckedChildren={<CloseOutlined />}
@@ -135,11 +116,11 @@ const Customer = () => {
             disabled={
               getUserOnePermissionFromList(
                 ROLE_PERMISSIONS,
-                EActionType.UPDATE + "_customer"
+                EActionType.UPDATE + "_volume"
               ) === null &&
               getUserOnePermissionFromList(
                 ROLE_PERMISSIONS,
-                EActionType.DELETE + "_customer"
+                EActionType.DELETE + "_volume"
               ) === null
             }
             onChange={(checked: boolean) =>
@@ -162,7 +143,7 @@ const Customer = () => {
             type={
               getUserManyPermissionsFromList(
                 userConnectedPermissions,
-                "customer"
+                "volume"
               ).length > 2
                 ? ETableActionType.DROPDOWN
                 : ETableActionType.BUTTON
@@ -183,7 +164,7 @@ const Customer = () => {
               ),
             }}
             deleteInfo={`${t("common.confirm_delete_info.cet")} ${t(
-              "common.customer"
+              "common.volume"
             ).toLowerCase()}?`}
             handleAction={handleModal}
             onConfirmDelete={onConfirmDelete}
@@ -194,36 +175,36 @@ const Customer = () => {
     return columns;
   };
 
-  const onChangeSwitchHandler = (checked: boolean, customerId: number) => {
-    const newCustomerList: ICustomer[] = switchStatus(
+  const onChangeSwitchHandler = (checked: boolean, volumeId: number) => {
+    const newVolumeList: IVolume[] = switchStatus(
       checked,
-      customerId,
-      customerList,
-      "customer"
+      volumeId,
+      volumeList,
+      "volume"
     );
-    setCustomerList(newCustomerList);
+    setVolumeList(newVolumeList);
   };
 
   const onConfirmDelete = (userId: any) => {
-    customerService.delete(userId).then((_: any) => {
+    volumeService.delete(userId).then((_: any) => {
       setRefresh(true);
     });
   };
 
   useEffect(() => {
     if (refresh) {
-      searchCustomers();
+      searchVolumes();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refresh]);
 
-  const searchCustomers = () => {
+  const searchVolumes = () => {
     startTransition(() => {
-      customerService
+      volumeService
         .search(filters, pagination)
         .then((res) => {
           const data = res?.data;
-          setCustomerList(data?.results);
+          setVolumeList(data?.results);
           setPaginationValues(data, setPagination);
         })
         .catch((err: any) => {
@@ -238,7 +219,7 @@ const Customer = () => {
 
   const handleModal = (r: any, type: EActionType) => {
     setActionType(type);
-    setCustomer(r);
+    setVolume(r);
     setIsModalVisible(true);
   };
 
@@ -265,16 +246,18 @@ const Customer = () => {
           mobile: currentFilters.mobile ? currentFilters.mobile[0] : undefined,
           fixe: currentFilters.fixe ? currentFilters.fixe[0] : undefined,
           active: currentFilters.active
-            ? currentFilters.active?.length > 0
-              ? currentFilters.active[0]
-                ? 1
-                : 0
-              : undefined
+            ? currentFilters.active[0]
+              ? 1
+              : 0
             : undefined,
         };
         
-        setFilters(data);
-        setRefresh(true);
+        if (
+          Object.values(data).some((d: any) => d !== undefined && d !== null)
+        ) {
+          setFilters(data);
+          setRefresh(true);
+        }
         break;
 
       case ETableChange.SORT:
@@ -292,7 +275,7 @@ const Customer = () => {
       setRefresh(true);
     }
     setIsModalVisible(false);
-    setCustomer(undefined);
+    setVolume(undefined);
   };
 
   const onRefresh = () => {
@@ -321,13 +304,13 @@ const Customer = () => {
 
   return (
     <div>
-      <CustomerModal
+      <VolumeModal
         type={actionType}
-        customer={customer}
+        volume={volume}
         isOpen={isModalVisible}
         onClose={onCloseModal}
       />
-      <PageTitle title={t("customer.page_title")} />
+      <PageTitle title={t("volume.page_title")} />
       <TableHeaderActions
         search
         refresh
@@ -338,14 +321,14 @@ const Customer = () => {
           getUserOnePermissionFromList(ROLE_PERMISSIONS, EActionType.CREATE)
         ) && (
           <Button icon={<UnlockOutlined />} type="primary" onClick={showModal}>
-            {t("customer.create_customer")}
+            {t("volume.create_volume")}
           </Button>
         )}
       </TableHeaderActions>
 
       <Table
         rowKey="id"
-        dataSource={customerList}
+        dataSource={volumeList}
         columns={getColumns()}
         loading={isPending}
         pagination={{
@@ -364,4 +347,4 @@ const Customer = () => {
   );
 };
 
-export default Customer;
+export default Volume;

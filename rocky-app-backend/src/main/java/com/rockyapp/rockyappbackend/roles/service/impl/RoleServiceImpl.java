@@ -75,7 +75,7 @@ public class RoleServiceImpl implements RoleService {
     public void update(Long roleId, RoleDTO roleDTO) throws RoleAlreadyExistsException, RoleNotFoundException {
         Role role  = this.findByName(roleDTO.getName());
 
-        if(!role.getId().equals(roleId)) throw new RoleAlreadyExistsException(roleDTO.getName());
+        if(role != null && !role.getId().equals(roleId)) throw new RoleAlreadyExistsException(roleDTO.getName());
 
         role = roleDAO.findById(roleId).orElseThrow(RoleNotFoundException::new);
         role = roleMapper.mapToEntity(roleDTO, role);

@@ -1,7 +1,6 @@
 package com.rockyapp.rockyappbackend.volumes.entity;
 
 import com.rockyapp.rockyappbackend.common.entity.AbstractSocleEntity;
-import com.rockyapp.rockyappbackend.utils.enums.MesureEnum;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,9 +25,8 @@ public class Volume extends AbstractSocleEntity {
     @Column(name = "quantity", nullable = false)
     private Long quantity;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "mesure", length = 2, nullable = false)
-    private MesureEnum mesure;
+    private String mesure;
 
     @Column(name = "description")
     private String description;

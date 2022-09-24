@@ -1,6 +1,7 @@
 import { IDefault, IDefaultCriteriaSearch } from "./global.interface";
 
 export interface ISimpleUser extends IDefault {
+  name: string;
   username: string;
   email: string;
   roleList: string[];
@@ -18,6 +19,7 @@ export interface IPassword {
 export interface IUserCrea extends IUser, IPassword {}
 
 export interface IUserCriteriaSearch extends IDefaultCriteriaSearch {
+  name?: string;
   username?: string;
   email?: string;
   roleList?: string[];

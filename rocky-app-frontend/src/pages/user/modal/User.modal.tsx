@@ -9,9 +9,8 @@ import {
   Modal,
   Row,
   Select,
-  Transfer,
+  Transfer
 } from "antd";
-import { TFunction } from "i18next";
 import { useEffect, useState, useTransition } from "react";
 import { useTranslation } from "react-i18next";
 import ModalFooterActions from "../../../components/ModalFooterActions/ModalFooterActions";
@@ -22,7 +21,7 @@ import { IPermission } from "../../../utils/interfaces/permission.interface";
 import { ISimpleRole } from "../../../utils/interfaces/role.interface";
 import {
   ISimpleUser,
-  IUserCrea,
+  IUserCrea
 } from "../../../utils/interfaces/user.interface";
 
 interface IProps {

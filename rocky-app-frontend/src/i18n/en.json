@@ -73,6 +73,9 @@
     "cities": "Cities",
     "customers": "Customers",
     "payment_types": "Payment options",
+    "quantity": "Quantity",
+    "mesure": "Mesure",
+    "volume": "Volume",
     "transfert": {
       "source": "Source",
       "target": "Target"
@@ -139,5 +142,12 @@
     "read_payment_type": "Show payment option",
     "update_payment_type": "Update payment option",
     "delete_payment_type": "Delete payment option"
+  },
+  "volume": {
+    "page_title": "List of volumes",
+    "create_volume": "Add volume",
+    "read_volume": "Show volume",
+    "update_volume": "Update volume",
+    "delete_volume": "Delete volume"
   }
 }

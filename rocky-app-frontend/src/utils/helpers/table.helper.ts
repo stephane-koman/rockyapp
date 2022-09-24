@@ -1,10 +1,15 @@
 import { IPagination } from "../interfaces/global.interface";
 
-export const getColumnFilter = (title: string, filters: any) => { 
-  const column = filters[title];  
-  return column !== undefined && column !== null && (Array.isArray(column) && column.length > 0)
-    ? [title]
+export const getColumnFilter = (title: any, filters: any) => {
+  const column = filters[title];
+
+  const columsActive: any = column !== null && column !== undefined
+    ? Array.isArray(column) && column.length > 0
+      ? column.concat([title])
+      : title === "active" ? [ Boolean(column), title] : [title]
     : [];
+
+  return columsActive;
 };
 
 export const getColumnSorter = (title: string, sorts?: string[] | any) => {
