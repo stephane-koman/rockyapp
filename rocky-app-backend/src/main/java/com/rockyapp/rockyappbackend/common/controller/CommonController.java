@@ -31,7 +31,7 @@ public class CommonController {
         try {
             String username = TokenHelper.extractUsernameFromToken(authToken);
 
-            User user = userService.findUserByUsernameOrEmail(username);
+            User user = userService.findByUsernameOrEmail(username);
             List<String> authorities = TokenHelper.getUserPermissions(user);
 
             String jwtAccessToken = TokenHelper.generateJwtAccessToken(username, authorities, request);

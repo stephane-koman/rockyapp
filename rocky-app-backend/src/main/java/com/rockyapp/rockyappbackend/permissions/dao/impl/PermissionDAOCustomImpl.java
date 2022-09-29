@@ -1,4 +1,4 @@
-package com.rockyapp.rockyappbackend.permissions.dao.Impl;
+package com.rockyapp.rockyappbackend.permissions.dao.impl;
 
 import com.rockyapp.rockyappbackend.common.dto.DefaultCriteriaDTO;
 import com.rockyapp.rockyappbackend.permissions.dao.PermissionDAOCustom;
@@ -18,7 +18,7 @@ public class PermissionDAOCustomImpl implements PermissionDAOCustom {
     private EntityManager entityManager;
 
     @Override
-    public Page<Permission> searchPermissions(DefaultCriteriaDTO criteriaDTO, Pageable pageable) {
+    public Page<Permission> search(DefaultCriteriaDTO criteriaDTO, Pageable pageable) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Permission> cq = cb.createQuery(Permission.class);
         Root<Permission> permissionRoot = cq.from(Permission.class);

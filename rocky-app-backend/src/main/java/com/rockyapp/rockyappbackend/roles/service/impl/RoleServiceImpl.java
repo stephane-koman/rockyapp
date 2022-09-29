@@ -29,14 +29,14 @@ public class RoleServiceImpl implements RoleService {
     private SimpleRoleMapper simpleRoleMapper;
 
     @Override
-    public ResultPagine<SimpleRoleDTO> searchRoles(DefaultCriteriaDTO criteriaDTO, Pageable pageable) {
+    public ResultPagine<SimpleRoleDTO> search(DefaultCriteriaDTO criteriaDTO, Pageable pageable) {
         Page<Role> rolePage = this.roleDAO.searchRoles(criteriaDTO, pageable);
 
         return this.simpleRoleMapper.mapFromEntity(rolePage);
     }
 
     @Override
-    public Role findRoleByName(String name) throws RoleNotFoundException {
+    public Role findByName(String name) throws RoleNotFoundException {
         Role role = roleDAO.findRoleByNameAndIsNotDelete(name);
 
         if(role == null) throw new RoleNotFoundException();
@@ -45,7 +45,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public RoleDTO findRoleById(Long id) throws RoleNotFoundException {
+    public RoleDTO findById(Long id) throws RoleNotFoundException {
         Role role = roleDAO.findRoleByIdAndIsNotDelete(id);
 
         if(role == null) throw new RoleNotFoundException();
@@ -54,30 +54,26 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public RoleDTO create(RoleDTO roleDTO) throws RoleAlreadyExistsException {
+    public void create(RoleDTO roleDTO) throws RoleAlreadyExistsException {
         boolean roleExists = roleDAO.existsByName(roleDTO.getName());
 
         if(Boolean.TRUE.equals(roleExists)) throw new RoleAlreadyExistsException(roleDTO.getName());
 
         Role role = new Role();
         role = roleMapper.mapToEntity(roleDTO, role);
-        role = roleDAO.save(role);
-
-        return roleMapper.mapFromEntity(role);
+        roleDAO.save(role);
     }
 
     @Override
-    public RoleDTO update(Long roleId, RoleDTO roleDTO) throws RoleAlreadyExistsException, RoleNotFoundException {
-        Role role  = this.findRoleByName(roleDTO.getName());
+    public void update(Long roleId, RoleDTO roleDTO) throws RoleAlreadyExistsException, RoleNotFoundException {
+        Role role  = this.findByName(roleDTO.getName());
 
         if(!role.getId().equals(roleId)) throw new RoleAlreadyExistsException(roleDTO.getName());
 
         role = roleDAO.findById(roleId).orElseThrow(RoleNotFoundException::new);
         role = roleMapper.mapToEntity(roleDTO, role);
         role.setUpdatedAt(LocalDateTime.now());
-        role = roleDAO.save(role);
-
-        return roleMapper.mapFromEntity(role);
+        roleDAO.save(role);
     }
 
     @Override

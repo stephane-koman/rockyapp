@@ -10,10 +10,10 @@ import com.rockyapp.rockyappbackend.roles.exception.RoleNotFoundException;
 import org.springframework.data.domain.Pageable;
 
 public interface RoleService {
-    ResultPagine<SimpleRoleDTO> searchRoles(final DefaultCriteriaDTO criteriaDTO, final Pageable pageable);
-    Role findRoleByName(final String name) throws RoleNotFoundException;
-    RoleDTO findRoleById(final Long id) throws RoleNotFoundException;
-    RoleDTO create(RoleDTO role) throws RoleAlreadyExistsException;
-    RoleDTO update(Long roleId, RoleDTO role) throws RoleAlreadyExistsException, RoleNotFoundException;
+    ResultPagine<SimpleRoleDTO> search(final DefaultCriteriaDTO criteriaDTO, final Pageable pageable);
+    Role findByName(final String name) throws RoleNotFoundException;
+    RoleDTO findById(final Long id) throws RoleNotFoundException;
+    void create(RoleDTO role) throws RoleAlreadyExistsException;
+    void update(Long roleId, RoleDTO role) throws RoleAlreadyExistsException, RoleNotFoundException;
     void delete(Long roleId) throws RoleNotFoundException;
 }

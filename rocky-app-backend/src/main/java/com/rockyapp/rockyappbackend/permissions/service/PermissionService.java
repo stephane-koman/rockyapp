@@ -10,10 +10,10 @@ import com.rockyapp.rockyappbackend.permissions.exception.PermissionNotFoundExce
 import org.springframework.data.domain.Pageable;
 
 public interface PermissionService {
-    ResultPagine<SimplePermissionDTO> searchPermissions(final DefaultCriteriaDTO criteriaDTO, final Pageable pageable);
-    Permission findPermissionByName(final String name) throws PermissionNotFoundException;
-    PermissionDTO findPermissionById(final Long id) throws PermissionNotFoundException;
-    PermissionDTO create(PermissionDTO permissionDTO) throws PermissionAlreadyExistsException;
-    PermissionDTO update(Long permissionId, PermissionDTO permissionDTO) throws PermissionAlreadyExistsException, PermissionNotFoundException;
+    ResultPagine<SimplePermissionDTO> search(final DefaultCriteriaDTO criteriaDTO, final Pageable pageable);
+    Permission findByName(final String name) throws PermissionNotFoundException;
+    PermissionDTO findById(final Long id) throws PermissionNotFoundException;
+    void create(PermissionDTO permissionDTO) throws PermissionAlreadyExistsException;
+    void update(Long permissionId, PermissionDTO permissionDTO) throws PermissionAlreadyExistsException, PermissionNotFoundException;
     void delete(Long permissionId) throws PermissionNotFoundException;
 }

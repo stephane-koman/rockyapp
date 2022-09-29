@@ -9,7 +9,9 @@ import com.rockyapp.rockyappbackend.permissions.exception.PermissionNotFoundExce
 import com.rockyapp.rockyappbackend.permissions.service.PermissionService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,32 +23,37 @@ public class PermissionController {
 
     @GetMapping("/search")
     @PostAuthorize("hasAnyAuthority('READ_PERMISSION', 'CREATE_PERMISSION', 'UPDATE_PERMISSION', 'DELETE_PERMISSION')")
-    public ResultPagine<SimplePermissionDTO> searchPermissions(@RequestBody(required = false) DefaultCriteriaDTO criteriaDTO,
+    public ResponseEntity<ResultPagine<SimplePermissionDTO>> search(@RequestBody(required = false) DefaultCriteriaDTO criteriaDTO,
                                                                Pageable pageable){
-        return permissionService.searchPermissions(criteriaDTO, pageable);
+        ResultPagine<SimplePermissionDTO> resultPagine = permissionService.search(criteriaDTO, pageable);
+        return ResponseEntity.ok(resultPagine);
     }
 
     @GetMapping("/{id}")
     @PostAuthorize("hasAnyAuthority('READ_PERMISSION', 'CREATE_PERMISSION', 'UPDATE_PERMISSION', 'DELETE_PERMISSION')")
-    public PermissionDTO findPermissionById(@PathVariable(name = "id") Long id) throws PermissionNotFoundException {
-        return permissionService.findPermissionById(id);
+    public ResponseEntity<PermissionDTO> findById(@PathVariable(name = "id") Long id) throws PermissionNotFoundException {
+        PermissionDTO permissionDTO = permissionService.findById(id);
+        return ResponseEntity.ok(permissionDTO);
     }
 
     @PostMapping
     @PostAuthorize("hasAnyAuthority('CREATE_PERMISSION', 'UPDATE_PERMISSION', 'DELETE_PERMISSION')")
-    public PermissionDTO createPermission(@RequestBody PermissionDTO permissionDTO) throws PermissionAlreadyExistsException {
-        return permissionService.create(permissionDTO);
+    public ResponseEntity<Void> create(@RequestBody @Validated PermissionDTO permissionDTO) throws PermissionAlreadyExistsException {
+        permissionService.create(permissionDTO);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
     @PostAuthorize("hasAnyAuthority('UPDATE_PERMISSION', 'DELETE_PERMISSION')")
-    public PermissionDTO updatePermission(@PathVariable(name = "id") Long id, @RequestBody PermissionDTO permissionDTO) throws PermissionNotFoundException, PermissionAlreadyExistsException {
-        return permissionService.update(id, permissionDTO);
+    public ResponseEntity<Void> update(@PathVariable(name = "id") Long id, @RequestBody PermissionDTO permissionDTO) throws PermissionNotFoundException, PermissionAlreadyExistsException {
+        permissionService.update(id, permissionDTO);
+        return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @PostAuthorize("hasAuthority('DELETE_PERMISSION')")
-    public void deletePermission(@RequestParam(name = "id") Long id) throws PermissionNotFoundException {
+    public ResponseEntity<Void> delete(@PathVariable(name = "id") Long id) throws PermissionNotFoundException {
         permissionService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }

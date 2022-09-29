@@ -6,5 +6,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface PermissionDAOCustom {
-    Page<Permission> searchPermissions(DefaultCriteriaDTO criteriaDTO, Pageable pageable);
+    Page<Permission> search(DefaultCriteriaDTO criteriaDTO, Pageable pageable);
 }

@@ -1,4 +1,4 @@
-package com.rockyapp.rockyappbackend.roles.dao.Impl;
+package com.rockyapp.rockyappbackend.roles.dao.impl;
 
 import com.rockyapp.rockyappbackend.common.dto.DefaultCriteriaDTO;
 import com.rockyapp.rockyappbackend.roles.dao.RoleDAOCustom;

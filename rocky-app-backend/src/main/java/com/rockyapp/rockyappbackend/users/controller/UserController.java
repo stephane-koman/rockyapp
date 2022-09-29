@@ -9,6 +9,7 @@ import com.rockyapp.rockyappbackend.users.exception.*;
 import com.rockyapp.rockyappbackend.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,32 +22,37 @@ public class UserController {
 
     @GetMapping("/search")
     @PostAuthorize("hasAnyAuthority('READ_USER', 'CREATE_USER', 'UPDATE_USER', 'DELETE_USER')")
-    public ResultPagine<SimpleUserDTO> searchUsers(@RequestBody(required = false) UserSearchCriteriaDTO criteriaDTO,
-                                                   Pageable pageable){
-        return userService.searchUsers(criteriaDTO, pageable);
+    public ResponseEntity<ResultPagine<SimpleUserDTO>> search(@RequestBody(required = false) UserSearchCriteriaDTO criteriaDTO,
+                                      Pageable pageable){
+        ResultPagine<SimpleUserDTO> resultPagine = userService.search(criteriaDTO, pageable);
+        return ResponseEntity.ok(resultPagine);
     }
 
     @GetMapping("/{id}")
     @PostAuthorize("hasAnyAuthority('READ_USER', 'CREATE_USER', 'UPDATE_USER', 'DELETE_USER')")
-    public UserDTO findUserById(@PathVariable(name = "id") Long id) throws UserNotFoundException {
-        return userService.findUserById(id);
+    public ResponseEntity<UserDTO> findById(@PathVariable(name = "id") Long id) throws UserNotFoundException {
+        UserDTO userDTO = userService.findById(id);
+        return ResponseEntity.ok(userDTO);
     }
 
     @PostMapping
     @PostAuthorize("hasAnyAuthority('CREATE_USER', 'UPDATE_USER', 'DELETE_USER')")
-    public UserDTO createUser(@RequestBody UserCreaDTO userDTO) throws UsernameAlreadyExistsException, PasswordNotMatchException, EmailAlreadyExistsException, PasswordEmptyException {
-        return userService.create(userDTO);
+    public ResponseEntity<Void> create(@RequestBody UserCreaDTO userDTO) throws UsernameAlreadyExistsException, PasswordNotMatchException, EmailAlreadyExistsException, PasswordEmptyException {
+        userService.create(userDTO);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
     @PostAuthorize("hasAnyAuthority('UPDATE_USER', 'DELETE_USER')")
-    public UserDTO updateUser(@PathVariable(name = "id") Long id, @RequestBody UserCreaDTO userDTO) throws UserNotFoundException, UsernameAlreadyExistsException, PasswordNotMatchException, EmailAlreadyExistsException, PasswordEmptyException {
-        return userService.update(id, userDTO);
+    public ResponseEntity<Void> update(@PathVariable(name = "id") Long id, @RequestBody UserCreaDTO userDTO) throws UserNotFoundException, UsernameAlreadyExistsException, PasswordNotMatchException, EmailAlreadyExistsException, PasswordEmptyException {
+        userService.update(id, userDTO);
+        return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @PostAuthorize("hasAuthority('DELETE_USER')")
-    public void deleteUser(@RequestParam(name = "id") Long id) throws UserNotFoundException {
+    public ResponseEntity<Void> delete(@PathVariable(name = "id") Long id) throws UserNotFoundException {
         userService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }

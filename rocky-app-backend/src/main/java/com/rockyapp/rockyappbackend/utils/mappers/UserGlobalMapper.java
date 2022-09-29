@@ -36,7 +36,7 @@ public class UserGlobalMapper {
             roles.forEach(r -> {
                 Role role = null;
                 try {
-                    role = roleService.findRoleByName(r);
+                    role = roleService.findByName(r);
                 } catch (RoleNotFoundException e) {
                     throw new RuntimeException(e);
                 }
@@ -53,7 +53,7 @@ public class UserGlobalMapper {
             permissions.forEach(p -> {
                 Permission permission = null;
                 try {
-                    permission = permissionService.findPermissionByName(p);
+                    permission = permissionService.findByName(p);
                 } catch (PermissionNotFoundException e) {
                     throw new RuntimeException(e);
                 }

@@ -1,4 +1,4 @@
-package com.rockyapp.rockyappbackend.users.dao.Impl;
+package com.rockyapp.rockyappbackend.users.dao.impl;
 
 import com.rockyapp.rockyappbackend.users.dao.UserDAOCustom;
 import com.rockyapp.rockyappbackend.users.dto.UserSearchCriteriaDTO;

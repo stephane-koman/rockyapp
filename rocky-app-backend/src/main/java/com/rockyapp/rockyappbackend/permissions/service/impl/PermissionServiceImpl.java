@@ -29,13 +29,13 @@ public class PermissionServiceImpl implements PermissionService {
     private SimplePermissionMapper simplePermissionMapper;
 
     @Override
-    public ResultPagine<SimplePermissionDTO> searchPermissions(DefaultCriteriaDTO criteriaDTO, Pageable pageable) {
-        Page<Permission> permissionPage = permissionDAO.searchPermissions(criteriaDTO, pageable);
+    public ResultPagine<SimplePermissionDTO> search(DefaultCriteriaDTO criteriaDTO, Pageable pageable) {
+        Page<Permission> permissionPage = permissionDAO.search(criteriaDTO, pageable);
         return simplePermissionMapper.mapFromEntity(permissionPage);
     }
 
     @Override
-    public Permission findPermissionByName(String name) throws PermissionNotFoundException {
+    public Permission findByName(String name) throws PermissionNotFoundException {
         Permission permission = permissionDAO.findPermissionByNameAndIsNotDelete(name);
 
         if(permission == null) throw new PermissionNotFoundException();
@@ -44,7 +44,7 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public PermissionDTO findPermissionById(Long id) throws PermissionNotFoundException {
+    public PermissionDTO findById(Long id) throws PermissionNotFoundException {
         Permission permission = permissionDAO.findPermissionByIdAndIsNotDelete(id);
 
         if(permission == null) throw new PermissionNotFoundException();
@@ -53,29 +53,25 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public PermissionDTO create(PermissionDTO permissionDTO) throws PermissionAlreadyExistsException {
+    public void create(PermissionDTO permissionDTO) throws PermissionAlreadyExistsException {
         boolean permissionExists = permissionDAO.existsByName(permissionDTO.getName());
 
         if(Boolean.TRUE.equals(permissionExists)) throw new PermissionAlreadyExistsException(permissionDTO.getName());
 
         Permission permission = new Permission();
         permission = permissionMapper.mapToEntity(permissionDTO, permission);
-        permission = permissionDAO.save(permission);
-
-        return permissionMapper.mapFromEntity(permission);
+        permissionDAO.save(permission);
     }
 
     @Override
-    public PermissionDTO update(Long permissionId, PermissionDTO permissionDTO) throws PermissionAlreadyExistsException, PermissionNotFoundException {
-        Permission permission  = this.findPermissionByName(permissionDTO.getName());
+    public void update(Long permissionId, PermissionDTO permissionDTO) throws PermissionAlreadyExistsException, PermissionNotFoundException {
+        Permission permission  = this.findByName(permissionDTO.getName());
         if(!permission.getId().equals(permissionId)) throw new PermissionAlreadyExistsException(permissionDTO.getName());
 
         permission = permissionDAO.findById(permissionId).orElseThrow(PermissionNotFoundException::new);
         permission = permissionMapper.mapToEntity(permissionDTO, permission);
         permission.setUpdatedAt(LocalDateTime.now());
-        permission = permissionDAO.save(permission);
-
-        return permissionMapper.mapFromEntity(permission);
+        permissionDAO.save(permission);
     }
 
     @Override

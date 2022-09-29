@@ -12,18 +12,8 @@ public interface PermissionDAO extends PagingAndSortingRepository<Permission, Lo
     Permission findPermissionByNameAndIsNotDelete(String name);
 
     @Query("SELECT p FROM Permission p " +
-            "WHERE (LOWER(p.name) = LOWER(:name)) " +
-            "AND p.active = 1 AND p.delete = 0")
-    Permission findPermissionByNameAndIsActiveAndIsNotDelete(String name);
-
-    @Query("SELECT p FROM Permission p " +
             "WHERE p.id = :id AND p.delete = 0")
     Permission findPermissionByIdAndIsNotDelete(@Param("id") Long id);
-
-    @Query("SELECT p FROM Permission p " +
-            "WHERE p.id = :id " +
-            "AND p.active = 1 AND p.delete = 0")
-    Permission findPermissionByIdAndIsActiveAndIsNotDelete(@Param("id") Long id);
 
     boolean existsByName(String name);
 }

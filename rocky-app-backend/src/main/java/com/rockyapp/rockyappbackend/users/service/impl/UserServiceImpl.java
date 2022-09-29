@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     private SimpleUserMapper simpleUserMapper;
 
     @Override
-    public User findUserByUsernameOrEmail(String name) throws UserNotFoundException {
+    public User findByUsernameOrEmail(String name) throws UserNotFoundException {
         User user = userDAO.findUserByUsernameOrEmailAndIsActiveAndIsNotDelete(name);
 
         if(user == null) throw new UserNotFoundException();
@@ -40,18 +40,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findUserById(Long id) throws UserNotFoundException {
+    public UserDTO findById(Long id) throws UserNotFoundException {
         return null;
     }
 
     @Override
-    public ResultPagine<SimpleUserDTO> searchUsers(UserSearchCriteriaDTO criteriaDTO, Pageable pageable) {
+    public ResultPagine<SimpleUserDTO> search(UserSearchCriteriaDTO criteriaDTO, Pageable pageable) {
         Page<User> userPage = userDAO.searchUsers(criteriaDTO, pageable);
         return simpleUserMapper.mapFromEntity(userPage);
     }
 
     @Override
-    public UserDTO create(UserCreaDTO userCreaDTO) throws PasswordNotMatchException, PasswordEmptyException, UsernameAlreadyExistsException, EmailAlreadyExistsException {
+    public void create(UserCreaDTO userCreaDTO) throws PasswordNotMatchException, PasswordEmptyException, UsernameAlreadyExistsException, EmailAlreadyExistsException {
         boolean usernameExists = userDAO.existsByUsernameOrEmail(userCreaDTO.getUsername());
         boolean emailExists = userDAO.existsByUsernameOrEmail(userCreaDTO.getEmail());
 
@@ -59,23 +59,20 @@ public class UserServiceImpl implements UserService {
         if(Boolean.TRUE.equals(emailExists)) throw new EmailAlreadyExistsException(userCreaDTO.getEmail());
 
         User user = new User();
-        user = userDAO.save(userCreaMapper.mapToEntity(userCreaDTO, user));
-        return userMapper.mapFromEntity(user);
+        userDAO.save(userCreaMapper.mapToEntity(userCreaDTO, user));
     }
 
     @Override
-    public UserDTO update(Long userId, UserCreaDTO userCreaDTO) throws PasswordNotMatchException, PasswordEmptyException, UsernameAlreadyExistsException, EmailAlreadyExistsException, UserNotFoundException {
-        User userName = this.findUserByUsernameOrEmail(userCreaDTO.getUsername());
-        User userEmail = this.findUserByUsernameOrEmail(userCreaDTO.getEmail());
+    public void update(Long userId, UserCreaDTO userCreaDTO) throws PasswordNotMatchException, PasswordEmptyException, UsernameAlreadyExistsException, EmailAlreadyExistsException, UserNotFoundException {
+        User userName = this.findByUsernameOrEmail(userCreaDTO.getUsername());
+        User userEmail = this.findByUsernameOrEmail(userCreaDTO.getEmail());
 
         if(!userName.getId().equals(userId)) throw new UsernameAlreadyExistsException(userCreaDTO.getUsername());
         if(!userEmail.getId().equals(userId)) throw new EmailAlreadyExistsException(userCreaDTO.getUsername());
 
         User user = userDAO.findById(userId).orElseThrow(UserNotFoundException::new);
         user = userCreaMapper.mapToEntity(userCreaDTO, user);
-        user = userDAO.save(user);
-
-        return userMapper.mapFromEntity(user);
+        userDAO.save(user);
     }
 
     @Override
