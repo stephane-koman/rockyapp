@@ -31,6 +31,12 @@ const _nav = (t: TFunction) => [
       .concat(VOLUME_PERMISSIONS),
     _children: [
       {
+        name: t("menu.volumes"),
+        to: "/settings/volumes",
+        icon: <BgColorsOutlined />,
+        permissions: VOLUME_PERMISSIONS,
+      },
+      {
         name: t("menu.users"),
         to: "/settings/users",
         icon: <TeamOutlined />,
@@ -47,12 +53,6 @@ const _nav = (t: TFunction) => [
         to: "/settings/permissions",
         icon: <AppstoreAddOutlined />,
         permissions: PERMISSION_PERMISSIONS,
-      },
-      {
-        name: t("menu.volumes"),
-        to: "/settings/volumes",
-        icon: <BgColorsOutlined />,
-        permissions: VOLUME_PERMISSIONS,
       },
     ],
   },
