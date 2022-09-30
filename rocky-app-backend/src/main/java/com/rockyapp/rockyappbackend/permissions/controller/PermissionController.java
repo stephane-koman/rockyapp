@@ -54,8 +54,9 @@ public class PermissionController {
 
     @PutMapping("/status/{id}")
     @PostAuthorize("hasAnyAuthority('UPDATE_PERMISSION', 'DELETE_PERMISSION')")
-    public void updateUserStatus(@PathVariable(name = "id") Long id, @RequestBody StatusDTO statusDTO) throws PermissionNotFoundException {
+    public ResponseEntity<Void> updateStatus(@PathVariable(name = "id") Long id, @RequestBody StatusDTO statusDTO) throws PermissionNotFoundException {
         permissionService.changeStatus(id, statusDTO.isActive());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
