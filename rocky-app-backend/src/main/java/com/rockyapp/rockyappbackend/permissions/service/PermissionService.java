@@ -17,5 +17,5 @@ public interface PermissionService {
     void update(Long permissionId, PermissionDTO permissionDTO) throws PermissionAlreadyExistsException, PermissionNotFoundException;
     void delete(Long permissionId) throws PermissionNotFoundException;
 
-    void changePermissionStatus(Long id, boolean active) throws PermissionNotFoundException;
+    void changeStatus(Long id, boolean active) throws PermissionNotFoundException;
 }

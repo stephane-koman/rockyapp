@@ -1,6 +1,7 @@
 package com.rockyapp.rockyappbackend.customers.entity;
 
 import com.rockyapp.rockyappbackend.common.entity.AbstractSocleEntity;
+import com.rockyapp.rockyappbackend.invoices.entity.Invoice;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -45,4 +47,8 @@ public class Customer extends AbstractSocleEntity {
 
     @Column(name = "description")
     private String description;
+
+    @Transient
+    @OneToMany(mappedBy = "customer")
+    private Set<Invoice> invoices;
 }

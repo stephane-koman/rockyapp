@@ -27,7 +27,7 @@ public class UserDAOCustomImpl implements UserDAOCustom {
     private EntityManager entityManager;
 
     @Override
-    public Page<User> searchUsers(UserSearchCriteriaDTO criteriaDTO, Pageable pageable) {
+    public Page<User> search(UserSearchCriteriaDTO criteriaDTO, Pageable pageable) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> cq = cb.createQuery(User.class);
         Root<User> user = cq.from(User.class);

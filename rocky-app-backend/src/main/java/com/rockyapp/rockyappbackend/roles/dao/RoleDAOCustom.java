@@ -6,5 +6,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface RoleDAOCustom {
-    Page<Role> searchRoles(DefaultCriteriaDTO criteriaDTO, Pageable pageable);
+    Page<Role> search(DefaultCriteriaDTO criteriaDTO, Pageable pageable);
 }

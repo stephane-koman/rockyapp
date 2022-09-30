@@ -18,7 +18,7 @@ public class RoleDAOCustomImpl implements RoleDAOCustom {
     private EntityManager entityManager;
 
     @Override
-    public Page<Role> searchRoles(DefaultCriteriaDTO criteriaDTO, Pageable pageable) {
+    public Page<Role> search(DefaultCriteriaDTO criteriaDTO, Pageable pageable) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Role> cq = cb.createQuery(Role.class);
         Root<Role> roleRoot = cq.from(Role.class);

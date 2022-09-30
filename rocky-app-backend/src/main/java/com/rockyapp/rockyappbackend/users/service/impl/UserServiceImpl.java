@@ -40,23 +40,28 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    @Override
-    public UserDTO findUserById(Long id) throws UserNotFoundException {
+    private User findUserById(Long id) throws UserNotFoundException {
         User user = userDAO.findUserByIdAndIsNotDelete(id);
 
         if(user == null) throw new UserNotFoundException();
 
+        return user;
+    }
+
+    @Override
+    public UserDTO findById(Long id) throws UserNotFoundException {
+        User user = this.findUserById(id);
         return userMapper.mapFromEntity(user);
     }
 
     @Override
     public ResultPagine<SimpleUserDTO> search(UserSearchCriteriaDTO criteriaDTO, Pageable pageable) {
-        Page<User> userPage = userDAO.searchUsers(criteriaDTO, pageable);
+        Page<User> userPage = userDAO.search(criteriaDTO, pageable);
         return simpleUserMapper.mapFromEntity(userPage);
     }
 
     @Override
-    public UserDTO create(UserCreaDTO userCreaDTO) throws PasswordNotMatchException, PasswordEmptyException, UsernameAlreadyExistsException, EmailAlreadyExistsException {
+    public void create(UserCreaDTO userCreaDTO) throws PasswordNotMatchException, PasswordEmptyException, UsernameAlreadyExistsException, EmailAlreadyExistsException {
         User usernameExists = userDAO.findUserByUsernameOrEmailAndIsActiveAndIsNotDelete(userCreaDTO.getUsername());
         User emailExists = userDAO.findUserByUsernameOrEmailAndIsActiveAndIsNotDelete(userCreaDTO.getEmail());
 
@@ -68,24 +73,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(Long userId, UserCreaDTO userCreaDTO) throws PasswordNotMatchException, PasswordEmptyException, UsernameAlreadyExistsException, EmailAlreadyExistsException, UserNotFoundException {
-        User userName = this.findByUsernameOrEmail(userCreaDTO.getUsername());
-        User userEmail = this.findByUsernameOrEmail(userCreaDTO.getEmail());
+    public void update(Long userId, UserUpdateDTO userUpdateDTO) throws PasswordNotMatchException, PasswordEmptyException, UsernameAlreadyExistsException, EmailAlreadyExistsException, UserNotFoundException {
+        User userName = this.findByUsernameOrEmail(userUpdateDTO.getUsername());
+        User userEmail = this.findByUsernameOrEmail(userUpdateDTO.getEmail());
 
         if(userName != null && !userName.getId().equals(userId)) throw new UsernameAlreadyExistsException(userUpdateDTO.getUsername());
         if(userEmail  != null && !userEmail.getId().equals(userId)) throw new EmailAlreadyExistsException(userUpdateDTO.getUsername());
 
-        User user = userDAO.findById(userId).orElseThrow(UserNotFoundException::new);
+        User user = this.findUserById(userId);
         user = userUpdateMapper.mapToEntity(userUpdateDTO, user);
         user.setUpdatedAt(LocalDateTime.now());
         user = userDAO.save(user);
 
-        return userMapper.mapFromEntity(user);
+        userMapper.mapFromEntity(user);
     }
 
     @Override
-    public UserDTO initPassword(Long userId, PasswordDTO passwordDTO) throws PasswordNotMatchException, PasswordEmptyException, UserNotFoundException {
-        User user = userDAO.findById(userId).orElseThrow(UserNotFoundException::new);
+    public void initPassword(Long userId, PasswordDTO passwordDTO) throws PasswordNotMatchException, PasswordEmptyException, UserNotFoundException {
+        User user = this.findUserById(userId);
 
         if(passwordDTO.getPassword() == null || passwordDTO.getPasswordConfirm() == null)
             throw new PasswordEmptyException();
@@ -96,8 +101,7 @@ public class UserServiceImpl implements UserService {
         userGlobalMapper.encryptPassword(passwordDTO.getPassword(), user);
 
         user.setUpdatedAt(LocalDateTime.now());
-        user = userDAO.save(user);
-        return userMapper.mapFromEntity(user);
+        userDAO.save(user);
     }
 
     @Override
@@ -112,7 +116,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeUserStatus(Long userId, boolean status) throws UserNotFoundException {
-        User user = userDAO.findById(userId).orElseThrow(UserNotFoundException::new);
+        User user = this.findUserById(userId);
         user.setActive(Boolean.TRUE.equals(status) ? 1 : 0);
         user.setUpdatedAt(LocalDateTime.now());
         userDAO.save(user);

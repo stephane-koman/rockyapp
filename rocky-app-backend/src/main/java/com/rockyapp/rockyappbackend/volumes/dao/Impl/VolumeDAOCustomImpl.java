@@ -29,7 +29,7 @@ public class VolumeDAOCustomImpl implements VolumeDAOCustom {
     private EntityManager entityManager;
 
     @Override
-    public Page<Volume> searchVolumes(VolumeSearchCriteriaDTO criteriaDTO, Pageable pageable) {
+    public Page<Volume> search(VolumeSearchCriteriaDTO criteriaDTO, Pageable pageable) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Volume> cq = cb.createQuery(Volume.class);
         Root<Volume> volumeRoot = cq.from(Volume.class);

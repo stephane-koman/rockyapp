@@ -7,9 +7,9 @@ import com.rockyapp.rockyappbackend.customers.dto.CustomerSearchCriteriaDTO;
 import com.rockyapp.rockyappbackend.customers.exception.CustomerAlreadyExistsException;
 import com.rockyapp.rockyappbackend.customers.exception.CustomerNotFoundException;
 import com.rockyapp.rockyappbackend.customers.service.CustomerService;
-import com.rockyapp.rockyappbackend.permissions.exception.PermissionNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,38 +22,44 @@ public class CustomerController {
 
     @PostMapping("/search")
     @PostAuthorize("hasAnyAuthority('READ_CUSTOMER', 'CREATE_CUSTOMER', 'UPDATE_CUSTOMER', 'DELETE_CUSTOMER')")
-    public ResultPagine<CustomerDTO> searchCustomers(@RequestBody(required = false) CustomerSearchCriteriaDTO criteriaDTO,
-                                                     Pageable pageable){
-        return customerService.searchCustomers(criteriaDTO, pageable);
+    public ResponseEntity<ResultPagine<CustomerDTO>> search(@RequestBody(required = false) CustomerSearchCriteriaDTO criteriaDTO,
+                                 Pageable pageable){
+        ResultPagine<CustomerDTO> resultPagine = customerService.search(criteriaDTO, pageable);
+        return ResponseEntity.ok(resultPagine);
     }
 
     @GetMapping("/{id}")
     @PostAuthorize("hasAnyAuthority('READ_CUSTOMER', 'CREATE_CUSTOMER', 'UPDATE_CUSTOMER', 'DELETE_CUSTOMER')")
-    public CustomerDTO findCustomerById(@PathVariable(name = "id") String id) throws CustomerNotFoundException {
-        return customerService.findCustomerById(id);
+    public ResponseEntity<CustomerDTO> findById(@PathVariable(name = "id") String id) throws CustomerNotFoundException {
+        CustomerDTO customerDTO = customerService.findById(id);
+        return ResponseEntity.ok(customerDTO);
     }
 
     @PostMapping
     @PostAuthorize("hasAnyAuthority('CREATE_CUSTOMER', 'UPDATE_CUSTOMER', 'DELETE_CUSTOMER')")
-    public CustomerDTO createCustomer(@RequestBody CustomerDTO customerDTO) throws CustomerAlreadyExistsException {
-        return customerService.create(customerDTO);
+    public ResponseEntity<Void> create(@RequestBody CustomerDTO customerDTO) throws CustomerAlreadyExistsException {
+        customerService.create(customerDTO);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
     @PostAuthorize("hasAnyAuthority('UPDATE_CUSTOMER', 'DELETE_CUSTOMER')")
-    public CustomerDTO updateCustomer(@PathVariable(name = "id") String id, @RequestBody CustomerDTO customerDTO) throws CustomerNotFoundException, CustomerAlreadyExistsException {
-        return customerService.update(id, customerDTO);
+    public ResponseEntity<Void> update(@PathVariable(name = "id") String id, @RequestBody CustomerDTO customerDTO) throws CustomerNotFoundException, CustomerAlreadyExistsException {
+        customerService.update(id, customerDTO);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/status/{id}")
     @PostAuthorize("hasAnyAuthority('UPDATE_CUSTOMER', 'DELETE_CUSTOMER')")
-    public void updateUserStatus(@PathVariable(name = "id") String id, @RequestBody StatusDTO statusDTO) throws CustomerNotFoundException {
-        customerService.changeCustomerStatus(id, statusDTO.isActive());
+    public ResponseEntity<Void> updateStatus(@PathVariable(name = "id") String id, @RequestBody StatusDTO statusDTO) throws CustomerNotFoundException {
+        customerService.changeStatus(id, statusDTO.isActive());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     @PostAuthorize("hasAuthority('DELETE_CUSTOMER')")
-    public void deleteCustomer(@PathVariable(name = "id") String id) throws CustomerNotFoundException {
+    public ResponseEntity<Void> delete(@PathVariable(name = "id") String id) throws CustomerNotFoundException {
         customerService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }

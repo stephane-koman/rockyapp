@@ -6,5 +6,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface VolumeDAOCustom {
-    Page<Volume> searchVolumes(VolumeSearchCriteriaDTO criteriaDTO, Pageable pageable);
+    Page<Volume> search(VolumeSearchCriteriaDTO criteriaDTO, Pageable pageable);
 }

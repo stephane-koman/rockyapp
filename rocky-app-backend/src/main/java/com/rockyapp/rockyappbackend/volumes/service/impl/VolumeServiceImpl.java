@@ -26,44 +26,45 @@ public class VolumeServiceImpl implements VolumeService {
     private VolumeMapper  volumeMapper;
 
     @Override
-    public ResultPagine<VolumeDTO> searchVolumes(VolumeSearchCriteriaDTO criteriaDTO, Pageable pageable) {
-        Page<Volume> volumePage = volumeDAO.searchVolumes(criteriaDTO, pageable);
+    public ResultPagine<VolumeDTO> search(VolumeSearchCriteriaDTO criteriaDTO, Pageable pageable) {
+        Page<Volume> volumePage = volumeDAO.search(criteriaDTO, pageable);
         return volumeMapper.mapFromEntity(volumePage);
     }
 
-    @Override
-    public VolumeDTO findVolumeById(Long id) throws VolumeNotFoundException {
+    private Volume findVolumeById(Long id) throws VolumeNotFoundException {
         Volume volume = volumeDAO.findVolumeByIdAndIsNotDelete(id);
 
         if(volume == null) throw new VolumeNotFoundException();
 
+        return volume;
+    }
+
+    @Override
+    public VolumeDTO findById(Long id) throws VolumeNotFoundException {
+        Volume volume = this.findVolumeById(id);
         return volumeMapper.mapFromEntity(volume);
     }
 
     @Override
-    public VolumeDTO create(VolumeDTO volumeDTO) throws VolumeAlreadyExistsException {
+    public void create(VolumeDTO volumeDTO) throws VolumeAlreadyExistsException {
         Volume volumeExists = volumeDAO.findVolumeByQuantityAndMesureAndIsNotDelete(volumeDTO.getQuantity(), volumeDTO.getMesure().name());
 
         if(volumeExists != null) throw new VolumeAlreadyExistsException(volumeDTO.getQuantity().toString().concat(" " + volumeDTO.getMesure()));
 
         Volume volume = new Volume();
         volume = volumeMapper.mapToEntity(volumeDTO, volume);
-        volume = volumeDAO.save(volume);
-
-        return volumeMapper.mapFromEntity(volume);
+        volumeDAO.save(volume);
     }
 
     @Override
-    public VolumeDTO update(Long volumeId, VolumeDTO volumeDTO) throws VolumeAlreadyExistsException, VolumeNotFoundException {
+    public void update(Long volumeId, VolumeDTO volumeDTO) throws VolumeAlreadyExistsException, VolumeNotFoundException {
         Volume volume  = volumeDAO.findVolumeByQuantityAndMesureAndIsNotDelete(volumeDTO.getQuantity(), volumeDTO.getMesure().name());
         if(volume != null && !volume.getId().equals(volumeId)) throw new VolumeAlreadyExistsException(volumeDTO.getQuantity().toString().concat(" " + volumeDTO.getMesure()));
 
-        volume = volumeDAO.findById(volumeId).orElseThrow(VolumeNotFoundException::new);
+        volume = this.findVolumeById(volumeId);
         volume = volumeMapper.mapToEntity(volumeDTO, volume);
         volume.setUpdatedAt(LocalDateTime.now());
-        volume = volumeDAO.save(volume);
-
-        return volumeMapper.mapFromEntity(volume);
+        volumeDAO.save(volume);
     }
 
     @Override
@@ -77,7 +78,7 @@ public class VolumeServiceImpl implements VolumeService {
     }
 
     @Override
-    public void changeVolumeStatus(Long id, boolean active) throws VolumeNotFoundException {
+    public void changeStatus(Long id, boolean active) throws VolumeNotFoundException {
         Volume volume = volumeDAO.findById(id).orElseThrow(VolumeNotFoundException::new);
         volume.setActive(Boolean.TRUE.equals(active) ? 1 : 0);
         volume.setUpdatedAt(LocalDateTime.now());

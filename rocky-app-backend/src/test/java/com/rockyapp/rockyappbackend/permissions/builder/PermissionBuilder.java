@@ -1,16 +1,14 @@
-package com.rockyapp.rockyappbackend.permissions.controller;
+package com.rockyapp.rockyappbackend.permissions.builder;
 
 import com.rockyapp.rockyappbackend.permissions.dto.PermissionDTO;
 import com.rockyapp.rockyappbackend.permissions.entity.Permission;
-
-import java.util.Collections;
-import java.util.List;
 
 public class PermissionBuilder {
 
     public static PermissionDTO getDto() {
         PermissionDTO dto = new PermissionDTO();
         dto.setId(1L);
+        dto.setName("toto");
         return dto;
     }
 

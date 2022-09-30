@@ -2,6 +2,7 @@ package com.rockyapp.rockyappbackend.permissions.controller;
 
 import com.rockyapp.rockyappbackend.common.AbstractControllerTest;
 import com.rockyapp.rockyappbackend.common.pagination.ResultPagine;
+import com.rockyapp.rockyappbackend.permissions.builder.PermissionBuilder;
 import com.rockyapp.rockyappbackend.permissions.dto.PermissionDTO;
 import com.rockyapp.rockyappbackend.permissions.dto.SimplePermissionDTO;
 import com.rockyapp.rockyappbackend.permissions.entity.Permission;
@@ -56,7 +57,7 @@ public class PermissionControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void findAllByPage() throws Exception {
+    public void searchPermissionsByPageAndCriteria_shouldReturn_resultPagineOfSimplePermissionDTO() throws Exception {
         Page<Permission> page = new PageImpl<>(Collections.singletonList(PermissionBuilder.getEntity()));
 
         SimplePermissionMapper mapper = new SimplePermissionMapper();
@@ -65,7 +66,7 @@ public class PermissionControllerTest extends AbstractControllerTest {
 
         Mockito.when(permissionService.search(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(resultPagine);
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/search")
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/search")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
@@ -77,7 +78,7 @@ public class PermissionControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void getById() throws Exception {
+    public void findPermissionById_shouldReturn_permissionDTO() throws Exception {
         Mockito.when(permissionService.findById(ArgumentMatchers.anyLong())).thenReturn(PermissionBuilder.getDto());
 
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/1"))
@@ -85,12 +86,12 @@ public class PermissionControllerTest extends AbstractControllerTest {
                 .andExpect(MockMvcResultMatchers.content()
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id", Is.is(1)));
-        Mockito.verify(permissionService, Mockito.times(1)).findById(1L);
+        Mockito.verify(permissionService, Mockito.times(1)).findById(ArgumentMatchers.anyLong());
         Mockito.verifyNoMoreInteractions(permissionService);
     }
 
     @Test
-    public void save() throws Exception {
+    public void createPermission_shouldReturn_successCode() throws Exception {
         Mockito.doNothing().when(permissionService).create(ArgumentMatchers.any(PermissionDTO.class));
 
         mockMvc.perform(
@@ -103,7 +104,7 @@ public class PermissionControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void update() throws Exception {
+    public void updatePermission_shouldReturn_successCode() throws Exception {
         Mockito.doNothing().when(permissionService).update(ArgumentMatchers.anyLong(), ArgumentMatchers.any());
 
         mockMvc.perform(
@@ -116,7 +117,7 @@ public class PermissionControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void delete() throws Exception {
+    public void deletePermission_shouldReturn_successCode() throws Exception {
         Mockito.doNothing().when(permissionService).delete(ArgumentMatchers.anyLong());
         mockMvc.perform(
                 MockMvcRequestBuilders

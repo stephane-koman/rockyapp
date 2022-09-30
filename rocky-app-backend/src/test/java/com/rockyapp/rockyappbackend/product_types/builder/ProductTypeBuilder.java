@@ -1,16 +1,14 @@
-package com.rockyapp.rockyappbackend.product_type.controller;
+package com.rockyapp.rockyappbackend.product_types.builder;
 
 import com.rockyapp.rockyappbackend.product_types.dto.ProductTypeDTO;
 import com.rockyapp.rockyappbackend.product_types.entity.ProductType;
-
-import java.util.Collections;
-import java.util.List;
 
 public class ProductTypeBuilder {
 
     public static ProductTypeDTO getDto() {
         ProductTypeDTO dto = new ProductTypeDTO();
         dto.setId(1L);
+        dto.setDescription("test");
         return dto;
     }
 

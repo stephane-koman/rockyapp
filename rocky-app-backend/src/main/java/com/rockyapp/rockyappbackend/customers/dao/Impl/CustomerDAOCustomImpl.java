@@ -28,7 +28,7 @@ public class CustomerDAOCustomImpl implements CustomerDAOCustom {
     private EntityManager entityManager;
 
     @Override
-    public Page<Customer> searchCustomers(CustomerSearchCriteriaDTO criteriaDTO, Pageable pageable) {
+    public Page<Customer> search(CustomerSearchCriteriaDTO criteriaDTO, Pageable pageable) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Customer> cq = cb.createQuery(Customer.class);
         Root<Customer> customerRoot = cq.from(Customer.class);

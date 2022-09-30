@@ -49,7 +49,7 @@ public class UserController {
 
         String username = TokenHelper.extractUsernameFromToken(authToken);
 
-        User user = userService.findUserByUsernameOrEmail(username);
+        User user = userService.findByUsernameOrEmail(username);
         return userMapper.mapFromEntity(user);
     }
 
@@ -62,21 +62,22 @@ public class UserController {
 
     @PutMapping("/{id}")
     @PostAuthorize("hasAnyAuthority('UPDATE_USER', 'DELETE_USER')")
-    public ResponseEntity<Void> update(@PathVariable(name = "id") Long id, @RequestBody UserCreaDTO userDTO) throws UserNotFoundException, UsernameAlreadyExistsException, PasswordNotMatchException, EmailAlreadyExistsException, PasswordEmptyException {
+    public ResponseEntity<Void> update(@PathVariable(name = "id") Long id, @RequestBody UserUpdateDTO userDTO) throws UserNotFoundException, UsernameAlreadyExistsException, PasswordNotMatchException, EmailAlreadyExistsException, PasswordEmptyException {
         userService.update(id, userDTO);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/status/{id}")
     @PostAuthorize("hasAnyAuthority('UPDATE_USER', 'DELETE_USER')")
-    public void updateUserStatus(@PathVariable(name = "id") Long id, @RequestBody StatusDTO statusDTO) throws UserNotFoundException {
+    public void updateStatus(@PathVariable(name = "id") Long id, @RequestBody StatusDTO statusDTO) throws UserNotFoundException {
         userService.changeUserStatus(id, statusDTO.isActive());
     }
 
     @PutMapping("/reset_password/{id}")
     @PostAuthorize("hasAnyAuthority('UPDATE_USER', 'DELETE_USER')")
-    public UserDTO initUserPassword(@PathVariable(name = "id") Long id, @RequestBody PasswordDTO passwordDTO) throws UserNotFoundException, PasswordNotMatchException, PasswordEmptyException {
-        return userService.initPassword(id, passwordDTO);
+    public ResponseEntity<Void> initPassword(@PathVariable(name = "id") Long id, @RequestBody PasswordDTO passwordDTO) throws UserNotFoundException, PasswordNotMatchException, PasswordEmptyException {
+        userService.initPassword(id, passwordDTO);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

@@ -15,4 +15,5 @@ public interface ProductTypeService {
     void create(ProductTypeDTO productTypeDTO) throws ProductTypeAlreadyExistsException;
     void update(Long productTypeId, ProductTypeDTO productTypeDTO) throws ProductTypeAlreadyExistsException, ProductTypeNotFoundException;
     void delete(Long productTypeId) throws ProductTypeNotFoundException;
+    void changeStatus(Long id, boolean active) throws ProductTypeNotFoundException;
 }

@@ -11,7 +11,8 @@ public interface UserService {
     User findByUsernameOrEmail(final String name) throws UserNotFoundException;
     UserDTO findById(final Long id) throws UserNotFoundException;
     void create(UserCreaDTO userCreaDTO) throws PasswordNotMatchException, PasswordEmptyException, UsernameAlreadyExistsException, EmailAlreadyExistsException;
-    void update(Long userId, UserCreaDTO userCreaDTO) throws PasswordNotMatchException, PasswordEmptyException, UsernameAlreadyExistsException, EmailAlreadyExistsException, UserNotFoundException;
+    void update(Long userId, UserUpdateDTO userUpdateDTO) throws PasswordNotMatchException, PasswordEmptyException, UsernameAlreadyExistsException, EmailAlreadyExistsException, UserNotFoundException;
+    void initPassword(Long userId, PasswordDTO passwordDTO) throws PasswordNotMatchException, PasswordEmptyException, UserNotFoundException;
     void delete(Long userId) throws UserNotFoundException;
     void changeUserStatus(Long userId, boolean status) throws UserNotFoundException;
 }

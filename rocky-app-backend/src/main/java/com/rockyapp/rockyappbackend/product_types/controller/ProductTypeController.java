@@ -22,7 +22,7 @@ public class ProductTypeController {
 
     private ProductTypeService productTypeService;
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     @PostAuthorize("hasAnyAuthority('READ_PRODUCT_TYPE', 'CREATE_PRODUCT_TYPE', 'UPDATE_PRODUCT_TYPE', 'DELETE_PRODUCT_TYPE')")
     public ResponseEntity<ResultPagine<ProductTypeDTO>> search(@RequestBody(required = false) DefaultCriteriaDTO criteriaDTO, @PageableDefault(sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable) {
         ResultPagine<ProductTypeDTO> productTypePage = productTypeService.search(criteriaDTO, pageable);

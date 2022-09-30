@@ -8,11 +8,11 @@ import com.rockyapp.rockyappbackend.customers.exception.CustomerNotFoundExceptio
 import org.springframework.data.domain.Pageable;
 
 public interface CustomerService {
-    ResultPagine<CustomerDTO> searchCustomers(final CustomerSearchCriteriaDTO criteriaDTO, final Pageable pageable);
-    CustomerDTO findCustomerById(final String id) throws CustomerNotFoundException;
-    CustomerDTO create(CustomerDTO customer) throws CustomerAlreadyExistsException;
-    CustomerDTO update(String customerId, CustomerDTO customer) throws CustomerAlreadyExistsException, CustomerNotFoundException;
+    ResultPagine<CustomerDTO> search(final CustomerSearchCriteriaDTO criteriaDTO, final Pageable pageable);
+    CustomerDTO findById(final String id) throws CustomerNotFoundException;
+    void create(CustomerDTO customer) throws CustomerAlreadyExistsException;
+    void update(String customerId, CustomerDTO customer) throws CustomerAlreadyExistsException, CustomerNotFoundException;
     void delete(String customerId) throws CustomerNotFoundException;
 
-    void changeCustomerStatus(String id, boolean active) throws CustomerNotFoundException;
+    void changeStatus(String id, boolean active) throws CustomerNotFoundException;
 }

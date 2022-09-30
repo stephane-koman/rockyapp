@@ -9,6 +9,7 @@ import com.rockyapp.rockyappbackend.volumes.exception.VolumeNotFoundException;
 import com.rockyapp.rockyappbackend.volumes.service.VolumeService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,38 +22,44 @@ public class VolumeController {
 
     @PostMapping("/search")
     @PostAuthorize("hasAnyAuthority('READ_VOLUME', 'CREATE_VOLUME', 'UPDATE_VOLUME', 'DELETE_VOLUME')")
-    public ResultPagine<VolumeDTO> searchVolumes(@RequestBody(required = false) VolumeSearchCriteriaDTO criteriaDTO,
-                                                               Pageable pageable){
-        return volumeService.searchVolumes(criteriaDTO, pageable);
+    public ResponseEntity<ResultPagine<VolumeDTO>> search(@RequestBody(required = false) VolumeSearchCriteriaDTO criteriaDTO,
+                                 Pageable pageable){
+        ResultPagine<VolumeDTO> resultPagine = volumeService.search(criteriaDTO, pageable);
+        return ResponseEntity.ok(resultPagine);
     }
 
     @GetMapping("/{id}")
     @PostAuthorize("hasAnyAuthority('READ_VOLUME', 'CREATE_VOLUME', 'UPDATE_VOLUME', 'DELETE_VOLUME')")
-    public VolumeDTO findVolumeById(@PathVariable(name = "id") Long id) throws VolumeNotFoundException {
-        return volumeService.findVolumeById(id);
+    public ResponseEntity<VolumeDTO> findById(@PathVariable(name = "id") Long id) throws VolumeNotFoundException {
+        VolumeDTO volumeDTO = volumeService.findById(id);
+        return ResponseEntity.ok(volumeDTO);
     }
 
     @PostMapping
     @PostAuthorize("hasAnyAuthority('CREATE_VOLUME', 'UPDATE_VOLUME', 'DELETE_VOLUME')")
-    public VolumeDTO createVolume(@RequestBody VolumeDTO volumeDTO) throws VolumeAlreadyExistsException {
-        return volumeService.create(volumeDTO);
+    public ResponseEntity<Void> create(@RequestBody VolumeDTO volumeDTO) throws VolumeAlreadyExistsException {
+        volumeService.create(volumeDTO);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
     @PostAuthorize("hasAnyAuthority('UPDATE_VOLUME', 'DELETE_VOLUME')")
-    public VolumeDTO updateVolume(@PathVariable(name = "id") Long id, @RequestBody VolumeDTO volumeDTO) throws VolumeNotFoundException, VolumeAlreadyExistsException {
-        return volumeService.update(id, volumeDTO);
+    public ResponseEntity<Void> update(@PathVariable(name = "id") Long id, @RequestBody VolumeDTO volumeDTO) throws VolumeNotFoundException, VolumeAlreadyExistsException {
+        volumeService.update(id, volumeDTO);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/status/{id}")
     @PostAuthorize("hasAnyAuthority('UPDATE_VOLUME', 'DELETE_VOLUME')")
-    public void updateUserStatus(@PathVariable(name = "id") Long id, @RequestBody StatusDTO statusDTO) throws VolumeNotFoundException {
-        volumeService.changeVolumeStatus(id, statusDTO.isActive());
+    public ResponseEntity<Void> updateStatus(@PathVariable(name = "id") Long id, @RequestBody StatusDTO statusDTO) throws VolumeNotFoundException {
+        volumeService.changeStatus(id, statusDTO.isActive());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     @PostAuthorize("hasAuthority('DELETE_VOLUME')")
-    public void deleteVolume(@PathVariable(name = "id") Long id) throws VolumeNotFoundException {
+    public ResponseEntity<Void> delete(@PathVariable(name = "id") Long id) throws VolumeNotFoundException {
         volumeService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }

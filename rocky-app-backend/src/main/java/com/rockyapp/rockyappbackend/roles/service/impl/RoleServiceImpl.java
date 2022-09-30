@@ -11,8 +11,6 @@ import com.rockyapp.rockyappbackend.roles.exception.RoleNotFoundException;
 import com.rockyapp.rockyappbackend.roles.mapper.RoleMapper;
 import com.rockyapp.rockyappbackend.roles.mapper.SimpleRoleMapper;
 import com.rockyapp.rockyappbackend.roles.service.RoleService;
-import com.rockyapp.rockyappbackend.users.entity.User;
-import com.rockyapp.rockyappbackend.users.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +30,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public ResultPagine<SimpleRoleDTO> search(DefaultCriteriaDTO criteriaDTO, Pageable pageable) {
-        Page<Role> rolePage = this.roleDAO.searchRoles(criteriaDTO, pageable);
+        Page<Role> rolePage = this.roleDAO.search(criteriaDTO, pageable);
 
         return this.simpleRoleMapper.mapFromEntity(rolePage);
     }
@@ -45,24 +43,21 @@ public class RoleServiceImpl implements RoleService {
 
         return role;
     }
+    private Role findRoleById(Long id) throws RoleNotFoundException {
+        Role role = roleDAO.findRoleByIdAndIsNotDelete(id);
+        if(role == null) throw new RoleNotFoundException();
+        return role;
+    }
 
     @Override
     public RoleDTO findById(Long id) throws RoleNotFoundException {
-        Role role = roleDAO.findRoleByIdAndIsNotDelete(id);
-
-        if(role == null) throw new RoleNotFoundException();
-
+        Role role = this.findRoleById(id);
         return roleMapper.mapFromEntity(role);
     }
 
     @Override
-<<<<<<< refs/remotes/origin/main
     public void create(RoleDTO roleDTO) throws RoleAlreadyExistsException {
-        boolean roleExists = roleDAO.existsByName(roleDTO.getName());
-=======
-    public RoleDTO create(RoleDTO roleDTO) throws RoleAlreadyExistsException {
         Role roleExists = roleDAO.findRoleByNameAndIsNotDelete(roleDTO.getName());
->>>>>>> Adding customer API
 
         if(roleExists != null) throw new RoleAlreadyExistsException(roleDTO.getName());
 
@@ -77,7 +72,8 @@ public class RoleServiceImpl implements RoleService {
 
         if(role != null && !role.getId().equals(roleId)) throw new RoleAlreadyExistsException(roleDTO.getName());
 
-        role = roleDAO.findById(roleId).orElseThrow(RoleNotFoundException::new);
+        role = this.findRoleById(roleId);
+
         role = roleMapper.mapToEntity(roleDTO, role);
         role.setUpdatedAt(LocalDateTime.now());
         roleDAO.save(role);
@@ -85,7 +81,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void delete(Long roleId) throws RoleNotFoundException {
-        Role role = roleDAO.findById(roleId).orElseThrow(RoleNotFoundException::new);
+        Role role = this.findRoleById(roleId);
         role.setDelete(1);
         role.setActive(0);
         role.setUpdatedAt(LocalDateTime.now());
@@ -94,8 +90,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void changeRoleStatus(Long id, boolean active) throws RoleNotFoundException {
-        Role role = roleDAO.findById(id).orElseThrow(RoleNotFoundException::new);
+    public void changeStatus(Long id, boolean active) throws RoleNotFoundException {
+        Role role = this.findRoleById(id);
         role.setActive(Boolean.TRUE.equals(active) ? 1 : 0);
         role.setUpdatedAt(LocalDateTime.now());
         roleDAO.save(role);

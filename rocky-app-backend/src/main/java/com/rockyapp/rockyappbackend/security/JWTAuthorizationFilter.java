@@ -3,8 +3,8 @@ package com.rockyapp.rockyappbackend.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.rockyapp.rockyappbackend.utils.helpers.TokenHelper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -38,20 +38,25 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             Algorithm algo = Algorithm.HMAC256(SecurityConstants.SECRET);
 
             JWTVerifier jwtVerifier = JWT.require(algo).build();
-            DecodedJWT decodedJWT = jwtVerifier.verify(jwtToken);
-            String username = decodedJWT.getSubject();
+            try {
+                DecodedJWT decodedJWT = jwtVerifier.verify(jwtToken);
+                String username = decodedJWT.getSubject();
 
-            String[] permissions = decodedJWT.getClaim("permissions").asArray(String.class);
+                String[] permissions = decodedJWT.getClaim("permissions").asArray(String.class);
 
-            Collection<GrantedAuthority> authorities = new ArrayList<>();
+                Collection<GrantedAuthority> authorities = new ArrayList<>();
 
-            for (String permission : permissions) {
-                authorities.add(new SimpleGrantedAuthority(permission));
+                for (String permission : permissions) {
+                    authorities.add(new SimpleGrantedAuthority(permission));
+                }
+
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                filterChain.doFilter(request, response);
+
+            }catch (TokenExpiredException e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             }
-
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            filterChain.doFilter(request, response);
 
         }
     }

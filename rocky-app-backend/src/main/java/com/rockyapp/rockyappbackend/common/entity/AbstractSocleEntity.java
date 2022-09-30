@@ -22,8 +22,10 @@ public abstract class AbstractSocleEntity implements SocleEntity {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 }

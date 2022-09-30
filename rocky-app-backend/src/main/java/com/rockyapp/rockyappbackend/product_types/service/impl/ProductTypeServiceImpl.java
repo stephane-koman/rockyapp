@@ -40,12 +40,17 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         return productType;
     }
 
-    @Override
-    public ProductTypeDTO findById(Long id) throws ProductTypeNotFoundException {
+    public ProductType findProductTypeById(Long id) throws ProductTypeNotFoundException {
         ProductType productType = productTypeDAO.findProductTypeByIdAndIsNotDelete(id);
 
         if(productType == null)  throw new ProductTypeNotFoundException();
 
+        return productType;
+    }
+
+    @Override
+    public ProductTypeDTO findById(Long id) throws ProductTypeNotFoundException {
+        ProductType productType = this.findProductTypeById(id);
         return productTypeMapper.mapFromEntity(productType);
     }
 
@@ -66,9 +71,8 @@ public class ProductTypeServiceImpl implements ProductTypeService {
 
         if(productType != null && !productType.getId().equals(productTypeId)) throw new ProductTypeAlreadyExistsException(productTypeDTO.getName());
 
-        productType = productTypeDAO.findProductTypeByIdAndIsNotDelete(productTypeId);
+        productType = this.findProductTypeById(productTypeId);
 
-        if(productType == null) throw new ProductTypeNotFoundException();
         productType = productTypeMapper.mapToEntity(productTypeDTO, productType);
         productType.setUpdatedAt(LocalDateTime.now());
         productTypeDAO.save(productType);
@@ -76,12 +80,19 @@ public class ProductTypeServiceImpl implements ProductTypeService {
 
     @Override
     public void delete(Long productTypeId) throws ProductTypeNotFoundException {
-        ProductType productType = productTypeDAO.findProductTypeByIdAndIsNotDelete(productTypeId);
-        if(productType == null) throw new ProductTypeNotFoundException();
+        ProductType productType = this.findProductTypeById(productTypeId);
         productType.setDelete(1);
         productType.setActive(0);
         productType.setUpdatedAt(LocalDateTime.now());
         productType.setDeletedAt(LocalDateTime.now());
+        productTypeDAO.save(productType);
+    }
+
+    @Override
+    public void changeStatus(Long id, boolean active) throws ProductTypeNotFoundException {
+        ProductType productType = this.findProductTypeById(id);
+        productType.setActive(Boolean.TRUE.equals(active) ? 1 : 0);
+        productType.setUpdatedAt(LocalDateTime.now());
         productTypeDAO.save(productType);
     }
 }

@@ -43,17 +43,22 @@ public class PermissionServiceImpl implements PermissionService {
         return permission;
     }
 
-    @Override
-    public PermissionDTO findById(Long id) throws PermissionNotFoundException {
+    public Permission findPermissionById(Long id) throws PermissionNotFoundException {
         Permission permission = permissionDAO.findPermissionByIdAndIsNotDelete(id);
 
         if(permission == null) throw new PermissionNotFoundException();
 
+        return permission;
+    }
+
+    @Override
+    public PermissionDTO findById(Long id) throws PermissionNotFoundException {
+        Permission permission = this.findPermissionById(id);
         return permissionMapper.mapFromEntity(permission);
     }
 
     @Override
-    public PermissionDTO create(PermissionDTO permissionDTO) throws PermissionAlreadyExistsException {
+    public void create(PermissionDTO permissionDTO) throws PermissionAlreadyExistsException {
         Permission permissionExists = permissionDAO.findPermissionByNameAndIsNotDelete(permissionDTO.getName());
 
         if(permissionExists != null) throw new PermissionAlreadyExistsException(permissionDTO.getName());
@@ -68,7 +73,7 @@ public class PermissionServiceImpl implements PermissionService {
         Permission permission  = this.findByName(permissionDTO.getName());
         if(!permission.getId().equals(permissionId)) throw new PermissionAlreadyExistsException(permissionDTO.getName());
 
-        permission = permissionDAO.findById(permissionId).orElseThrow(PermissionNotFoundException::new);
+        permission = this.findPermissionById(permissionId);
         permission = permissionMapper.mapToEntity(permissionDTO, permission);
         permission.setUpdatedAt(LocalDateTime.now());
         permissionDAO.save(permission);
@@ -76,7 +81,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public void delete(Long permissionId) throws PermissionNotFoundException {
-        Permission permission = permissionDAO.findById(permissionId).orElseThrow(PermissionNotFoundException::new);
+        Permission permission = this.findPermissionById(permissionId);
         permission.setDelete(1);
         permission.setActive(0);
         permission.setUpdatedAt(LocalDateTime.now());
@@ -85,8 +90,8 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public void changePermissionStatus(Long id, boolean active) throws PermissionNotFoundException {
-        Permission permission = permissionDAO.findById(id).orElseThrow(PermissionNotFoundException::new);
+    public void changeStatus(Long id, boolean active) throws PermissionNotFoundException {
+        Permission permission = this.findPermissionById(id);
         permission.setActive(Boolean.TRUE.equals(active) ? 1 : 0);
         permission.setUpdatedAt(LocalDateTime.now());
         permissionDAO.save(permission);

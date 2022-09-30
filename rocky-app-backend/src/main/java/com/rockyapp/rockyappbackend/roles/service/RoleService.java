@@ -7,7 +7,6 @@ import com.rockyapp.rockyappbackend.roles.dto.SimpleRoleDTO;
 import com.rockyapp.rockyappbackend.roles.entity.Role;
 import com.rockyapp.rockyappbackend.roles.exception.RoleAlreadyExistsException;
 import com.rockyapp.rockyappbackend.roles.exception.RoleNotFoundException;
-import com.rockyapp.rockyappbackend.users.exception.UserNotFoundException;
 import org.springframework.data.domain.Pageable;
 
 public interface RoleService {
@@ -18,5 +17,5 @@ public interface RoleService {
     void update(Long roleId, RoleDTO role) throws RoleAlreadyExistsException, RoleNotFoundException;
     void delete(Long roleId) throws RoleNotFoundException;
 
-    void changeRoleStatus(Long id, boolean active) throws RoleNotFoundException;
+    void changeStatus(Long id, boolean active) throws RoleNotFoundException;
 }

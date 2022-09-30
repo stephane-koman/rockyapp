@@ -1,6 +1,7 @@
 package com.rockyapp.rockyappbackend.users.entity;
 
 import com.rockyapp.rockyappbackend.common.entity.AbstractSocleEntity;
+import com.rockyapp.rockyappbackend.invoices.entity.Invoice;
 import com.rockyapp.rockyappbackend.permissions.entity.Permission;
 import com.rockyapp.rockyappbackend.roles.entity.Role;
 import lombok.*;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -39,6 +41,10 @@ public class User extends AbstractSocleEntity {
 
     @Column(name = "email", length = 250, nullable = false)
     private String email;
+
+    @Transient
+    @OneToMany(mappedBy = "user")
+    private Set<Invoice> invoices;
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToMany()

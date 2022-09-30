@@ -215,6 +215,13 @@ CREATE TABLE payments
 
     invoice_id   VARCHAR(250) NOT NULL,
 
+    is_active  NUMERIC(1) DEFAULT 1,
+    is_delete  NUMERIC(1) DEFAULT 0,
+
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE,
+    deleted_at TIMESTAMP WITH TIME ZONE,
+
     CONSTRAINT pk_payments PRIMARY KEY (id)
 );
 ALTER TABLE payments

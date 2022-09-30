@@ -6,5 +6,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface UserDAOCustom {
-    Page<User> searchUsers(UserSearchCriteriaDTO criteriaDTO, Pageable pageable);
+    Page<User> search(UserSearchCriteriaDTO criteriaDTO, Pageable pageable);
 }

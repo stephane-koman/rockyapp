@@ -4,15 +4,9 @@ import com.rockyapp.rockyappbackend.common.mapper.AbstractSocleMapper;
 import com.rockyapp.rockyappbackend.common.mapper.SocleMapper;
 import com.rockyapp.rockyappbackend.customers.dto.CustomerDTO;
 import com.rockyapp.rockyappbackend.customers.entity.Customer;
-import com.rockyapp.rockyappbackend.permissions.entity.Permission;
-import com.rockyapp.rockyappbackend.roles.dto.RoleDTO;
-import com.rockyapp.rockyappbackend.roles.entity.Role;
-import com.rockyapp.rockyappbackend.utils.mappers.UserGlobalMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
-
-import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor

@@ -8,7 +8,6 @@ import com.rockyapp.rockyappbackend.permissions.dto.SimplePermissionDTO;
 import com.rockyapp.rockyappbackend.permissions.exception.PermissionAlreadyExistsException;
 import com.rockyapp.rockyappbackend.permissions.exception.PermissionNotFoundException;
 import com.rockyapp.rockyappbackend.permissions.service.PermissionService;
-import com.rockyapp.rockyappbackend.users.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +54,7 @@ public class PermissionController {
     @PutMapping("/status/{id}")
     @PostAuthorize("hasAnyAuthority('UPDATE_PERMISSION', 'DELETE_PERMISSION')")
     public void updateUserStatus(@PathVariable(name = "id") Long id, @RequestBody StatusDTO statusDTO) throws PermissionNotFoundException {
-        permissionService.changePermissionStatus(id, statusDTO.isActive());
+        permissionService.changeStatus(id, statusDTO.isActive());
     }
 
     @DeleteMapping("/{id}")
