@@ -42,9 +42,9 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
                 DecodedJWT decodedJWT = jwtVerifier.verify(jwtToken);
                 String username = decodedJWT.getSubject();
 
-                String[] permissions = decodedJWT.getClaim("permissions").asArray(String.class);
+            String[] permissions = decodedJWT.getClaim("permissions").asArray(String.class);
 
-                Collection<GrantedAuthority> authorities = new ArrayList<>();
+            Collection<GrantedAuthority> authorities = new ArrayList<>();
 
                 for (String permission : permissions) {
                     authorities.add(new SimpleGrantedAuthority(permission));
@@ -57,6 +57,10 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             }catch (TokenExpiredException e) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             }
+
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            filterChain.doFilter(request, response);
 
         }
     }

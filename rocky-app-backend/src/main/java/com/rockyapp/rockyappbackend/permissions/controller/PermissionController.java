@@ -8,6 +8,7 @@ import com.rockyapp.rockyappbackend.permissions.dto.SimplePermissionDTO;
 import com.rockyapp.rockyappbackend.permissions.exception.PermissionAlreadyExistsException;
 import com.rockyapp.rockyappbackend.permissions.exception.PermissionNotFoundException;
 import com.rockyapp.rockyappbackend.permissions.service.PermissionService;
+import com.rockyapp.rockyappbackend.users.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
