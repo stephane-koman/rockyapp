@@ -57,11 +57,6 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             }catch (TokenExpiredException e) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             }
-
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            filterChain.doFilter(request, response);
-
         }
     }
 }
