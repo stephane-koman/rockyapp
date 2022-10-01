@@ -36,7 +36,7 @@ CREATE TABLE users
     name       VARCHAR(250)             NOT NULL,
     username   VARCHAR(250)             NOT NULL,
     password   VARCHAR(250)             NOT NULL,
-    email       VARCHAR(250)             NOT NULL,
+    email      VARCHAR(250)             NOT NULL,
 
     is_active  NUMERIC(1) DEFAULT 1,
     is_delete  NUMERIC(1) DEFAULT 0,
@@ -104,7 +104,7 @@ CREATE TABLE product_types
 CREATE TABLE products
 (
     product_id      VARCHAR(250),
-    name            VARCHAR(50)              NOT NULL UNIQUE,
+    name            VARCHAR(50)              NOT NULL,
     description     TEXT,
     price           DECIMAL,
     image           BYTEA,
@@ -147,7 +147,7 @@ CREATE TABLE volumes
 (
     id          BIGSERIAL,
     quantity    BIGINT                   NOT NULL,
-    mesure      VARCHAR(4)                   NOT NULL DEFAULT 'ML',
+    mesure      VARCHAR(4)               NOT NULL DEFAULT 'ML',
     description TEXT,
 
     is_active   NUMERIC(1)                        DEFAULT 1,
@@ -207,20 +207,19 @@ ALTER TABLE invoice_items
 ALTER TABLE invoice_items
     ADD CONSTRAINT fk_invoice_items_reference_volumes FOREIGN KEY (volume_id) REFERENCES volumes (id);
 
-CREATE TYPE paymentType AS ENUM ('CASH', 'CB', 'VIREMENT');
 CREATE TABLE payments
 (
     id           BIGSERIAL,
-    payment_type paymentType  NOT NULL DEFAULT 'VIREMENT',
+    payment_type VARCHAR(10)              NOT NULL DEFAULT 'VIREMENT',
 
-    invoice_id   VARCHAR(250) NOT NULL,
+    invoice_id   VARCHAR(250)             NOT NULL,
 
-    is_active  NUMERIC(1) DEFAULT 1,
-    is_delete  NUMERIC(1) DEFAULT 0,
+    is_active    NUMERIC(1)                        DEFAULT 1,
+    is_delete    NUMERIC(1)                        DEFAULT 0,
 
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE,
-    deleted_at TIMESTAMP WITH TIME ZONE,
+    created_at   TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at   TIMESTAMP WITH TIME ZONE,
+    deleted_at   TIMESTAMP WITH TIME ZONE,
 
     CONSTRAINT pk_payments PRIMARY KEY (id)
 );

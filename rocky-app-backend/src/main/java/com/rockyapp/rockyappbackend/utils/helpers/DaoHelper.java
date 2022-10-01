@@ -12,16 +12,21 @@ import org.springframework.data.jpa.repository.query.QueryUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DaoHelper {
 
-    public static Predicate createStringPredicate(String property, Path<String> propertyPath, CriteriaBuilder cb) {
+    public static Predicate createPredicate(String property, Path<String> propertyPath, CriteriaBuilder cb) {
         return cb.like(cb.function("unaccent", String.class, cb.lower(propertyPath)) , '%' + StringHelper.unaccent(property.toLowerCase()) + '%');
     }
 
-    public static Predicate createIntegerPredicate(int property, Path<String> propertyPath, CriteriaBuilder cb) {
+    public static Predicate createPredicate(int property, Path<String> propertyPath, CriteriaBuilder cb) {
+        return cb.like(propertyPath.as(String.class), '%' + String.valueOf(property) + '%');
+    }
+
+    public static Predicate createPredicate(BigDecimal property, Path<String> propertyPath, CriteriaBuilder cb) {
         return cb.like(propertyPath.as(String.class), '%' + String.valueOf(property) + '%');
     }
 
@@ -30,28 +35,28 @@ public class DaoHelper {
 
         if(criteriaDTO == null) criteriaDTO = new DefaultCriteriaDTO();
 
-        Predicate deleteP = createIntegerPredicate(0, root.get(DefaultEnum.DELETE.getValue()), cb);
+        Predicate deleteP = createPredicate(0, root.get(DefaultEnum.DELETE.getValue()), cb);
         predicates.add(deleteP);
 
         if (StringUtils.isNotEmpty(criteriaDTO.getText_search())) {
-            Predicate nameP = createStringPredicate(criteriaDTO.getText_search(), root.get(DefaultEnum.NAME.getValue()), cb);
-            Predicate descriptionP = createStringPredicate(criteriaDTO.getText_search(), root.get(DefaultEnum.DESCRIPTION.getValue()), cb);
+            Predicate nameP = createPredicate(criteriaDTO.getText_search(), root.get(DefaultEnum.NAME.getValue()), cb);
+            Predicate descriptionP = createPredicate(criteriaDTO.getText_search(), root.get(DefaultEnum.DESCRIPTION.getValue()), cb);
             Predicate combineP = cb.or(nameP, descriptionP);
             predicates.add(combineP);
         }
 
         if (StringUtils.isNotEmpty(criteriaDTO.getName())) {
-            Predicate nameP = createStringPredicate(criteriaDTO.getName(), root.get(DefaultEnum.NAME.getValue()), cb);
+            Predicate nameP = createPredicate(criteriaDTO.getName(), root.get(DefaultEnum.NAME.getValue()), cb);
             predicates.add(nameP);
         }
 
         if (StringUtils.isNotEmpty(criteriaDTO.getDescription())) {
-            Predicate descriptionP = createStringPredicate(criteriaDTO.getDescription(), root.get(DefaultEnum.DESCRIPTION.getValue()), cb);
+            Predicate descriptionP = createPredicate(criteriaDTO.getDescription(), root.get(DefaultEnum.DESCRIPTION.getValue()), cb);
             predicates.add(descriptionP);
         }
 
         if (ArrayHelper.verifyIntIsBoolean(criteriaDTO.getActive())) {
-            Predicate activeP = createIntegerPredicate(criteriaDTO.getActive(), root.get(DefaultEnum.ACTIVE.getValue()), cb);
+            Predicate activeP = createPredicate(criteriaDTO.getActive(), root.get(DefaultEnum.ACTIVE.getValue()), cb);
             predicates.add(activeP);
         }
 

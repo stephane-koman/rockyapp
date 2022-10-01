@@ -1,5 +1,6 @@
 package com.rockyapp.rockyappbackend.volumes.dao.Impl;
 
+import com.rockyapp.rockyappbackend.common.dao.SocleDAO;
 import com.rockyapp.rockyappbackend.utils.enums.VolumeEnum;
 import com.rockyapp.rockyappbackend.utils.helpers.ArrayHelper;
 import com.rockyapp.rockyappbackend.utils.helpers.DaoHelper;
@@ -11,6 +12,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.query.QueryUtils;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,13 +23,11 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.rockyapp.rockyappbackend.utils.helpers.DaoHelper.createIntegerPredicate;
-import static com.rockyapp.rockyappbackend.utils.helpers.DaoHelper.createStringPredicate;
+import static com.rockyapp.rockyappbackend.utils.helpers.DaoHelper.createPredicate;
+import static com.rockyapp.rockyappbackend.utils.helpers.DaoHelper.createPredicate;
 
-public class VolumeDAOCustomImpl implements VolumeDAOCustom {
-    @PersistenceContext
-    private EntityManager entityManager;
-
+@Component
+public class VolumeDAOCustomImpl extends SocleDAO implements VolumeDAOCustom {
     @Override
     public Page<Volume> search(VolumeSearchCriteriaDTO criteriaDTO, Pageable pageable) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -38,28 +38,28 @@ public class VolumeDAOCustomImpl implements VolumeDAOCustom {
 
         if(criteriaDTO == null) criteriaDTO = new VolumeSearchCriteriaDTO();
 
-        Predicate deleteP = createIntegerPredicate(0, volumeRoot.get(VolumeEnum.DELETE.getValue()), cb);
+        Predicate deleteP = createPredicate(0, volumeRoot.get(VolumeEnum.DELETE.getValue()), cb);
         predicates.add(deleteP);
 
         if (StringUtils.isNotEmpty(criteriaDTO.getText_search())) {
-            Predicate quantityP = NumberUtils.isDigits(criteriaDTO.getText_search()) ? createIntegerPredicate(NumberUtils.toInt(criteriaDTO.getText_search()), volumeRoot.get(VolumeEnum.QUANTITY.getValue()), cb) : null;
-            Predicate mesureP = createStringPredicate(criteriaDTO.getText_search(), volumeRoot.get(VolumeEnum.MESURE.getValue()), cb);
+            Predicate quantityP = NumberUtils.isDigits(criteriaDTO.getText_search()) ? createPredicate(NumberUtils.toInt(criteriaDTO.getText_search()), volumeRoot.get(VolumeEnum.QUANTITY.getValue()), cb) : null;
+            Predicate mesureP = DaoHelper.createPredicate(criteriaDTO.getText_search(), volumeRoot.get(VolumeEnum.MESURE.getValue()), cb);
             Predicate combineP = cb.or(quantityP, mesureP);
             predicates.add(combineP);
         }
 
         if (criteriaDTO.getQuantity() != null) {
-            Predicate quantityP = createIntegerPredicate(Math.toIntExact(criteriaDTO.getQuantity()), volumeRoot.get(VolumeEnum.QUANTITY.getValue()), cb);
+            Predicate quantityP = createPredicate(Math.toIntExact(criteriaDTO.getQuantity()), volumeRoot.get(VolumeEnum.QUANTITY.getValue()), cb);
             predicates.add(quantityP);
         }
 
         if ( criteriaDTO.getMesure() != null && StringUtils.isNotEmpty(criteriaDTO.getMesure().name())) {
-            Predicate emailP = createStringPredicate(criteriaDTO.getMesure().name(), volumeRoot.get(VolumeEnum.MESURE.getValue()), cb);
+            Predicate emailP = DaoHelper.createPredicate(criteriaDTO.getMesure().name(), volumeRoot.get(VolumeEnum.MESURE.getValue()), cb);
             predicates.add(emailP);
         }
 
         if (ArrayHelper.verifyIntIsBoolean(criteriaDTO.getActive())) {
-            Predicate activeP = createIntegerPredicate(criteriaDTO.getActive(), volumeRoot.get(VolumeEnum.ACTIVE.getValue()), cb);
+            Predicate activeP = createPredicate(criteriaDTO.getActive(), volumeRoot.get(VolumeEnum.ACTIVE.getValue()), cb);
             predicates.add(activeP);
         }
 

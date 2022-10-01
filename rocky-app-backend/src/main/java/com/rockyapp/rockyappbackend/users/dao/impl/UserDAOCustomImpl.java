@@ -1,5 +1,6 @@
 package com.rockyapp.rockyappbackend.users.dao.impl;
 
+import com.rockyapp.rockyappbackend.common.dao.SocleDAO;
 import com.rockyapp.rockyappbackend.roles.entity.Role;
 import com.rockyapp.rockyappbackend.users.dao.UserDAOCustom;
 import com.rockyapp.rockyappbackend.users.dto.UserSearchCriteriaDTO;
@@ -12,19 +13,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.query.QueryUtils;
+import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.rockyapp.rockyappbackend.utils.helpers.DaoHelper.createIntegerPredicate;
-import static com.rockyapp.rockyappbackend.utils.helpers.DaoHelper.createStringPredicate;
+import static com.rockyapp.rockyappbackend.utils.helpers.DaoHelper.createPredicate;
+import static com.rockyapp.rockyappbackend.utils.helpers.DaoHelper.createPredicate;
 
-public class UserDAOCustomImpl implements UserDAOCustom {
-    @PersistenceContext
-    private EntityManager entityManager;
+@Component
+public class UserDAOCustomImpl extends SocleDAO implements UserDAOCustom {
 
     @Override
     public Page<User> search(UserSearchCriteriaDTO criteriaDTO, Pageable pageable) {
@@ -37,13 +36,13 @@ public class UserDAOCustomImpl implements UserDAOCustom {
 
         if(criteriaDTO == null) criteriaDTO = new UserSearchCriteriaDTO();
 
-        Predicate deleteP = createIntegerPredicate(0, user.get(UserEnum.DELETE.getValue()), cb);
+        Predicate deleteP = createPredicate(0, user.get(UserEnum.DELETE.getValue()), cb);
         predicates.add(deleteP);
 
         if (StringUtils.isNotEmpty(criteriaDTO.getText_search())) {
-            Predicate nameP = createStringPredicate(criteriaDTO.getText_search(), user.get(UserEnum.NAME.getValue()), cb);
-            Predicate usernameP = createStringPredicate(criteriaDTO.getText_search(), user.get(UserEnum.USERNAME.getValue()), cb);
-            Predicate emailP = createStringPredicate(criteriaDTO.getText_search(), user.get(UserEnum.EMAIL.getValue()), cb);
+            Predicate nameP = DaoHelper.createPredicate(criteriaDTO.getText_search(), user.get(UserEnum.NAME.getValue()), cb);
+            Predicate usernameP = DaoHelper.createPredicate(criteriaDTO.getText_search(), user.get(UserEnum.USERNAME.getValue()), cb);
+            Predicate emailP = DaoHelper.createPredicate(criteriaDTO.getText_search(), user.get(UserEnum.EMAIL.getValue()), cb);
             Predicate rolesP = cb.like(useRoles.get(UserEnum.NAME.getValue()), "%" + StringHelper.unaccent(criteriaDTO.getText_search().toUpperCase()) + "%");
 
             Predicate combineP = cb.or(nameP, usernameP, emailP, rolesP);
@@ -51,22 +50,22 @@ public class UserDAOCustomImpl implements UserDAOCustom {
         }
 
         if (StringUtils.isNotEmpty(criteriaDTO.getName())) {
-            Predicate nameP = createStringPredicate(criteriaDTO.getName(), user.get(UserEnum.NAME.getValue()), cb);
+            Predicate nameP = DaoHelper.createPredicate(criteriaDTO.getName(), user.get(UserEnum.NAME.getValue()), cb);
             predicates.add(nameP);
         }
 
         if (StringUtils.isNotEmpty(criteriaDTO.getUsername())) {
-            Predicate usernameP = createStringPredicate(criteriaDTO.getUsername(), user.get(UserEnum.USERNAME.getValue()), cb);
+            Predicate usernameP = DaoHelper.createPredicate(criteriaDTO.getUsername(), user.get(UserEnum.USERNAME.getValue()), cb);
             predicates.add(usernameP);
         }
 
         if (StringUtils.isNotEmpty(criteriaDTO.getEmail())) {
-            Predicate emailP = createStringPredicate(criteriaDTO.getEmail(), user.get(UserEnum.EMAIL.getValue()), cb);
+            Predicate emailP = DaoHelper.createPredicate(criteriaDTO.getEmail(), user.get(UserEnum.EMAIL.getValue()), cb);
             predicates.add(emailP);
         }
 
         if (ArrayHelper.verifyIntIsBoolean(criteriaDTO.getActive())) {
-            Predicate activeP = createIntegerPredicate(criteriaDTO.getActive(), user.get(UserEnum.ACTIVE.getValue()), cb);
+            Predicate activeP = createPredicate(criteriaDTO.getActive(), user.get(UserEnum.ACTIVE.getValue()), cb);
             predicates.add(activeP);
         }
 

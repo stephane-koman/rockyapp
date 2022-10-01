@@ -72,7 +72,6 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         if(productType != null && !productType.getId().equals(productTypeId)) throw new ProductTypeAlreadyExistsException(productTypeDTO.getName());
 
         productType = this.findProductTypeById(productTypeId);
-
         productType = productTypeMapper.mapToEntity(productTypeDTO, productType);
         productType.setUpdatedAt(LocalDateTime.now());
         productTypeDAO.save(productType);

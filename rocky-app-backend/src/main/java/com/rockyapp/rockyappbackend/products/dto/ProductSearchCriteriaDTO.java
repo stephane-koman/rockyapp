@@ -1,14 +1,12 @@
 package com.rockyapp.rockyappbackend.products.dto;
 
 import com.rockyapp.rockyappbackend.common.dto.SocleDTO;
-import com.rockyapp.rockyappbackend.product_types.dto.ProductTypeDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * A DTO for the {@link com.rockyapp.rockyappbackend.products.entity.Product} entity
@@ -16,12 +14,11 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDTO implements SocleDTO {
-    private String id;
+public class ProductSearchCriteriaDTO implements SocleDTO {
+    private String text_search;
     private String name;
     private String description;
     private BigDecimal price;
-    private byte[] image;
-    private boolean active;
-    private ProductTypeDTO productType;
+    private List<String> productTypes;
+    private int active;
 }

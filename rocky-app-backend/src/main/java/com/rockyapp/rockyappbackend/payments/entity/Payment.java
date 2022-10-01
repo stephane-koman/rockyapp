@@ -29,7 +29,6 @@ public class Payment extends AbstractSocleEntity {
     @JoinColumn(name = "invoice_id", nullable = false)
     private Invoice invoice;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "payment_type")
-    private PaymentTypeEnum paymentType;
+    private String paymentType;
 }
