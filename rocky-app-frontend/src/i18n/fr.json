@@ -12,7 +12,10 @@
     "name": "Le nom est obligatoire",
     "email": "Le mail est obligatoire",
     "phone": "Le téléphone est obligatoire",
-    "address": "L'adresse est obligatoire"
+    "address": "L'adresse est obligatoire",
+    "volume": "Le volume est obligatoire",
+    "product_type": "Le type de produit est obligatoire",
+    "price": "Le prix est obligatoire"
   },
   "menu": {
     "dashboard": "Tableau de bord",
