@@ -26,11 +26,15 @@
     "cities": "Villes",
     "customers": "Clients",
     "volumes": "Volumes",
-    "payment_types": "Moyens de paiement"
+    "payment_types": "Moyens de paiement",
+    "products": "Produits",
+    "product_types": "Types de produit"
   },
   "common": {
     "yes": "Oui",
     "no": "Non",
+    "enable": "Actif",
+    "disable": "Inactif",
     "actions": "Actions",
     "welcome": "Bienvenue",
     "home": "Accueil",
@@ -54,6 +58,7 @@
     "update": "Modifier",
     "search": "Rechercher",
     "reset": "Réinitialiser",
+    "price": "Prix",
     "sure_to_delete": "Confimez-vous la suppression?",
     "session_expired": "Votre session a expirée",
     "to": "à",
@@ -67,6 +72,8 @@
     "city": "Ville",
     "customer": "Client",
     "payment_type": "Moyen de paiement",
+    "product": "Produit",
+    "product_type": "Type de produit",
     "roles": "Rôles",
     "users": "Utilisateurs",
     "permissions": "Permissions",
@@ -74,6 +81,8 @@
     "cities": "Villes",
     "customers": "Clients",
     "payment_types": "Moyens de paiement",
+    "products": "Produits",
+    "product_types": "Types de produit",
     "quantity": "Quantité",
     "mesure": "Mesure",
     "volume": "Volume",
@@ -91,7 +100,8 @@
     "tous": "Tous",
     "toutes": "Toutes",
     "tout": "Tout",
-    "select": "Sélectionner"
+    "select": "Sélectionner",
+    "upload": "Uploader"
   },
   "user": {
     "page_title": "Liste des utilisateurs",
@@ -150,5 +160,21 @@
     "read_volume": "Afficher un volume",
     "update_volume": "Modifier un volume",
     "delete_volume": "Supprimer un volume"
+  },
+  "product_type": {
+    "page_title": "Liste des types de produit",
+    "create_product_type": "Ajouter un type de produit",
+    "read_product_type": "Afficher un type de produit",
+    "update_product_type": "Modifier un type de produit",
+    "delete_product_type": "Supprimer un type de produit"
+  },
+  "product": {
+    "page_title": "Liste des produits",
+    "create_product": "Ajouter un produit",
+    "read_product": "Afficher un produit",
+    "update_product": "Modifier un produit",
+    "delete_product": "Supprimer un produit",
+    "images": "Images du produit",
+    "code": "Code produit"
   }
 }

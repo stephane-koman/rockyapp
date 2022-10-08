@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeUserStatus(Long userId, boolean status) throws UserNotFoundException {
+    public void changeStatus(Long userId, boolean status) throws UserNotFoundException {
         User user = this.findUserById(userId);
         user.setActive(Boolean.TRUE.equals(status) ? 1 : 0);
         user.setUpdatedAt(LocalDateTime.now());

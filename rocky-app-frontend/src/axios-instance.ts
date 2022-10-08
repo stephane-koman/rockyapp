@@ -67,6 +67,7 @@ axiosApiInstance.interceptors.response.use(
       notification.error({
         message: "Erreur",
         description: error?.response?.data?.message,
+        duration: 1000
       });
     }
 

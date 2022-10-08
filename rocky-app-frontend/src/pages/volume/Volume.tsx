@@ -141,10 +141,8 @@ const Volume = () => {
         render: (_: any, data: any) => (
           <TableActions
             type={
-              getUserManyPermissionsFromList(
-                userConnectedPermissions,
-                "volume"
-              ).length > 2
+              getUserManyPermissionsFromList(userConnectedPermissions, "volume")
+                .length > 2
                 ? ETableActionType.DROPDOWN
                 : ETableActionType.BUTTON
             }
@@ -163,7 +161,7 @@ const Volume = () => {
                 EActionType.DELETE
               ),
             }}
-            deleteInfo={`${t("common.confirm_delete_info.cet")} ${t(
+            deleteInfo={`${t("common.confirm_delete_info.default")} ${t(
               "common.volume"
             ).toLowerCase()}?`}
             handleAction={handleModal}
@@ -252,16 +250,12 @@ const Volume = () => {
             : undefined,
         };
         
-        if (
-          Object.values(data).some((d: any) => d !== undefined && d !== null)
-        ) {
-          setFilters(data);
-          setRefresh(true);
-        }
+        setFilters(data);
+        setRefresh(true);
         break;
 
       case ETableChange.SORT:
-        setOneSortsTable(sorter, pagination.sorts, setPagination);
+        setOneSortsTable(sorter, setPagination);
         setRefresh(true);
         break;
 

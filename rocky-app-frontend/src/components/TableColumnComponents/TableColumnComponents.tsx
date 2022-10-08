@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import { Button, Checkbox, Divider, Input, List, Radio } from "antd";
 import { ColumnFilterItem, FilterDropdownProps } from "antd/lib/table/interface";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Checkbox, Divider, Input, List, Menu, Radio } from "antd";
-import Item from "antd/lib/list/Item";
 
 interface IProps {
   dataIndex: any;
@@ -104,9 +103,9 @@ const onInputSelectChange = (
 ) => {
   const value: any = e?.target?.value;
   setSearch(value);
-  const data: any[] = filters && filters.filter((f: any) =>
+  const data: any[] = (filters && filters.filter((f: any) =>
     f?.value?.toLowerCase()?.includes(value?.toLowerCase())
-  ) || [];
+  )) || [];
   setFiltersTmp(data);
 };
 
@@ -148,7 +147,7 @@ const onChangeCheckAll = (
     setSelectedKeys([]);
   } else {
     setSelectedKeys(
-      filters && filters.map((f: ColumnFilterItem) => f.value.toString()) || []
+      (filters && filters.map((f: ColumnFilterItem) => f.value.toString())) || []
     );
   }
 };
@@ -164,7 +163,6 @@ export const ColumnSelectProps = ({
   filterMultiple,
   reset,
 }: IColumnSelectProps) => {
-  const menuKeys: any[] = selectedKeys;
   const { t } = useTranslation();
   const [filtersTmp, setFiltersTmp] = useState<ColumnFilterItem[] | undefined>(filters);
   const [search, setSearch] = useState<any>(null);
@@ -181,7 +179,7 @@ export const ColumnSelectProps = ({
       setSearch(null);
       setFiltersTmp(filters);
     }
-  }, [reset]);
+  }, [reset, filters]);
 
   return (
     <div className="custom-filter-dropdown">

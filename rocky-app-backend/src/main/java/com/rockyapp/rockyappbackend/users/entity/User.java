@@ -1,7 +1,7 @@
 package com.rockyapp.rockyappbackend.users.entity;
 
 import com.rockyapp.rockyappbackend.common.entity.AbstractSocleEntity;
-import com.rockyapp.rockyappbackend.invoices.entity.Invoice;
+import com.rockyapp.rockyappbackend.orders.entity.Order;
 import com.rockyapp.rockyappbackend.permissions.entity.Permission;
 import com.rockyapp.rockyappbackend.roles.entity.Role;
 import lombok.*;
@@ -44,7 +44,7 @@ public class User extends AbstractSocleEntity {
 
     @Transient
     @OneToMany(mappedBy = "user")
-    private Set<Invoice> invoices;
+    private Set<Order> orders;
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToMany()

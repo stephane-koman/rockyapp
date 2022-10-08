@@ -1,4 +1,4 @@
-package com.rockyapp.rockyappbackend.invoices.entity;
+package com.rockyapp.rockyappbackend.orders.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +16,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class InvoiceItemId implements Serializable {
+public class OrderItemId implements Serializable {
 
     private static final long serialVersionUID = 4107321409952613249L;
 
@@ -26,22 +26,18 @@ public class InvoiceItemId implements Serializable {
     @Column(name = "product_id", nullable = false, length = 250)
     private String productId;
 
-    @Column(name = "volume_id", nullable = false)
-    private Long volumeId;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        InvoiceItemId entity = (InvoiceItemId) o;
+        OrderItemId entity = (OrderItemId) o;
         return Objects.equals(this.productId, entity.productId) &&
-                Objects.equals(this.volumeId, entity.volumeId) &&
                 Objects.equals(this.invoiceId, entity.invoiceId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productId, volumeId, invoiceId);
+        return Objects.hash(productId, invoiceId);
     }
 
 }

@@ -12,8 +12,9 @@ public interface ProductDAO extends PagingAndSortingRepository<Product, String>,
     @Query("SELECT p FROM Product p " +
             "WHERE (LOWER(p.name) = LOWER(:name)) " +
             "AND p.productType.id = :productTypeId " +
+            "AND p.volume.id = :volumeId " +
             "AND p.delete = 0")
-    Product findProductByNameAndProductTypeAndIsNotDelete(@Param("name") String name, @Param("productTypeId") Long productTypeId);
+    Product findProductByNameAndProductTypeAndVolumeAndIsNotDelete(@Param("name") String name, @Param("productTypeId") Long productTypeId, @Param("volumeId") Long volumeId);
 
     @Query("SELECT p FROM Product p " +
             "WHERE p.id = :id AND p.delete = 0")

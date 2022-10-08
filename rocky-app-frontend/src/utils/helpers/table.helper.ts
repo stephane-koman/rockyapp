@@ -25,7 +25,6 @@ export const getColumnSorter = (title: string, sorts?: string[] | any) => {
 
 export const setOneSortsTable = (
   sorter: any,
-  sorts?: string[],
   setPagination?: any
 ) => {
   const sortDir: string = sorter.field + "," + sorter.order;
@@ -67,10 +66,10 @@ export const setPaginationValues = (data: any, setPagination: any) => {
 export const getActiveListData = (t: any) => [
   {
     value: true,
-    text: t("common.yes"),
+    text: t("common.enable"),
   },
   {
     value: false,
-    text: t("common.no"),
+    text: t("common.disable"),
   },
 ];

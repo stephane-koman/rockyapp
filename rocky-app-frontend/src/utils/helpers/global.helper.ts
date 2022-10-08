@@ -9,7 +9,7 @@ export const showTotalPagination = (
 
 export const addSortsForSearch = (
   sortsParam: string[] | undefined
-): string[] => {
+): string => {
   const sorts: string[] = [];
 
   if (sortsParam) {
@@ -19,8 +19,8 @@ export const addSortsForSearch = (
       sorts.push(sort);
     });
   }
-
-  return sorts;
+  
+  return sorts.join("&sort=");
 };
 
 export const globalFilterOption = (

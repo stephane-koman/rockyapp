@@ -85,6 +85,23 @@ ALTER TABLE roles_permissions
 ALTER TABLE roles_permissions
     ADD CONSTRAINT fk_roles_permissions_reference_permissions FOREIGN KEY (permission_id) REFERENCES permissions (id);
 
+CREATE TABLE volumes
+(
+    id          BIGSERIAL,
+    quantity    BIGINT                   NOT NULL,
+    mesure      VARCHAR(4)               NOT NULL DEFAULT 'ML',
+    description TEXT,
+
+    is_active   NUMERIC(1)                        DEFAULT 1,
+    is_delete   NUMERIC(1)                        DEFAULT 0,
+
+    created_at  TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at  TIMESTAMP WITH TIME ZONE,
+    deleted_at  TIMESTAMP WITH TIME ZONE,
+
+    CONSTRAINT pk_volumes PRIMARY KEY (id)
+);
+
 CREATE TABLE product_types
 (
     id          BIGSERIAL,
@@ -104,12 +121,13 @@ CREATE TABLE product_types
 CREATE TABLE products
 (
     product_id      VARCHAR(250),
+    product_code    VARCHAR(250)             NOT NULL UNIQUE,
     name            VARCHAR(50)              NOT NULL,
     description     TEXT,
     price           DECIMAL,
-    image           BYTEA,
 
     product_type_id BIGINT                   NOT NULL,
+    volume_id       BIGINT                   NOT NULL,
 
     is_active       NUMERIC(1) DEFAULT 1,
     is_delete       NUMERIC(1) DEFAULT 0,
@@ -122,6 +140,23 @@ CREATE TABLE products
 );
 ALTER TABLE products
     ADD CONSTRAINT fk_products_reference_product_types FOREIGN KEY (product_type_id) REFERENCES product_types (id);
+ALTER TABLE products
+    ADD CONSTRAINT fk_products_reference_volumes FOREIGN KEY (volume_id) REFERENCES volumes (id);
+
+CREATE TABLE documents
+(
+    id         BIGSERIAL,
+    content    TEXT                     NOT NULL,
+    filename   VARCHAR(100)             NOT NULL,
+    mime_type  VARCHAR(10)              NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+
+    product_id VARCHAR(250)             NOT NULL,
+
+    CONSTRAINT pk_documents PRIMARY KEY (id)
+);
+ALTER TABLE documents
+    ADD CONSTRAINT fk_documents_reference_products FOREIGN KEY (product_id) REFERENCES products (product_id);
 
 CREATE TABLE customers
 (
@@ -143,50 +178,36 @@ CREATE TABLE customers
     CONSTRAINT pk_customers PRIMARY KEY (customer_id)
 );
 
-CREATE TABLE volumes
+CREATE TABLE orders
 (
-    id          BIGSERIAL,
-    quantity    BIGINT                   NOT NULL,
-    mesure      VARCHAR(4)               NOT NULL DEFAULT 'ML',
-    description TEXT,
+    order_id      VARCHAR(250),
+    price         DECIMAL,
 
-    is_active   NUMERIC(1)                        DEFAULT 1,
-    is_delete   NUMERIC(1)                        DEFAULT 0,
+    user_id       BIGINT                   NOT NULL,
+    customer_id   VARCHAR(250)             NOT NULL,
 
-    created_at  TIMESTAMP WITH TIME ZONE NOT NULL,
-    updated_at  TIMESTAMP WITH TIME ZONE,
-    deleted_at  TIMESTAMP WITH TIME ZONE,
+    due_date      DATE,
+    delivery_date DATE,
 
-    CONSTRAINT pk_volumes PRIMARY KEY (id)
+    is_delivery   NUMERIC(1) DEFAULT 0,
+    is_active     NUMERIC(1) DEFAULT 1,
+    is_delete     NUMERIC(1) DEFAULT 0,
+
+    created_at    TIMESTAMP WITH TIME ZONE NOT NULL,
+    updated_at    TIMESTAMP WITH TIME ZONE,
+    deleted_at    TIMESTAMP WITH TIME ZONE,
+
+    CONSTRAINT pk_orders PRIMARY KEY (order_id)
 );
+ALTER TABLE orders
+    ADD CONSTRAINT fk_orders_reference_users FOREIGN KEY (user_id) REFERENCES users (id);
+ALTER TABLE orders
+    ADD CONSTRAINT fk_orders_reference_customers FOREIGN KEY (customer_id) REFERENCES customers (customer_id);
 
-CREATE TABLE invoices
+CREATE TABLE order_items
 (
-    invoice_id  VARCHAR(250),
-    price       DECIMAL,
-
-    user_id     BIGINT                   NOT NULL,
-    customer_id VARCHAR(250)             NOT NULL,
-
-    is_active   NUMERIC(1) DEFAULT 1,
-    is_delete   NUMERIC(1) DEFAULT 0,
-
-    created_at  TIMESTAMP WITH TIME ZONE NOT NULL,
-    updated_at  TIMESTAMP WITH TIME ZONE,
-    deleted_at  TIMESTAMP WITH TIME ZONE,
-
-    CONSTRAINT pk_invoices PRIMARY KEY (invoice_id)
-);
-ALTER TABLE invoices
-    ADD CONSTRAINT fk_invoices_reference_users FOREIGN KEY (user_id) REFERENCES users (id);
-ALTER TABLE invoices
-    ADD CONSTRAINT fk_invoices_reference_customers FOREIGN KEY (customer_id) REFERENCES customers (customer_id);
-
-CREATE TABLE invoice_items
-(
-    invoice_id VARCHAR(250),
+    order_id   VARCHAR(250),
     product_id VARCHAR(250),
-    volume_id  BIGINT,
 
     quantity   BIGINT,
     price      DECIMAL,
@@ -198,21 +219,20 @@ CREATE TABLE invoice_items
     updated_at TIMESTAMP WITH TIME ZONE,
     deleted_at TIMESTAMP WITH TIME ZONE,
 
-    CONSTRAINT pk_invoice_items PRIMARY KEY (invoice_id, product_id, volume_id)
+    CONSTRAINT pk_order_items PRIMARY KEY (order_id, product_id)
 );
-ALTER TABLE invoice_items
-    ADD CONSTRAINT fk_invoice_items_reference_invoices FOREIGN KEY (invoice_id) REFERENCES invoices (invoice_id);
-ALTER TABLE invoice_items
-    ADD CONSTRAINT fk_invoice_items_reference_products FOREIGN KEY (product_id) REFERENCES products (product_id);
-ALTER TABLE invoice_items
-    ADD CONSTRAINT fk_invoice_items_reference_volumes FOREIGN KEY (volume_id) REFERENCES volumes (id);
+ALTER TABLE order_items
+    ADD CONSTRAINT fk_order_items_reference_orders FOREIGN KEY (order_id) REFERENCES orders (order_id);
+ALTER TABLE order_items
+    ADD CONSTRAINT fk_order_items_reference_products FOREIGN KEY (product_id) REFERENCES products (product_id);
 
 CREATE TABLE payments
 (
     id           BIGSERIAL,
+    price        DECIMAL                  NOT NULL,
     payment_type VARCHAR(10)              NOT NULL DEFAULT 'VIREMENT',
 
-    invoice_id   VARCHAR(250)             NOT NULL,
+    order_id     VARCHAR(250)             NOT NULL,
 
     is_active    NUMERIC(1)                        DEFAULT 1,
     is_delete    NUMERIC(1)                        DEFAULT 0,
@@ -224,4 +244,4 @@ CREATE TABLE payments
     CONSTRAINT pk_payments PRIMARY KEY (id)
 );
 ALTER TABLE payments
-    ADD CONSTRAINT fk_payments_reference_invoices FOREIGN KEY (invoice_id) REFERENCES invoices (invoice_id);
+    ADD CONSTRAINT fk_payments_reference_orders FOREIGN KEY (order_id) REFERENCES orders (order_id);

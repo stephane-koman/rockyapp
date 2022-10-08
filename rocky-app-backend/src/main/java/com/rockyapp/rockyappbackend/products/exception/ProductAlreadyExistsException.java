@@ -3,8 +3,6 @@ package com.rockyapp.rockyappbackend.products.exception;
 import com.rockyapp.rockyappbackend.common.exception.ValidationException;
 import com.rockyapp.rockyappbackend.utils.helpers.StringHelper;
 
-import java.io.Serial;
-
 public class ProductAlreadyExistsException extends ValidationException {
 
     private static final long serialVersionUID = 6126127434292555653L;

@@ -5,10 +5,11 @@ import {
   TeamOutlined,
   ToolOutlined,
   UsergroupAddOutlined,
-  BgColorsOutlined
+  BgColorsOutlined,
+  TableOutlined
 } from "@ant-design/icons";
 import { TFunction } from "i18next";
-import { CUSTOMER_PERMISSIONS, PERMISSION_PERMISSIONS, ROLE_PERMISSIONS, USER_PERMISSIONS, VOLUME_PERMISSIONS } from "../utils/constants/permissions.constant";
+import { CUSTOMER_PERMISSIONS, GLOBAL_PERMISSIONS, PERMISSION_PERMISSIONS, PRODUCT_PERMISSIONS, PRODUCT_TYPE_PERMISSIONS, ROLE_PERMISSIONS, USER_PERMISSIONS, VOLUME_PERMISSIONS } from "../utils/constants/permissions.constant";
 
 const _nav = (t: TFunction) => [
   {
@@ -23,13 +24,23 @@ const _nav = (t: TFunction) => [
     permissions: CUSTOMER_PERMISSIONS,
   },
   {
+    name: t("menu.products"),
+    to: "/settings/products",
+    icon: <TableOutlined />,
+    permissions: PRODUCT_PERMISSIONS,
+  },
+  {
     name: t("menu.settings"),
     to: "/settings",
     icon: <SettingOutlined />,
-    permissions: USER_PERMISSIONS.concat(ROLE_PERMISSIONS)
-      .concat(PERMISSION_PERMISSIONS)
-      .concat(VOLUME_PERMISSIONS),
+    permissions: GLOBAL_PERMISSIONS,
     _children: [
+      {
+        name: t("menu.product_types"),
+        to: "/settings/product_types",
+        icon: <TableOutlined />,
+        permissions: PRODUCT_TYPE_PERMISSIONS,
+      },
       {
         name: t("menu.volumes"),
         to: "/settings/volumes",

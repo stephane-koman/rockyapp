@@ -67,7 +67,7 @@ public class ProductTypeServiceImpl implements ProductTypeService {
 
     @Override
     public void update(Long productTypeId, ProductTypeDTO productTypeDTO) throws ProductTypeAlreadyExistsException, ProductTypeNotFoundException {
-        ProductType productType = this.findByName(productTypeDTO.getName());
+        ProductType productType = productTypeDAO.findProductTypeByNameAndIsNotDelete(productTypeDTO.getName());
 
         if(productType != null && !productType.getId().equals(productTypeId)) throw new ProductTypeAlreadyExistsException(productTypeDTO.getName());
 

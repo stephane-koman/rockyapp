@@ -1,5 +1,6 @@
 package com.rockyapp.rockyappbackend.products.controller;
 
+import com.rockyapp.rockyappbackend.common.dto.StatusDTO;
 import com.rockyapp.rockyappbackend.common.pagination.ResultPagine;
 import com.rockyapp.rockyappbackend.products.dto.ProductCreaDTO;
 import com.rockyapp.rockyappbackend.products.dto.ProductDTO;
@@ -26,7 +27,7 @@ public class ProductController {
 
     @PostMapping("/search")
     @PostAuthorize("hasAnyAuthority('READ_PRODUCT', 'CREATE_PRODUCT', 'UPDATE_PRODUCT', 'DELETE_PRODUCT')")
-    public ResponseEntity<ResultPagine<SimpleProductDTO>> search(@RequestBody(required = false) ProductSearchCriteriaDTO criteriaDTO, @PageableDefault(sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<ResultPagine<SimpleProductDTO>> search(@RequestBody(required = false) ProductSearchCriteriaDTO criteriaDTO, @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         ResultPagine<SimpleProductDTO> productPage = productService.search(criteriaDTO, pageable);
         return ResponseEntity.ok(productPage);
     }
@@ -50,6 +51,12 @@ public class ProductController {
     public ResponseEntity<Void> update(@PathVariable("id") String id, @RequestBody @Validated ProductCreaDTO productDto) throws ProductAlreadyExistsException, ProductNotFoundException {
         productService.update(id, productDto);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/status/{id}")
+    @PostAuthorize("hasAnyAuthority('UPDATE_PRODUCT', 'DELETE_PRODUCT')")
+    public void updateStatus(@PathVariable(name = "id") String id, @RequestBody StatusDTO statusDTO) throws ProductNotFoundException {
+        productService.changeStatus(id, statusDTO.isActive());
     }
 
     @DeleteMapping("/{id}")

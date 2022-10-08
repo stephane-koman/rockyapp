@@ -8,14 +8,14 @@ public class ProductTypeBuilder {
     public static ProductTypeDTO getDto() {
         ProductTypeDTO dto = new ProductTypeDTO();
         dto.setId(1L);
-        dto.setDescription("test");
+        dto.setName("Lait");
         return dto;
     }
 
     public static ProductType getEntity() {
         ProductType entity = new ProductType();
         entity.setId(1L);
-        entity.setDescription("test");
+        entity.setName("Lait");
         return entity;
     }
 }

@@ -7,3 +7,4 @@ export const DEFAULT_PAGE = 1;
 
 export const SITE_TITLE = "ROCKY APP";
 export const SITE_TITLE_FOOTER = "Rocky App";
+export const DEVISE =  "F CFA";

@@ -1,7 +1,7 @@
 package com.rockyapp.rockyappbackend.customers.entity;
 
 import com.rockyapp.rockyappbackend.common.entity.AbstractSocleEntity;
-import com.rockyapp.rockyappbackend.invoices.entity.Invoice;
+import com.rockyapp.rockyappbackend.orders.entity.Order;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,5 +50,5 @@ public class Customer extends AbstractSocleEntity {
 
     @Transient
     @OneToMany(mappedBy = "customer")
-    private Set<Invoice> invoices;
+    private Set<Order> orders;
 }

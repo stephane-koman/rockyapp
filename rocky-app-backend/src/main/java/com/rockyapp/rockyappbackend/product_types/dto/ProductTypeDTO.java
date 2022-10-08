@@ -12,5 +12,5 @@ public class ProductTypeDTO implements SocleDTO {
     private Long id;
     private String name;
     private String description;
-    private boolean active;
+    private boolean active = true;
 }

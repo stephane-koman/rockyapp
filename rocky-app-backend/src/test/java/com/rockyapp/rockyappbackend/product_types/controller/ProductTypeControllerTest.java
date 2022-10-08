@@ -19,7 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -34,15 +33,15 @@ import java.util.Locale;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ProductTypeControllerTest  extends AbstractControllerTest {
+public class ProductTypeControllerTest extends AbstractControllerTest {
+    
     private static final String ENDPOINT_URL = "/api/v1/product-type";
+
     @InjectMocks
     private ProductTypeController productTypeController;
 
     @Mock
     private ProductTypeService productTypeService;
-
-    private MockMvc mockMvc;
 
     @Before
     public void setUp() {
@@ -62,17 +61,17 @@ public class ProductTypeControllerTest  extends AbstractControllerTest {
     public void searchProductTypesByPageAndCriteria_shouldReturn_resultPagineOfProductTypeDTO() throws Exception {
         Page<ProductType> page = new PageImpl<>(Collections.singletonList(ProductTypeBuilder.getEntity()));
 
-        ProductTypeMapper productTypeMapper = new ProductTypeMapper();
+        ProductTypeMapper mapper = new ProductTypeMapper();
 
-        ResultPagine<ProductTypeDTO> resultPagine = productTypeMapper.mapFromEntity(page);
+        ResultPagine<ProductTypeDTO> resultPagine = mapper.mapFromEntity(page);
 
         Mockito.when(productTypeService.search(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(resultPagine);
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post(ENDPOINT_URL + "/search")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].description").value("test"));
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.results[0].name").value("Lait"));
 
         Mockito.verify(productTypeService, Mockito.times(1)).search(ArgumentMatchers.any(), ArgumentMatchers.any());
         Mockito.verifyNoMoreInteractions(productTypeService);
@@ -84,7 +83,7 @@ public class ProductTypeControllerTest  extends AbstractControllerTest {
         Mockito.when(productTypeService.findById(ArgumentMatchers.anyLong())).thenReturn(ProductTypeBuilder.getDto());
 
         mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_URL + "/1"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content()
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id", Is.is(1)));
@@ -100,7 +99,7 @@ public class ProductTypeControllerTest  extends AbstractControllerTest {
                         MockMvcRequestBuilders.post(ENDPOINT_URL)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(CustomUtils.asJsonString(ProductTypeBuilder.getDto())))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(status().isOk());
         Mockito.verify(productTypeService, Mockito.times(1)).create(ArgumentMatchers.any(ProductTypeDTO.class));
         Mockito.verifyNoMoreInteractions(productTypeService);
     }
@@ -113,7 +112,7 @@ public class ProductTypeControllerTest  extends AbstractControllerTest {
                         MockMvcRequestBuilders.put(ENDPOINT_URL + "/1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(CustomUtils.asJsonString(ProductTypeBuilder.getDto())))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(status().isOk());
         Mockito.verify(productTypeService, Mockito.times(1)).update(ArgumentMatchers.anyLong(), ArgumentMatchers.any(ProductTypeDTO.class));
         Mockito.verifyNoMoreInteractions(productTypeService);
     }
@@ -122,10 +121,11 @@ public class ProductTypeControllerTest  extends AbstractControllerTest {
     public void deleteProductType_shouldReturn_successCode() throws Exception {
         Mockito.doNothing().when(productTypeService).delete(ArgumentMatchers.anyLong());
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(ENDPOINT_URL + "/1")
+                MockMvcRequestBuilders
+                        .delete(ENDPOINT_URL + "/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
         Mockito.verify(productTypeService, Mockito.times(1)).delete(Mockito.anyLong());
         Mockito.verifyNoMoreInteractions(productTypeService);
     }

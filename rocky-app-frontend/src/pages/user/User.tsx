@@ -197,7 +197,7 @@ const User = () => {
                 EActionType.DELETE + "_user"
               ),
             }}
-            deleteInfo={`${t("common.confirm_delete_info.cet")} ${t(
+            deleteInfo={`${t("common.confirm_delete_info.default")} ${t(
               "common.user"
             ).toLowerCase()}?`}
             handleAction={handleModal}
@@ -342,7 +342,7 @@ const User = () => {
         break;
 
       case ETableChange.SORT:
-        setOneSortsTable(sorter, pagination.sorts, setPagination);
+        setOneSortsTable(sorter, setPagination);
         setRefresh(true);
         break;
 

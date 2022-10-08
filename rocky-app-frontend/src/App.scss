@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+
+.slick-track {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.slick-dots {
+  background: #56317a !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 0.5rem 0 !important;
+}
+
+.slick-dots-bottom {
+  bottom: 0 !important;
+  margin-bottom: 0 !important;
+}

@@ -1,6 +1,6 @@
 import { TFunction } from "i18next";
 import React from "react";
-import { CUSTOMER_PERMISSIONS, PERMISSION_PERMISSIONS, ROLE_PERMISSIONS, USER_PERMISSIONS, VOLUME_PERMISSIONS } from "./utils/constants/permissions.constant";
+import { CUSTOMER_PERMISSIONS, GLOBAL_PERMISSIONS, PERMISSION_PERMISSIONS, PRODUCT_PERMISSIONS, PRODUCT_TYPE_PERMISSIONS, ROLE_PERMISSIONS, USER_PERMISSIONS, VOLUME_PERMISSIONS } from "./utils/constants/permissions.constant";
 
 const Dashboard = React.lazy(() => import('./pages/dashborad/Dashboard'));
 const User = React.lazy(() => import("./pages/user/User"));
@@ -8,6 +8,8 @@ const Role = React.lazy(() => import("./pages/role/Role"));
 const Permission = React.lazy(() => import("./pages/permission/Permission"));
 const Customer = React.lazy(() => import("./pages/customer/Customer"));
 const Volume = React.lazy(() => import("./pages/volume/Volume"));
+const ProductType = React.lazy(() => import("./pages/product-type/ProductType"));
+const Product = React.lazy(() => import("./pages/product/Product"));
 
 const routes = (t: TFunction) => [
   {
@@ -34,9 +36,7 @@ const routes = (t: TFunction) => [
     name: t("menu.settings"),
     breadcrumbName: t("menu.settings"),
     component: User,
-    permissions: USER_PERMISSIONS.concat(ROLE_PERMISSIONS)
-      .concat(PERMISSION_PERMISSIONS)
-      .concat(VOLUME_PERMISSIONS),
+    permissions: GLOBAL_PERMISSIONS,
   },
   {
     path: "/settings/users",
@@ -65,6 +65,20 @@ const routes = (t: TFunction) => [
     breadcrumbName: t("menu.volumes"),
     component: Volume,
     permissions: VOLUME_PERMISSIONS,
+  },
+  {
+    path: "/settings/product_types",
+    name: t("menu.product_types"),
+    breadcrumbName: t("menu.product_types"),
+    component: ProductType,
+    permissions: PRODUCT_TYPE_PERMISSIONS,
+  },
+  {
+    path: "/settings/products",
+    name: t("menu.products"),
+    breadcrumbName: t("menu.products"),
+    component: Product,
+    permissions: PRODUCT_PERMISSIONS,
   },
 ];
 

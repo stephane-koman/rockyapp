@@ -1,11 +1,13 @@
 package com.rockyapp.rockyappbackend.product_types.controller;
 
 import com.rockyapp.rockyappbackend.common.dto.DefaultCriteriaDTO;
+import com.rockyapp.rockyappbackend.common.dto.StatusDTO;
 import com.rockyapp.rockyappbackend.common.pagination.ResultPagine;
 import com.rockyapp.rockyappbackend.product_types.dto.ProductTypeDTO;
 import com.rockyapp.rockyappbackend.product_types.exception.ProductTypeAlreadyExistsException;
 import com.rockyapp.rockyappbackend.product_types.exception.ProductTypeNotFoundException;
 import com.rockyapp.rockyappbackend.product_types.service.ProductTypeService;
+import com.rockyapp.rockyappbackend.users.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,7 +26,7 @@ public class ProductTypeController {
 
     @PostMapping("/search")
     @PostAuthorize("hasAnyAuthority('READ_PRODUCT_TYPE', 'CREATE_PRODUCT_TYPE', 'UPDATE_PRODUCT_TYPE', 'DELETE_PRODUCT_TYPE')")
-    public ResponseEntity<ResultPagine<ProductTypeDTO>> search(@RequestBody(required = false) DefaultCriteriaDTO criteriaDTO, @PageableDefault(sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<ResultPagine<ProductTypeDTO>> search(@RequestBody(required = false) DefaultCriteriaDTO criteriaDTO, @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         ResultPagine<ProductTypeDTO> productTypePage = productTypeService.search(criteriaDTO, pageable);
         return ResponseEntity.ok(productTypePage);
     }
@@ -48,6 +50,11 @@ public class ProductTypeController {
     public ResponseEntity<Void> update(@PathVariable("id") Long id, @RequestBody @Validated ProductTypeDTO productTypeDto) throws ProductTypeAlreadyExistsException, ProductTypeNotFoundException {
         productTypeService.update(id, productTypeDto);
         return ResponseEntity.ok().build();
+    }
+    @PutMapping("/status/{id}")
+    @PostAuthorize("hasAnyAuthority('UPDATE_USER', 'DELETE_USER')")
+    public void updateStatus(@PathVariable(name = "id") Long id, @RequestBody StatusDTO statusDTO) throws ProductTypeNotFoundException {
+        productTypeService.changeStatus(id, statusDTO.isActive());
     }
 
     @DeleteMapping("/{id}")

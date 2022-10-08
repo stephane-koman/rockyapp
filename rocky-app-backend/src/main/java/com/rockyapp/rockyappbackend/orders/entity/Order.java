@@ -1,28 +1,37 @@
-package com.rockyapp.rockyappbackend.invoices.entity;
+package com.rockyapp.rockyappbackend.orders.entity;
 
 import com.rockyapp.rockyappbackend.common.entity.AbstractSocleEntity;
 import com.rockyapp.rockyappbackend.customers.entity.Customer;
+import com.rockyapp.rockyappbackend.payments.entity.Payment;
 import com.rockyapp.rockyappbackend.users.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "invoices")
-public class Invoice extends AbstractSocleEntity {
+@Table(name = "orders")
+public class Order extends AbstractSocleEntity {
 
     private static final long serialVersionUID = -2168355007508950744L;
 
     @Id
-    @Column(name = "invoice_id", nullable = false, length = 250)
+    @GeneratedValue(generator = "invoice-sequence", strategy = GenerationType.SEQUENCE)
+    @GenericGenerator(
+            name = "order-sequence",
+            strategy = "com.rockyapp.rockyappbackend.common.generator.OrderSequenceIdentifier",
+            parameters = @org.hibernate.annotations.Parameter(name = "prefix", value = "ORD")
+    )
+    @Column(name = "order_id", nullable = false, length = 250)
     private String id;
 
     @Column(name = "price")
@@ -35,5 +44,11 @@ public class Invoice extends AbstractSocleEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
+
+    @OneToMany(mappedBy = "order")
+    private Set<OrderItem> orderItems;
+
+    @OneToMany(mappedBy = "order")
+    private Set<Payment> payments;
 
 }

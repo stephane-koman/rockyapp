@@ -1,9 +1,11 @@
 package com.rockyapp.rockyappbackend.volumes.entity;
 
 import com.rockyapp.rockyappbackend.common.entity.AbstractSocleEntity;
+import com.rockyapp.rockyappbackend.products.entity.Product;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -30,4 +32,8 @@ public class Volume extends AbstractSocleEntity {
 
     @Column(name = "description")
     private String description;
+
+    @Transient
+    @OneToMany(mappedBy = "volume")
+    private Set<Product> products;
 }

@@ -6,9 +6,11 @@ import com.rockyapp.rockyappbackend.products.dao.ProductDAOCustom;
 import com.rockyapp.rockyappbackend.products.dto.ProductSearchCriteriaDTO;
 import com.rockyapp.rockyappbackend.products.entity.Product;
 import com.rockyapp.rockyappbackend.utils.enums.ProductEnum;
+import com.rockyapp.rockyappbackend.utils.enums.VolumeEnum;
 import com.rockyapp.rockyappbackend.utils.helpers.ArrayHelper;
 import com.rockyapp.rockyappbackend.utils.helpers.DaoHelper;
 import com.rockyapp.rockyappbackend.utils.helpers.StringHelper;
+import com.rockyapp.rockyappbackend.volumes.entity.Volume;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,22 +30,34 @@ public class ProductDAOCustomImpl extends SocleDAO implements ProductDAOCustom {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product> cq = cb.createQuery(Product.class);
         Root<Product> productRoot = cq.from(Product.class);
-        Join<Product, ProductType> productType = productRoot.join("productType", JoinType.LEFT);
+        Join<Product, ProductType> productTypeJoin = productRoot.join("productType", JoinType.LEFT);
+        Join<Product, Volume> volumeJoin = productRoot.join("volume", JoinType.LEFT);
 
         List<Predicate> predicates = new ArrayList<>();
 
         if(criteriaDTO == null) criteriaDTO = new ProductSearchCriteriaDTO();
 
-        Predicate deleteP = createPredicate(0, productType.get(ProductEnum.DELETE.getValue()), cb);
+        Predicate deleteP = createPredicate(0, productTypeJoin.get(ProductEnum.DELETE.getValue()), cb);
         predicates.add(deleteP);
 
+        Expression<String> volumeExp = cb.concat(volumeJoin.get(VolumeEnum.QUANTITY.getValue()).as(String.class), "");
+        volumeExp = cb.concat(volumeExp, volumeJoin.get(VolumeEnum.MESURE.getValue()));
+
         if (StringUtils.isNotEmpty(criteriaDTO.getText_search())) {
+            Predicate codeP = DaoHelper.createPredicate(criteriaDTO.getText_search(), productRoot.get(ProductEnum.CODE.getValue()), cb);
             Predicate nameP = DaoHelper.createPredicate(criteriaDTO.getText_search(), productRoot.get(ProductEnum.NAME.getValue()), cb);
             Predicate priceP = DaoHelper.createPredicate(criteriaDTO.getText_search(), productRoot.get(ProductEnum.PRICE.getValue()), cb);
-            Predicate productTypeP = cb.like(productType.get(ProductEnum.NAME.getValue()), "%" + StringHelper.unaccent(criteriaDTO.getText_search().toUpperCase()) + "%");
+            Predicate productTypeP = cb.like(productTypeJoin.get(ProductEnum.NAME.getValue()), "%" + StringHelper.unaccent(criteriaDTO.getText_search().toUpperCase()) + "%");
 
-            Predicate combineP = cb.or(nameP, priceP, productTypeP);
+            Predicate volumeP = cb.like(volumeExp, "%" + StringHelper.unaccent(criteriaDTO.getText_search().toUpperCase()) + "%");
+
+            Predicate combineP = cb.or(nameP, codeP, priceP, productTypeP, volumeP);
             predicates.add(combineP);
+        }
+
+        if (StringUtils.isNotEmpty(criteriaDTO.getCode())) {
+            Predicate codeP = DaoHelper.createPredicate(criteriaDTO.getCode(), productRoot.get(ProductEnum.CODE.getValue()), cb);
+            predicates.add(codeP);
         }
 
         if (StringUtils.isNotEmpty(criteriaDTO.getName())) {
@@ -61,10 +75,16 @@ public class ProductDAOCustomImpl extends SocleDAO implements ProductDAOCustom {
             predicates.add(activeP);
         }
 
-        if(criteriaDTO.getProductTypes() != null && !criteriaDTO.getProductTypes().isEmpty()){
-            CriteriaBuilder.In<String> inProductTypes = cb.in(productType.get(ProductEnum.NAME.getValue()));
-            criteriaDTO.getProductTypes().forEach(inProductTypes::value);
+        if(criteriaDTO.getProductTypeList() != null && !criteriaDTO.getProductTypeList().isEmpty()){
+            CriteriaBuilder.In<String> inProductTypes = cb.in(productTypeJoin.get(ProductEnum.NAME.getValue()));
+            criteriaDTO.getProductTypeList().forEach(inProductTypes::value);
             predicates.add(inProductTypes);
+        }
+
+        if(criteriaDTO.getVolumeList() != null && !criteriaDTO.getVolumeList().isEmpty()){
+            CriteriaBuilder.In<String> inVolumes = cb.in(volumeExp);
+            criteriaDTO.getVolumeList().forEach(inVolumes::value);
+            predicates.add(inVolumes);
         }
 
         Predicate[] finalPredicates = new Predicate[predicates.size()];

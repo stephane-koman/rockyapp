@@ -2,6 +2,7 @@ package com.rockyapp.rockyappbackend.utils.enums;
 
 public enum ProductEnum {
     ID("id"),
+    CODE("code"),
     NAME("name"),
     DESCRIPTION("description"),
     PRICE("price"),

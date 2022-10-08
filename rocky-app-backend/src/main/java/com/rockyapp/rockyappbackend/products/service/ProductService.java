@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
     ResultPagine<SimpleProductDTO> search(final ProductSearchCriteriaDTO criteriaDTO, final Pageable pageable);
-    Product findByNameAndProductType(final String name, final Long productTypeId) throws ProductNotFoundException;
+    Product findByNameAndProductTypeAndVolume(final String name, final Long productTypeId, final Long volumeId) throws ProductNotFoundException;
     ProductDTO findById(final String id) throws ProductNotFoundException;
     void create(ProductCreaDTO productDTO) throws ProductAlreadyExistsException;
     void update(String productId, ProductCreaDTO productDTO) throws ProductAlreadyExistsException, ProductNotFoundException;

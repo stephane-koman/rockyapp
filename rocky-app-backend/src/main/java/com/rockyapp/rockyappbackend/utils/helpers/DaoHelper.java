@@ -19,7 +19,7 @@ import java.util.List;
 public class DaoHelper {
 
     public static Predicate createPredicate(String property, Path<String> propertyPath, CriteriaBuilder cb) {
-        return cb.like(cb.function("unaccent", String.class, cb.lower(propertyPath)) , '%' + StringHelper.unaccent(property.toLowerCase()) + '%');
+        return cb.like(cb.function("unaccent", String.class, cb.lower(propertyPath.as(String.class))) , '%' + StringHelper.unaccent(property.toLowerCase()) + '%');
     }
 
     public static Predicate createPredicate(int property, Path<String> propertyPath, CriteriaBuilder cb) {
@@ -68,7 +68,7 @@ public class DaoHelper {
                 .orderBy(QueryUtils.toOrders(pageable.getSort(), root, cb));
     }
 
-    public static <T> Page<T> returnResults (EntityManager entityManager, CriteriaQuery<T> cq, Pageable pageable){
+    public static <T> Page<T>   returnResults (EntityManager entityManager, CriteriaQuery<T> cq, Pageable pageable){
         TypedQuery<T> query = entityManager.createQuery(cq);
         int totalRows = query.getResultList().size();
         Pageable page = null;

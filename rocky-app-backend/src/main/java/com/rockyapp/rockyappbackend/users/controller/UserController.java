@@ -70,7 +70,7 @@ public class UserController {
     @PutMapping("/status/{id}")
     @PostAuthorize("hasAnyAuthority('UPDATE_USER', 'DELETE_USER')")
     public void updateStatus(@PathVariable(name = "id") Long id, @RequestBody StatusDTO statusDTO) throws UserNotFoundException {
-        userService.changeUserStatus(id, statusDTO.isActive());
+        userService.changeStatus(id, statusDTO.isActive());
     }
 
     @PutMapping("/reset_password/{id}")
